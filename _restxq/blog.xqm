@@ -8,13 +8,15 @@ module namespace gdp.blog = "gdp.blog" ;
  : @version 0.3
  : @see https://github.com/guidesDeParis/
  : @see http://www.passes-present.eu/en/node/363
- : @todo paramétriser le rendu en adaptant le module de templating txq
- : @todo transférer le html dans une vue
+ :
+ : @rmq traiter comme un projet avec synopsx
+ : @qst Donner une organisation par pages ?
+ : @qst Donner une organisation par dates ?
+ :
  :)
  
 declare namespace db = "http://basex.org/modules/db" ;
 declare default function namespace 'gdp.blog';
-declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 (:~
  : Simple blog in RESTXQ
@@ -25,37 +27,111 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 :)
 
 (:~
- : resource function for the page list
+ : resource function for the blog home
  : 
 :)
-declare %restxq:path('/gdp/blog')
-        %restxq:GET
-function blog(){
-  let $content := map { 
-      "title"   := "Corpus" ,
-      "items"   := 
-        <section>
-          {
-            for $corpus in db:open('gdp')/tei:teiCorpus/tei:teiCorpus
-            return <article>
-                     <div role="heading">
-                       <h2>{$corpus/tei:teiHeader//tei:titleStmt/tei:title}</h2>
-                       <h3>{fn:count($corpus//tei:TEI)} éditions</h3>
-                     </div>
-                     <div>
-                       <ul>
-                         {
-                           for $edition in $corpus//tei:TEI
-                           return <li><a href="/gdp/{$edition//tei:sourceDesc/@xml:id}">{$edition//tei:titleStmt//tei:title}</a></li>
-                          }
-                       </ul>
-                     </div>
-                    </article>
-           }
-          </section> ,
-      "url"      := "http://guidesdeparis.net/corpus" ,
-      "metadata" := <meta>test de Métadonnées</meta>
-    }
-    
-  return prof:dump($content)
+declare 
+  %restxq:path('/blog')
+function home(){
+  todo
+};
+
+
+(:~
+ : resource function for a blog entry
+ : 
+:)
+declare 
+  %restxq:path('/blog/{entryId}')
+function article($entryId as xs:string){
+  todo
+};
+
+(:~
+ : resource function for comments (if supported)
+ : 
+ : Collection des commentaires d'un billet de blog : 
+ : `guidesdeparis.net/blog/posts/{entryId}/{comments}`
+ : Item de commentaires d'un billet de blog 
+ : `guidesdeparis.net/blog/posts/{entryId}/{comments}/{commentId}`
+ :)
+
+(:~
+ : resource function to search blog posts
+ : 
+ : `guidesdeparis.net/blog/posts/search?q=query` 
+ : ou bien `guidesdeparis.net/blog/posts?q=query`
+ : ?? `added_after`, `blog`, `blog_tag`, `pmid`, `tag`, `term`
+ : 
+ :)
+declare 
+  %restxq:path('/blog/search')
+function search(){
+  todo
+};
+
+
+(:~
+ : resource function for collection of tags
+ : 
+ :)
+declare
+  %restxq:path('/blog/tags')
+function tags(){
+  todo
+};
+
+
+(:~
+ : resource function for collection of blog entries by tag
+ : 
+ :)
+declare
+  %restxq:path('/blog/tags/{tagId}')
+function entriesByTagId($tagId as xs:string){
+  todo
+};
+
+
+(:~
+ : resource function for collection of category
+ : 
+ :)
+declare
+  %restxq:path('/blog/categories')
+function categories(){
+  todo
+};
+
+
+(:~
+ : resource function for collection of blog entries by tag
+ : 
+ :)
+declare
+  %restxq:path('/blog/categories/{categoryId}')
+function entriesByCategoryId($categoryId as xs:string){
+  todo
+};
+
+
+(:~
+ : resource function for collection of authors
+ : 
+ :)
+declare
+  %restxq:path('/blog/authors')
+function entriesByCategoryId(){
+  todo
+};
+
+
+(:~
+ : resource function for collection of category
+ : 
+ :)
+declare
+  %restxq:path('/blog/authors/{authorId}')
+function categories($authorId as xs:string){
+  todo
 };
