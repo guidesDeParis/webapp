@@ -10,7 +10,7 @@
    <head>
       <meta charset="utf-8"/>
       <title>{title}</title>
-      <link href="styles.css" rel="stylesheet"/>
+      <link href="static/css/styles.css" rel="stylesheet"/>
       <script src="scripts.js"></script>
       <!-- ajouter js pour lt IE 9 -->
    </head>
@@ -21,7 +21,7 @@
            <h1>{title}</h1>
            <h2><span>{quantity}</span> corpus disponibles</h2>
          </header>
-         {content}
+         <main>{content}</main>
        </div>
      </main>
    </body>
