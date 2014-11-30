@@ -1,5 +1,5 @@
-xquery version "3.0" ;
-module namespace gdp.blog = "gdp.blog" ;
+xquery version '3.0' ;
+module namespace gdp.blog = 'gdp.blog' ;
 (:~
  : This module is a RESTXQ for the Paris' guidebooks electronic edition' blog
  :
@@ -14,18 +14,27 @@ module namespace gdp.blog = "gdp.blog" ;
  : @qst Donner une organisation par dates ?
  :
  :)
+
+import module namespace restxq = 'http://exquery.org/ns/restxq';
  
-declare namespace db = "http://basex.org/modules/db" ;
+import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
+import module namespace gdp.models.tei = 'gdp.models.tei' at '../models/tei.xqm' ;
+import module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ; 
 declare default function namespace 'gdp.blog';
+
 
 (:~
  : resource function for the blog home
  : 
 :)
 declare 
-  %restxq:path('/blog')
+  %restxq:path('/blog/home')
 function home(){
-  'todo'
+  let $data    := gdp.models.tei:listTexts()
+  let $options := map {}
+  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/html.xhtml'
+  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/list.xhtml'
+  return gdp.mappings.htmlWrapping:globalWrapper($data, $options, $layout, $pattern)
 };
 
 
