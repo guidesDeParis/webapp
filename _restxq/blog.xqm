@@ -25,7 +25,7 @@ declare default function namespace 'gdp.blog';
 declare 
   %restxq:path('/blog')
 function home(){
-  todo
+  'todo'
 };
 
 
@@ -36,7 +36,7 @@ function home(){
 declare 
   %restxq:path('/blog/{$entryId}')
 function article($entryId as xs:string){
-  todo
+  'todo'
 };
 
 (:~
@@ -59,7 +59,7 @@ function article($entryId as xs:string){
 declare 
   %restxq:path('/blog/search')
 function search(){
-  todo
+  'todo'
 };
 
 
@@ -70,7 +70,7 @@ function search(){
 declare
   %restxq:path('/blog/tags')
 function tags(){
-  todo
+  'todo'
 };
 
 
@@ -81,7 +81,7 @@ function tags(){
 declare
   %restxq:path('/blog/tags/{$tagId}')
 function entriesByTagId($tagId as xs:string){
-  todo
+  'todo'
 };
 
 
@@ -92,7 +92,7 @@ function entriesByTagId($tagId as xs:string){
 declare
   %restxq:path('/blog/categories')
 function categories(){
-  todo
+  'todo'
 };
 
 
@@ -103,7 +103,7 @@ function categories(){
 declare
   %restxq:path('/blog/categories/{$categoryId}')
 function entriesByCategoryId($categoryId as xs:string){
-  todo
+  'todo'
 };
 
 
@@ -114,7 +114,7 @@ function entriesByCategoryId($categoryId as xs:string){
 declare
   %restxq:path('/blog/authors')
 function entriesByCategoryId(){
-  todo
+  'todo'
 };
 
 
@@ -125,5 +125,5 @@ function entriesByCategoryId(){
 declare
   %restxq:path('/blog/authors/{$authorId}')
 function categories($authorId as xs:string){
-  todo
+  'todo'
 };
