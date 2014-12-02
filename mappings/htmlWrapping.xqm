@@ -48,29 +48,28 @@ declare namespace html = 'http://www.w3.org/1999/xhtml';
  : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
  : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
  :)
-declare function globalWrapper($data, $options, $layout, $pattern){
+declare function wrapper($data, $options, $layout, $pattern){
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data,'content')
-  let $wrap := fn:doc($layout) (: open the global layout doc:)
+  let $wrap := fn:doc($layout)
   return $wrap update (
     for $text in .//@*
       where fn:starts-with($text, '{') and fn:ends-with($text, '}')
       let $key := fn:replace($text, '\{|\}', '')
       let $value := map:get($meta, $key)
-      return
-        replace value of node $text with fn:string($value) ,
+      return replace value of node $text with fn:string($value) ,
     for $text in .//text()
       where fn:starts-with($text, '{') and fn:ends-with($text, '}')
       let $key := fn:replace($text, '\{|\}', '')
       let $value := map:get($meta,$key)
-    return 
-      if ($key = 'content') then 
-        replace node $text with pattern($meta, $contents, $options, $pattern)
-      else 
-        replace node $text with $value (: replace node $text with (xslt:transform($value, '../../../../static/xslt2/tei2html5.xsl')) :)
-  )
+      return if ($key = 'content') 
+        then replace node $text with pattern($meta, $contents, $options, $pattern)
+        else replace node $text with $value 
+    )
 };
 
+(: replace node $text with (xslt:transform($value, '../../../../static/xslt2/tei2html5.xsl')) :)
+  
 (: 
   let $content := map:get($data,'content')
   let $tmpl := fn:doc($layout) 
@@ -124,12 +123,16 @@ declare function innerWrapper($meta, $content, $options, $pattern){
 declare function pattern($meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {
   map:for-each($contents, function($key, $content) {
     fn:doc($pattern) update (
-      for $text in .//text() (: look through all text nodes with the particular condition specified below :)
-      where fn:starts-with($text, '{') 
-        and fn:ends-with($text, '}')
-      let $key := fn:replace($text, '\{|\}', '') (: get the text between braces :)
-      let $value := map:get($content, $key)  (: get the content corresponding to the key :)
-      return replace node $text with $value (: replace text between braces with the content :)
-    )
+      for $text in .//@*
+        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($content, $key) 
+        return replace value of node $text with fn:string($value) ,
+      for $text in .//text()
+        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($content, $key) 
+        return replace node $text with $value
+      )
   })
 };
