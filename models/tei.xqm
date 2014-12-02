@@ -16,27 +16,16 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0';
  : This function creates a map of two maps : one for metadata, one for content data
  :)
 declare function listTexts() {
-  let $texts := db:open($G:BLOGDB)//tei:TEI (: openning the database:)
-  let $meta as map(*) := {
-    'title' : <tei:head>Liste des articles</tei:head> , 
-    'quantity' : <tei:label>{fn:count($texts)}</tei:label> , 
-    'descriptionFr' : (
-      'todo'
-      ),
-    'descriptionEn' : (
-      fn:string-join(for $terms in fn:distinct-values($texts//tei:keywords[fn:starts-with(@xml:lang, 'en')]/tei:term) return fn:string($terms) , ', ')
-      ),
-    'author' : (
-      fn:string-join(for $person in fn:distinct-values($texts//respStmt//tei:persName[@full='yes'])
-      order by $person
-      return $person, ', ')
-      ),
-    'keywordsFr' : (
-      fn:string-join(for $terms in fn:distinct-values($texts//tei:keywords[fn:starts-with(@xml:lang, 'fr')]/tei:term) return fn:string($terms) , ', ')
-      ),
-    'copyright' : (
-      fn:distinct-values($texts//tei:licence/@target)
-      )
+  let $texts := db:open($G:BLOGDB)//tei:TEI
+  let $meta := {
+    'title' : 'Liste d’articles', 
+    'quantity' : fn:count($texts) , 
+    'descriptionFr' : getDescription($texts, 'fr'),
+    'descriptionEn' : getDescription($texts, 'en'),
+    'author' : getAuthors($texts),
+    'keywordsFr' : getKeywords($texts, 'fr'),
+    'keywordsEn' : getKeywords($texts, 'en'),
+    'copyright' : getCopyright($texts)
     }
   let $content as map(*) := map:merge(
     for $item in $texts//tei:teiHeader 
@@ -47,7 +36,6 @@ declare function listTexts() {
     'content'    : $content
     }
 };
-
 
 (:~
  : This function creates a map for a corpus item with teiHeader 
@@ -71,4 +59,65 @@ declare function header($item as element()) {
     'date'       : $date/text() ,
     'principal'  : $author/text()
   }
+};
+
+(:~
+ : this function get authors
+ : @param $content texts to process
+ : @return a distinct-values comma separated list
+ :)
+declare function getAuthors($content as element()*){
+  fn:string-join(
+    fn:distinct-values(
+      for $name in $content//tei:respStmt[tei:resp/@key='aut'] | $content//tei:principal
+      return getName($name)
+      ), 
+    ', ')
+};
+
+(:~
+ : this function serialize tei:persName
+ : @param $named named content to process
+ : @return concatenate forename and surname
+ :)
+declare function getName($named as element()*){
+  for $person in $named/tei:persName 
+  return ($person/tei:forename || ' ' || $person/tei:surname)
+};
+
+(:~
+ : this function get keywords
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a comma separated list of values
+ :)
+declare function getKeywords($content as element()*, $lang as xs:string){
+  fn:string-join(
+    for $terms in fn:distinct-values($content//tei:keywords[fn:starts-with(@xml:lang, $lang)]/tei:term) 
+    return fn:string($terms), 
+    ', ')
+};
+
+(:~
+ : this function get description
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a comma separated list of 90 first caracters of div[@type='abstract']
+ :)
+declare function getDescription($content as element()*, $lang as xs:string){
+  fn:string-join(
+    for $abstract in $content//tei:div[parent::tei:div[fn:starts-with(@xml:lang, $lang)]][@type='abstract']/tei:p 
+    return fn:substring($abstract, 0, 90),
+    ', ')
+};
+
+(:~
+ : this function get the licence url
+ : @param $content texts to process
+ : @return the @target url of licence
+ :
+ : @rmq if a sequence get the first one
+ :)
+declare function getCopyright($content){
+  ($content//tei:licence/@target)[1]
 };
