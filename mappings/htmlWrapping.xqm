@@ -28,7 +28,7 @@ import module namespace G = "synopsx.globals" at '../../../globals.xqm';
 declare default function namespace 'gdp.mappings.htmlWrapping'; 
 
 declare namespace html = 'http://www.w3.org/1999/xhtml'; 
-
+declare variable $gdp.mappings.htmlWrapping:xslt := '../../../../static/xsl/tei2html5.xsl' ;
 
 (:~
  : this function can eventually call an innerWrapper to perform intermediate wrappings 
@@ -132,7 +132,10 @@ declare function pattern($meta as map(*), $contents  as map(*), $options, $patte
         where fn:starts-with($text, '{') and fn:ends-with($text, '}')
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key) 
-        return replace node $text with $value
+        return if ($key = 'tei') 
+          then replace node $text with xslt:transform($value, $gdp.mappings.htmlWrapping:xslt)
+          else replace node $text with $value
+        
       )
   })
 };

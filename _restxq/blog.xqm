@@ -23,6 +23,8 @@ import module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' 
 declare default function namespace 'gdp.blog';
 
 
+declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: to supress :)
+
 (:~
  : resource function for the blog home
  : 
@@ -31,10 +33,10 @@ declare
   %restxq:path('/blog/home')
 function home(){
   let $data    := gdp.models.tei:listTexts()
-  let $options := map {}
-  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/html.xhtml'
+  let $options := map {'sorting' : 'descending'} (: todo :)
+  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/html5.xhtml'
   let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/list.xhtml'
-  return gdp.mappings.htmlWrapping:globalWrapper($data, $options, $layout, $pattern)
+  return gdp.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
 };
 
 
@@ -45,7 +47,11 @@ function home(){
 declare 
   %restxq:path('/blog/{$entryId}')
 function article($entryId as xs:string){
-  'todo'
+  let $data    := gdp.models.tei:article($entryId)
+  let $options := map {}
+  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/html5.xhtml'
+  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/article.xhtml'
+  return gdp.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
 };
 
 (:~
@@ -68,7 +74,7 @@ function article($entryId as xs:string){
 declare 
   %restxq:path('/blog/search')
 function search(){
-  'todo'
+ 'toto'
 };
 
 
