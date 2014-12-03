@@ -29,7 +29,7 @@ import module namespace G = "synopsx.globals" at '../../../globals.xqm';
 declare default function namespace 'gdp.mappings.htmlWrapping'; 
 
 declare namespace html = 'http://www.w3.org/1999/xhtml'; 
-declare variable $gdp.mappings.htmlWrapping:xslt := '../../../../static/xsl/tei2html5.xsl' ;
+declare variable $gdp.mappings.htmlWrapping:xslt := '../xsl2/tei2html.xsl' ;
 
 (:~
  : this function can eventually call an innerWrapper to perform intermediate wrappings 
