@@ -48,6 +48,7 @@ declare variable $gdp.mappings.htmlWrapping:xslt := '../xsl2/tei2html.xsl' ;
  : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
  : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
  : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
+ : @toto treat in the same loop @* and text()
  :)
 declare function wrapper($data, $options, $layout, $pattern){
   let $meta := map:get($data, 'meta')
@@ -120,6 +121,7 @@ declare function innerWrapper($meta, $content, $options, $pattern){
  : @pattern path to the html fragment layout 
  :
  : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
+ : @toto treat in the same loop @* and text()
  :)
 declare function pattern($meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {
   map:for-each($contents, function($key, $content) {
@@ -136,7 +138,6 @@ declare function pattern($meta as map(*), $contents  as map(*), $options, $patte
         return if ($key = 'tei') 
           then replace node $text with xslt:transform($value, $gdp.mappings.htmlWrapping:xslt)
           else replace node $text with $value
-        
       )
   })
 };
