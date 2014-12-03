@@ -23,8 +23,6 @@ import module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' 
 declare default function namespace 'gdp.blog';
 
 
-declare namespace tei = 'http://www.tei-c.org/ns/1.0'; (: to supress :)
-
 (:~
  : resource function for the blog home
  : 

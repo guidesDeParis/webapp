@@ -21,6 +21,7 @@ module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping';
  : You should have received a copy of the GNU General Public License along 
  : with SynopsX. If not, see <http://www.gnu.org/licenses/>
  :
+ : @todo give xslt's path with a function
  :)
 
 import module namespace G = "synopsx.globals" at '../../../globals.xqm';
