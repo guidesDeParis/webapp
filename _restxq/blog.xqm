@@ -24,6 +24,17 @@ declare default function namespace 'gdp.blog';
 
 
 (:~
+ : resource function for the blog
+ : 
+:)
+declare 
+  %restxq:path('/blog')
+function blog(){
+  <rest:redirect>{ '/blog/home' }</rest:redirect>
+};
+
+
+(:~
  : resource function for the blog home
  : 
 :)
@@ -32,8 +43,8 @@ declare
 function home(){
   let $data    := gdp.models.tei:listTexts()
   let $options := map {'sorting' : 'descending'} (: todo :)
-  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/html5.xhtml'
-  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/list.xhtml'
+  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/refillsHtml5.xhtml'
+  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/refillsListSerif.xhtml'
   return gdp.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
 };
 
@@ -44,12 +55,27 @@ function home(){
 :)
 declare 
   %restxq:path('/blog/{$entryId}')
+  %rest:produces("application/html")
 function article($entryId as xs:string){
   let $data    := gdp.models.tei:article($entryId)
   let $options := map {}
-  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/html5.xhtml'
-  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/article.xhtml'
+  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/refillsHtml5.xhtml'
+  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/refillsArticleSerif.xhtml'
   return gdp.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
+};
+
+(:~
+ : resource function for a blog entry
+ : 
+:)
+declare 
+  %restxq:path('/blog/{$entryId}')
+  %rest:produces("application/xml")
+  %rest:produces("application/tei+xml")  
+function articleXml($entryId as xs:string){
+  let $lang := 'fr'
+  let $data := gdp.models.tei:getXmlTeiById($entryId) 
+  return $data (: to serialize :)
 };
 
 (:~

@@ -11,35 +11,69 @@ module namespace gdp.edition = "gdp.edition" ;
  : @todo paramétriser le rendu en adaptant le module de templating txq
  : @todo transférer le html dans une vue
  :)
+
+import module namespace restxq = 'http://exquery.org/ns/restxq';
  
-declare namespace db = "http://basex.org/modules/db" ;
+import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
+import module namespace gdp.models.tei = 'gdp.models.tei' at '../models/tei.xqm' ;
+import module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ; 
 declare default function namespace 'gdp.edition';
-declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
+
+declare namespace tei = 'http://www.tei-c.org/ns/1.0';  (: to suppress :)
 
 
-declare variable $gdp.edition:xslt := "../static/xsl/tei2html5.xsl" ; (: @basex pourquoi ne peut-on pas déclarer un chemin absolu :)
+
 (:~
  : resource function for the home
  : 
 :)
-declare %restxq:path('/gdp')
-        %restxq:GET
-function home(){
-  let $content := map { 
-      "title"   := "Les Guides de Paris" ,
-      "url"      := "http://guidesdeparis.net" ,
-      "metadata" := <meta>test de Métadonnées</meta>
-    }
-  return $content
+declare 
+  %restxq:path('/')
+function root(){
+  <rest:redirect>{ '/home' }</rest:redirect>
 };
+
+(:~
+ : resource function for the home
+ : 
+:)
+declare 
+  %restxq:path('/home')
+function home(){
+  let $data    := gdp.models.tei:homePage()
+  let $options := map {'sorting' : 'descending'} (: todo :)
+  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/refillsHomeHtml5.xhtml'
+  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/refillsBullet.xhtml'
+  return gdp.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
+};
+
+
+(:~
+ : resource function for the edition
+ : 
+:)
+declare 
+  %restxq:path('/gdp')
+function blog(){
+  <rest:redirect>{ '/gdp/corpus' }</rest:redirect>
+};
+
 
 (:~
  : resource function for the page list
  : 
 :)
-declare %restxq:path('/gdp/corpus')
-        %restxq:GET
+declare 
+  %restxq:path('/gdp/corpus')
 function corpus(){
+  let $data    := gdp.models.tei:listCorpus()
+  let $options := map {'sorting' : 'descending'} (: todo :)
+  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/refillsHtml5.xhtml'
+  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/refillsCards.xhtml'
+  return gdp.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
+};
+
+(: function corpus(){
   let $content := map { 
       "title"   := "Corpus disponibles" ,
       "items"   := 
@@ -74,7 +108,7 @@ function corpus(){
                   </ul>
                 </div>
               </div>
-            </article>
+            </article> :)
 
             (: <article>
                      <div role="heading">
@@ -90,16 +124,23 @@ function corpus(){
                        </ul>
                      </div>
                     </article> :)
-           }
+         (:   }
           </section> ,
       "url"      := "http://guidesdeparis.net/corpus" ,
       "metadata" := <meta>test de Métadonnées</meta>
     }
     
   return $content
-};
+}; :)
 
 
+(: function article($entryId as xs:string){
+  let $data    := gdp.models.tei:article()
+  let $options := map {}
+  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/refillsHtml5.xhtml'
+  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/refillsArticleSerif.xhtml'
+  return gdp.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
+}; :)
 (:~
  : resource function for the corpus'list
  : 
@@ -174,7 +215,7 @@ function showitem($editionId, $itemId){
                  <h3>[localisation du passage dans l’ouvrage (todo)]</h3>
                </div>
                <div>
-                 {xslt:transform($item, $gdp.edition:xslt)}
+                 {xslt:transform($item, 'xslt')}
                </div>
              </article>
          }

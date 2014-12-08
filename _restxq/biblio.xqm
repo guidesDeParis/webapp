@@ -33,7 +33,7 @@ declare %restxq:path("/gdp/bibliography")
         %output:omit-xml-declaration("yes")
         %output:html-version("5.0")
         %output:encoding("UTF-8")
-    function bibliographyList() as element() {
+    function bibliographyList() {
     let $title := "Liste des ouvrages"
     let $content := map { 
       "title"   := "Corpus" ,
@@ -43,7 +43,7 @@ declare %restxq:path("/gdp/bibliography")
             { 
             for $references in db:open("gdp")//tei:listBibl/tei:biblStruct
             let $referencesIds := $references/@xml:id
-            return <li><a href="/gdp/bibliography/{$referencesIds}">{xslt:transform($references, "../static/xsl/biblio.xsl")}</a></li> 
+            return <li><a href="/gdp/bibliography/{$referencesIds}">{xslt:transform($references, "../../../../static/xsl/biblio.xsl")}</a></li> 
             }
         </ul>)
       }
@@ -64,7 +64,7 @@ declare %restxq:path('/gdp/bibliography/{$item}')
             for $reference in db:open('gdp')//tei:listBibl/tei:biblStruct[@xml:id=$item]
             return 
               <table>
-                <caption>{xslt:transform($reference, '../static/xsl/biblio.xsl')}</caption>
+                <caption>{xslt:transform($reference, '../../../../static/xsl/biblio.xsl')}</caption>
                 <tr>{$reference//tei:author}</tr>
                 <tr>{$reference/*[1]/tei:title}</tr>
               </table>
