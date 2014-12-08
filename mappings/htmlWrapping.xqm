@@ -120,7 +120,7 @@ declare function innerWrapper($meta, $content, $options, $pattern){
  : @options options for rendering (not in use yet)
  : @pattern path to the html fragment layout 
  :
- : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
+ : @toto modify to replace text nodes like "{quantity} éléments" (mixed content) EC2014-11-15
  : @toto treat in the same loop @* and text()
  :)
 declare function pattern($meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {

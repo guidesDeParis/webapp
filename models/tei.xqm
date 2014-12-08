@@ -26,9 +26,9 @@ declare function listTexts() {
     'description' : getDescription($texts, $lang),
     'keywords' : getKeywords($texts, $lang)
     }
-  let $content as map(*) := map:merge(
+  let $content := map:merge(
     for $item in $texts/tei:teiHeader 
-    order by $item//tei:publicationStmt/tei:date/@when (: sans effet :)
+    order by ($item//tei:publicationStmt/tei:date/@when) descending (: sans effet :)
     return  map:entry( fn:generate-id($item), header($item) )
     )
   return  map{
@@ -73,10 +73,61 @@ declare function header($item as element()) {
     'title' : getTitle($item, $lang),
     'subtitle' : getSubtitle($item, $lang),
     'date' : getDate($item, $dateFormat),
-    'principal' : getAuthors($item),
+    'author' : getAuthors($item),
     'tei' : $item,
     'url' : getUrl($item, $lang)
+    (: ', teiAbstract' : getAbstract($item, $lang) :)
   }
+};
+
+(:~
+ : This function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function gdp.models.tei:homePage() {
+  let $texts := db:open($G:BLOGDB)//tei:TEI
+  let $lang := 'fr'
+  let $meta := {
+    'title' : 'Liste d’articles', 
+    'author' : getAuthors($texts),
+    'copyright'  : getCopyright($texts),
+    'description' : getDescription($texts, $lang),
+    'keywords' : getKeywords($texts, $lang)
+    }
+  let $content as map(*) := map:merge(
+    for $item in $texts/tei:teiHeader 
+    order by $item//tei:publicationStmt/tei:date/@when (: sans effet :)
+    return  map:entry( fn:generate-id($item), header($item) )
+    )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+
+(:~
+ : This function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function listCorpus() {
+  let $texts := db:open($G:DBNAME)//tei:teiCorpus
+  let $lang := 'fr'
+  let $meta := {
+    'title' : 'Liste d’articles', 
+    'quantity' : getQuantity($texts, 'article'), (: @todo internationalize :)
+    'author' : getAuthors($texts),
+    'copyright'  : getCopyright($texts),
+    'description' : getDescription($texts, $lang),
+    'keywords' : getKeywords($texts, $lang)
+    }
+  let $content as map(*) := map:merge(
+    for $item in $texts/tei:teiHeader 
+    order by $item//tei:publicationStmt/tei:date/@when (: sans effet :)
+    return  map:entry( fn:generate-id($item), header($item) )
+    )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
 };
 
 (:~
@@ -84,6 +135,15 @@ declare function header($item as element()) {
  : tei builders
  : ~:~:~:~:~:~:~:~:~
  :)
+
+(:~
+ : this function get abstract
+ : @param $content texts to process
+ : @return a tei abstract
+ :)
+declare function getAbstract($content as element()*, $lang as xs:string){
+  $content//tei:front//tei:div[@type='abstract'][fn:starts-with(@xml:lang, $lang)]
+};
 
 (:~
  : this function get authors
@@ -105,6 +165,7 @@ declare function getAuthors($content as element()*){
  : @return the @target url of licence
  :
  : @rmq if a sequence get the first one
+ : @toto make it better !
  :)
 declare function getCopyright($content){
   ($content//tei:licence/@target)[1]
@@ -191,6 +252,15 @@ declare function getSubtitle($content as element()*, $lang as xs:string){
 };
 
 (:~
+ : this function get tei doc by id
+ : @param $id documents id to retrieve
+ : @return a plain xml-tei document
+ :)
+declare function getXmlTeiById($id as xs:string){
+  db:open($G:BLOGDB)//tei:TEI[//tei:sourceDesc[@xml-id=$id]]
+};
+
+(:~
  : this function get title
  : @param $content texts to process
  : @param $lang iso langcode starts
@@ -226,6 +296,6 @@ declare function getTitles($content as element()*, $lang as xs:string){
  : @toto print the real uri
  :)
 declare function getUrl($content as element()*, $lang as xs:string){
-  fn:string($content//tei:sourceDesc/@xml:id)
+  $G:PROJECTBLOGROOT || $content//tei:sourceDesc/@xml:id
 };
 
