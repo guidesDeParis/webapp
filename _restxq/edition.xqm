@@ -14,9 +14,9 @@ module namespace gdp.edition = "gdp.edition" ;
 
 import module namespace restxq = 'http://exquery.org/ns/restxq';
  
-import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
+import module namespace G = 'synopsx.globals' at '../../synopsx/globals.xqm' ;
 import module namespace gdp.models.tei = 'gdp.models.tei' at '../models/tei.xqm' ;
-import module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ; 
+import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../synopsx/mappings/htmlWrapping.xqm' ; 
 declare default function namespace 'gdp.edition';
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0';  (: to suppress :)
@@ -42,9 +42,9 @@ declare
 function home(){
   let $data    := gdp.models.tei:homePage()
   let $options := map {'sorting' : 'descending'} (: todo :)
-  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/refillsHomeHtml5.xhtml'
-  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/refillsBullet.xhtml'
-  return gdp.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
+  let $layout  := $G:PROJECTS || 'templates/refillsHomeHtml5.xhtml'
+  let $pattern  := $G:PROJECTS || 'templates/refillsBullet.xhtml'
+  return synopsx.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
 };
 
 
@@ -68,9 +68,9 @@ declare
 function corpus(){
   let $data    := gdp.models.tei:listCorpus()
   let $options := map {'sorting' : 'descending'} (: todo :)
-  let $layout  := $G:PROJECTS || 'gdpWebapp/templates/refillsHtml5.xhtml'
-  let $pattern  := $G:PROJECTS || 'gdpWebapp/templates/refillsCards.xhtml'
-  return gdp.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
+  let $layout  := $G:PROJECTS || 'templates/refillsHtml5.xhtml'
+  let $pattern  := $G:PROJECTS || 'templates/refillsCards.xhtml'
+  return synopsx.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
 };
 
 (: function corpus(){

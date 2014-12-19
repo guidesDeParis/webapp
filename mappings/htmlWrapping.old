@@ -24,7 +24,7 @@ module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping';
  : @todo give xslt's path with a function
  :)
 
-import module namespace G = "synopsx.globals" at '../../../globals.xqm';
+import module namespace G = "synopsx.globals" at '../../synopsx/globals.xqm';
 
 declare default function namespace 'gdp.mappings.htmlWrapping'; 
 

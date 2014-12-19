@@ -17,7 +17,7 @@ module namespace gdp.blog = 'gdp.blog' ;
 
 import module namespace restxq = 'http://exquery.org/ns/restxq';
  
-import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
+import module namespace G = 'synopsx.globals' at '../../synopsx/globals.xqm' ;
 import module namespace gdp.models.tei = 'gdp.models.tei' at '../models/tei.xqm' ;
 import module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ; 
 declare default function namespace 'gdp.blog';

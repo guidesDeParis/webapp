@@ -6,7 +6,7 @@ module namespace gdp.models.tei = 'gdp.models.tei';
  :)
 import module namespace db = 'http://basex.org/modules/db';
 
-import module namespace G = 'synopsx.globals' at '../../../globals.xqm'; 
+import module namespace G = 'synopsx.globals' at '../../synopsx/globals.xqm'; 
 
 declare default function namespace 'gdp.models.tei'; 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0'; 
