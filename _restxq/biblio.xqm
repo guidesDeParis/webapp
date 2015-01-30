@@ -12,6 +12,12 @@ module namespace gdp.biblio = "gdp.biblio" ;
  : @todo transférer le html dans une vue
  :)
 
+import module namespace restxq = 'http://exquery.org/ns/restxq';
+
+import module namespace G = 'synopsx.globals' at '../../synopsx/globals.xqm' ;
+import module namespace synopsx.models.teiBiblio = 'synopsx.models.teiBiblio' at '../../synopsx/models/teiBiblio.xqm' ;
+import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../synopsx/mappings/htmlWrapping.xqm' ; 
+
 declare namespace db = "http://basex.org/modules/db" ;
 declare default function namespace 'gdp.biblio';
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
@@ -24,31 +30,30 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
  : @see https://github.com/publicarchitectura/webappBasex
 :)
 
-
 (:~
- : list bibliographic entries
+ : this resource function redirects to the works list
  :)
 declare %restxq:path("/gdp/bibliography")
-        %output:method("xhtml")
-        %output:omit-xml-declaration("yes")
-        %output:html-version("5.0")
-        %output:encoding("UTF-8")
-    function bibliographyList() {
-    let $title := "Liste des ouvrages"
-    let $content := map { 
-      "title"   := "Corpus" ,
-      "items"   := 
-        (<h2>{$title}</h2>, <br/>,
-        <ul class="ui list"> 
-            { 
-            for $references in db:open("gdp")//tei:listBibl/tei:biblStruct
-            let $referencesIds := $references/@xml:id
-            return <li><a href="/gdp/bibliography/{$referencesIds}">{xslt:transform($references, "../../../../static/xsl/biblio.xsl")}</a></li> 
-            }
-        </ul>)
-      }
-    return $content
-    };
+function bibliography(){
+  <rest:response>
+    <http:response status="303" message="See Other">
+      <http:header name="location" value="/gdp/bibliography/works"/>
+    </http:response>
+  </rest:response>
+};
+
+(:~
+ : this resource function list the works
+ :)
+declare 
+  %restxq:path("/gdp/bibliography/works")
+function bibliographyList(){
+  let $data    := synopsx.models.teiBiblio:listWorks()
+  let $options := map {}
+  let $layout  := $G:TEMPLATES || 'blogHtml5.xhtml'
+  let $pattern  := $G:TEMPLATES || 'biblioListSerif.xhtml'
+  return synopsx.mappings.htmlWrapping:wrapper($data, $options, $layout, $pattern)
+};
 
 (:~
  : fonction ressource qui affiche un item
