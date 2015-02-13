@@ -47,8 +47,8 @@ declare variable $gdp.mappings.htmlWrapping:xslt := '../xsl2/tei2html.xsl' ;
  : 
  : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
  : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
- : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
- : @toto treat in the same loop @* and text()
+ : @todo modify to replace text nodes like "{quantity} éléments" EC2014-11-15
+ : @todo treat in the same loop @* and text()
  :)
 declare function wrapper($data, $options, $layout, $pattern){
   let $meta := map:get($data, 'meta')
@@ -97,7 +97,7 @@ declare function wrapper($data, $options, $layout, $pattern){
  : 
  : @rmq prof:dump($data,'data : ') to debug, messages appears in the basexhttp console
  : @change add flexibility to retrieve meta values and changes in variables names EC2014-11-15
- : @toto modify to replace text nodes like "{quantity} éléments" EC2014-11-15
+ : @todo modify to replace text nodes like "{quantity} éléments" EC2014-11-15
  :
  : This function should be called by a global wrapper and wraps a sequence of items according to the pattern
  : @content brought by the model 
@@ -120,8 +120,8 @@ declare function innerWrapper($meta, $content, $options, $pattern){
  : @options options for rendering (not in use yet)
  : @pattern path to the html fragment layout 
  :
- : @toto modify to replace text nodes like "{quantity} éléments" (mixed content) EC2014-11-15
- : @toto treat in the same loop @* and text()
+ : @todo modify to replace text nodes like "{quantity} éléments" (mixed content) EC2014-11-15
+ : @todo treat in the same loop @* and text()
  :)
 declare function pattern($meta as map(*), $contents  as map(*), $options, $pattern  as xs:string) as document-node()* {
   map:for-each($contents, function($key, $content) {

@@ -14,8 +14,8 @@ module namespace gdp.biblio = "gdp.biblio" ;
 
 import module namespace restxq = 'http://exquery.org/ns/restxq';
 
-import module namespace G = 'synopsx.globals' at '../../synopsx/globals.xqm' ;
-import module namespace synopsx.models.teiBiblio = 'synopsx.models.teiBiblio' at '../../synopsx/models/teiBiblio.xqm' ;
+import module namespace G = 'synopsx.globals' at '../../../../synopsx/globals.xqm' ;
+import module namespace gdp.models.teiBiblio = 'gdp.models.teiBiblio' at '../models/teiBiblio.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../synopsx/mappings/htmlWrapping.xqm' ; 
 
 declare namespace db = "http://basex.org/modules/db" ;
