@@ -39,8 +39,8 @@ function index() {
 
 (:~
  : this resource function is the html representation of the corpus resource
+ :
  : @return an html representation of the corpus resource with a bibliographical list
- : the HTML serialization also shows a bibliographical list
  :)
 declare 
   %restxq:path('/gdp/home')
@@ -65,42 +65,43 @@ function editionHome() {
 }; 
 
 (:~
- : this resource function is the html representation of the corpus resource
- : @return an html representation of the corpus resource with a bibliographical list
- : the HTML serialization also shows a bibliographical list
+ : resource function for corpus list
+ :
+ : @return an html representation of the corpus resource
  :)
 declare 
-  %restxq:path('/gdp/texts')
+  %restxq:path('/gdp/corpus')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function editionTexts() {
+function corpus() {
     let $queryParams := map {
      'project' : 'gdpWebapp',
      'dbName' : 'gdp',
      'model' : 'tei',
-     'function' : 'getTextsList'
+     'function' : 'getCorpusList'
      }
     let $data := synopsx.lib.commons:getQueryFunction($queryParams)
     let $outputParams := map {
       'lang' : 'fr',
-      'layout' : 'home.xhtml',
+      'layout' : 'page.html',
       'pattern' : 'article.xhtml'
       (: specify an xslt mode and other kind of output options :)
       }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
  : this resource function is a corpus list for testing
+ :
  : @return an html representation of the corpus list
  : @param $pattern a GET param giving the name of the calling HTML tag
  : @todo use this tag !
  :)
 declare 
-  %restxq:path("/gdp/texts/list/html")
+  %restxq:path("/gdp/texts")
 (: %restxq:query-param("pattern", "{$pattern}") :)
-function corpusListHtml() {
+function texts() {
   let $queryParams := map {
     'project' :'gdpWebapp',
     'dbName' : 'gdp',

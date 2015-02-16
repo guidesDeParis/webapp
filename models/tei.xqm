@@ -13,6 +13,31 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
 
+
+(:~
+ : This function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function getBibliographicalExpressionsList($queryParams as map(*)) {
+  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:TEI
+  let $lang := 'fr'
+  let $meta := {
+    'title' : 'Liste des expressions', 
+    'quantity' : getQuantity($expressions, 'expression'),
+    'author' : synopsx.models.tei:getAuthors($expressions),
+    'copyright'  : synopsx.models.tei:getCopyright($expressions),
+    'description' : synopsx.models.tei:getDescription($expressions, $lang),
+    'keywords' : synopsx.models.tei:getKeywords($expressions, $lang)
+    }
+  let $content := map:merge(
+    for $item in $expressions/tei:biblStruct 
+    return  map:entry( fn:generate-id($item), getHeader($item) )
+    )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)

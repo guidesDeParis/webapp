@@ -81,7 +81,7 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblWork() {
+function biblWork($workId) {
     let $queryParams := map {
      'project' : 'gdpWebapp',
      'dbName' : 'gdp',
@@ -118,8 +118,8 @@ function biblExpressions() {
     let $data := synopsx.lib.commons:getQueryFunction($queryParams)
     let $outputParams := map {
       'lang' : 'fr',
-      'layout' : 'page.html',
-      'pattern' : 'article.xhtml'
+      'layout' : 'page.xhtml',
+      'pattern' : 'blogArticle.xhtml'
       (: specify an xslt mode and other kind of output options :)
       }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
@@ -136,7 +136,7 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblExpression() {
+function biblExpression($expressionId) {
     let $queryParams := map {
      'project' : 'gdpWebapp',
      'dbName' : 'gdp',
@@ -187,11 +187,11 @@ function biblItems() {
  : @return a bibliographical item by ID
  :)
 declare 
-  %restxq:path('/gdp/bibliography/item/{$itemId}')
+  %restxq:path('/gdp/bibliography/items/{$itemId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblItem() {
+function biblItem($itemId) {
     let $queryParams := map {
      'project' : 'gdpWebapp',
      'dbName' : 'gdp',
