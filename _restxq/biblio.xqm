@@ -1,15 +1,20 @@
 xquery version "3.0" ;
 module namespace gdp.biblio = "gdp.biblio" ;
+
 (:~
- : This module is a RESTXQ for the Paris' guidebooks electronic edition' blog
+ : This module is a RESTXQ for Paris' guidebooks bibliography
  :
- : @author Emmanuel Chateau (Cluster Pasts in the Present)
- : @date 2014-05-22
+ : @author emchateau (Cluster Pasts in the Present)
+ : @since 2015-02-22 
  : @version 0.3
- : @see https://github.com/guidesDeParis/
- : @see http://www.passes-present.eu/en/node/363
- : @todo paramétriser le rendu en adaptant le module de templating txq
- : @todo transférer le html dans une vue
+ : @see http://guidesdeparis.net
+ :
+ : This module uses SynopsX publication framework 
+ : see <https://github.com/ahn-ens-lyon/synopsx> 
+ : It is distributed under the GNU General Public Licence, 
+ : see <http://www.gnu.org/licenses/>
+ :
+ : @qst give webpath by dates and pages ?
  :)
 
 import module namespace restxq = 'http://exquery.org/ns/restxq';

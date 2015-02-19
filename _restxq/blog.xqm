@@ -2,20 +2,22 @@ xquery version "3.0" ;
 module namespace gdp.blog = 'gdp.blog' ;
 
 (:~
- : This module is a RESTXQ for Paris' guidebooks electronic edition's blog
+ : This module is a RESTXQ for Paris' guidebooks blog
  :
  : @author emchateau (Cluster Pasts in the Present)
  : @since 2015-02-05 
  : @version 0.5
  : @see http://guidesdeparis.net
- : @see https://github.com/guidesDeParis/
  :
- : This module uses SynopsX publication framework see <https://github.com/ahn-ens-lyon/synopsx> 
- : It is distributed under the GNU General Public Licence, see <http://www.gnu.org/licenses/>
+ : This module uses SynopsX publication framework 
+ : see <https://github.com/ahn-ens-lyon/synopsx> 
+ : It is distributed under the GNU General Public Licence, 
+ : see <http://www.gnu.org/licenses/>
  :
- : @rmq treated as a project with SynopsX
  : @qst give webpath by dates and pages ?
  :)
+
+import module namespace restxq = 'http://exquery.org/ns/restxq';
 
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;

@@ -1,5 +1,5 @@
 xquery version "3.0" ;
-module namespace gdp.webapp = 'gdp.edition' ;
+module namespace gdp.edition = 'gdp.edition' ;
 
 (:~
  : This module is a RESTXQ for Paris' guidebooks electronic edition
@@ -8,14 +8,16 @@ module namespace gdp.webapp = 'gdp.edition' ;
  : @since 2015-02-05 
  : @version 0.5
  : @see http://guidesdeparis.net
- : @see https://github.com/guidesDeParis/
  :
- : This module uses SynopsX publication framework see <https://github.com/ahn-ens-lyon/synopsx> 
- : It is distributed under the GNU General Public Licence, see <http://www.gnu.org/licenses/>
+ : This module uses SynopsX publication framework 
+ : see <https://github.com/ahn-ens-lyon/synopsx> 
+ : It is distributed under the GNU General Public Licence, 
+ : see <http://www.gnu.org/licenses/>
  :
- : @rmq treated as a project with SynopsX
  : @qst give webpath by dates and pages ?
  :)
+
+import module namespace restxq = 'http://exquery.org/ns/restxq';
 
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
@@ -38,9 +40,9 @@ function index() {
 };
 
 (:~
- : this resource function is the html representation of the corpus resource
+ : resource function for the home
  :
- : @return an html representation of the corpus resource with a bibliographical list
+ : @return a home page for the edition
  :)
 declare 
   %restxq:path('/gdp/home')

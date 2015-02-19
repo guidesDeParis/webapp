@@ -1,14 +1,21 @@
 xquery version "3.0" ;
 module namespace synopsx.models.tei = 'gdp.models.tei' ;
+
 (:~
- : This module is a TEI models' library for Guides de Paris
- : @version 0.1
+ : This module is a TEI models library for paris' guidebooks edition
+ :
+ : @author emchateau (Cluster Pasts in the Present)
  : @since 2014-11-10 
- : @author emchateau
+ : @version 0.2
  : @see http://guidesdeparis.net
  :
+ : This module uses SynopsX publication framework 
+ : see <https://github.com/ahn-ens-lyon/synopsx> 
+ : It is distributed under the GNU General Public Licence, 
+ : see <http://www.gnu.org/licenses/>
+ :
  :)
-
+ 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
