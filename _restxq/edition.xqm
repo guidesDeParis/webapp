@@ -10,9 +10,9 @@ module namespace gdp.edition = 'gdp.edition' ;
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 
- : see <https://github.com/ahn-ens-lyon/synopsx> 
+ : see https://github.com/ahn-ens-lyon/synopsx
  : It is distributed under the GNU General Public Licence, 
- : see <http://www.gnu.org/licenses/>
+ : see http://www.gnu.org/licenses/
  :
  : @qst give webpath by dates and pages ?
  :)
@@ -22,6 +22,7 @@ import module namespace restxq = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
 
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'gdp.edition' ;
@@ -51,16 +52,17 @@ declare
   %output:html-version("5.0")
 function editionHome() {
   let $queryParams := map {
-    'project' : 'gdpWebapp',
+    'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
     'function' : 'getTextsList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'page.xhtml',
-    'pattern' : ()
+    'pattern' : 'article'
     (: specify an xslt mode and other kind of output options :)
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
@@ -77,20 +79,21 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function corpus() {
-    let $queryParams := map {
-     'project' : 'gdpWebapp',
+  let $queryParams := map {
+     'project' : 'gdp',
      'dbName' : 'gdp',
      'model' : 'tei',
      'function' : 'getCorpusList'
      }
-    let $data := synopsx.lib.commons:getQueryFunction($queryParams)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'page.html',
-      'pattern' : 'article.xhtml'
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'lang' : 'fr',
+    'layout' : 'page.html',
+    'pattern' : 'article.xhtml'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -105,12 +108,13 @@ declare
 (: %restxq:query-param("pattern", "{$pattern}") :)
 function texts() {
   let $queryParams := map {
-    'project' :'gdpWebapp',
+    'project' :'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
     'function' : 'getTextsList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_blogListSerif.xhtml',
@@ -136,7 +140,8 @@ function biblioListHtml($pattern as xs:string?) {
     'model' : 'tei',
     'function' : 'getRespList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'inc_blogListSerif.xhtml',

@@ -10,9 +10,9 @@ module namespace gdp.blog = 'gdp.blog' ;
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 
- : see <https://github.com/ahn-ens-lyon/synopsx> 
+ : see https://github.com/ahn-ens-lyon/synopsx
  : It is distributed under the GNU General Public Licence, 
- : see <http://www.gnu.org/licenses/>
+ : see http://www.gnu.org/licenses/
  :
  : @qst give webpath by dates and pages ?
  :)
@@ -22,6 +22,7 @@ import module namespace restxq = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
 
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'gdp.blog' ;
@@ -43,6 +44,13 @@ function index() {
   </rest:response>
 };
 
+declare 
+ %restxq:path('toto')
+function context() {
+ inspect:context()
+};
+
+
 (:~
  : resource function for the blog's home
  :
@@ -55,16 +63,17 @@ declare
   %output:html-version('5.0')
 function blogHome() {
   let $queryParams := map {
-    'project' : 'gdpWebapp',
+    'project' : 'gdp',
     'dbName' :  'blog',
     'model' : 'tei' ,
-    'function' : 'getBlogHome'
+    'function' : 'getTextsList'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'page.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml',
+    'pattern' : 'blogArticle.xhtml',
     'sorting' : 'descending'
     (: specify an xslt mode and other kind of output options :)
     }
@@ -83,16 +92,17 @@ declare
   %output:html-version('5.0')
 function blogPosts() {
   let $queryParams := map {
-    'project' : 'gdpWebapp',
+    'project' : 'gdp',
     'dbName' :  'blog',
     'model' : 'tei' ,
     'function' : 'getBlogPosts'
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'page.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml',
+    'pattern' : 'blogArticle.xhtml',
     'sorting' : 'descending'
     (: specify an xslt mode and other kind of output options :)
     }
@@ -106,23 +116,24 @@ function blogPosts() {
  : @return a blog item
  :)
 declare 
-  %restxq:path('/gdp/posts/{$entryId}')
+  %restxq:path('/blog/posts/{$entryId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
 function blogItem($entryId as xs:string) {
   let $queryParams := map {
-    'project' : 'gdpWebapp',
+    'project' : 'gdp',
     'dbName' :  'blog',
     'model' : 'tei',
     'function' : 'getBlogItem',
     'entryId' : $entryId
     }
-  let $data := synopsx.lib.commons:getQueryFunction($queryParams)
+  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'page.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml'
+    'pattern' : 'blogArticle.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
