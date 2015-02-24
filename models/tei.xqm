@@ -10,9 +10,9 @@ module namespace synopsx.models.tei = 'gdp.models.tei' ;
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 
- : see <https://github.com/ahn-ens-lyon/synopsx> 
+ : see https://github.com/ahn-ens-lyon/synopsx
  : It is distributed under the GNU General Public Licence, 
- : see <http://www.gnu.org/licenses/>
+ : see http://www.gnu.org/licenses/
  :
  :)
  
@@ -20,14 +20,75 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
 
+(:~
+ : ~:~:~:~:~:~:~:~:~
+ : tei blog
+ : ~:~:~:~:~:~:~:~:~
+ :)
+ 
+(:~
+ : this function lists blog posts
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getBlogPosts($queryParams as map(*)) {
+  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
+  let $lang := 'fr'
+  let $meta := map{
+    'title' : 'Liste des articles', 
+    'quantity' : getQuantity($expressions, 'expression'),
+    'author' : synopsx.models.tei:getAuthors($expressions),
+    'copyright'  : synopsx.models.tei:getCopyright($expressions),
+    'description' : synopsx.models.tei:getDescription($expressions, $lang),
+    'keywords' : synopsx.models.tei:getKeywords($expressions, $lang)
+    }
+  let $content := map:merge(
+    for $item in $expressions/tei:TEI
+    return  map:entry( fn:generate-id($item), getHeader($item) )
+    )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
 
+(:~
+ : This function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function getBlogItem($queryParams as map(*)) {
+  let $itemId := map:get($queryParams, 'entryId')
+  let $texts := db:open(map:get($queryParams, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id=$itemId]]
+  let $lang := 'fr'
+  let $meta := map{
+    'title' : synopsx.models.tei:getTitles($itemId, $lang), 
+    'author' : synopsx.models.tei:getAuthors($itemId),
+    'copyright'  : synopsx.models.tei:getCopyright($itemId),
+    'description' : synopsx.models.tei:getDescription($itemId, $lang),
+    'keywords' : synopsx.models.tei:getKeywords($itemId, $lang)
+    }
+  let $content as map(*) := map:merge(
+    map:entry( fn:generate-id($itemId), getHeader($itemId) )
+    )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : ~:~:~:~:~:~:~:~:~
+ : tei blog
+ : ~:~:~:~:~:~:~:~:~
+ :)
+ 
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getBibliographicalExpressionsList($queryParams as map(*)) {
   let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:TEI
   let $lang := 'fr'
-  let $meta := {
+  let $meta := map{
     'title' : 'Liste des expressions', 
     'quantity' : getQuantity($expressions, 'expression'),
     'author' : synopsx.models.tei:getAuthors($expressions),
@@ -45,54 +106,6 @@ declare function getBibliographicalExpressionsList($queryParams as map(*)) {
     }
 };
 
-(:~
- : This function creates a map of two maps : one for metadata, one for content data
- :)
-declare function getArticlesList($queryParams as map(*)) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:TEI
-  let $lang := 'fr'
-  let $meta := {
-    'title' : 'Liste d’articles', 
-    'quantity' : getQuantity($texts, 'article'), (: @todo internationalize :)
-    'author' : synopsx.models.tei:getAuthors($texts),
-    'copyright'  : synopsx.models.tei:getCopyright($texts),
-    'description' : synopsx.models.tei:getDescription($texts, $lang),
-    'keywords' : synopsx.models.tei:getKeywords($texts, $lang)
-    }
-  let $content := map:merge(
-    for $item in $texts/tei:teiHeader 
-    order by ($item//tei:publicationStmt/tei:date/@when) descending (: sans effet :)
-    return  map:entry( fn:generate-id($item), getHeader($item) )
-    )
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
-
-(:~
- : This function creates a map of two maps : one for metadata, one for content data
- :)
-declare function getArticle($queryParams as map(*)) {
-  let $itemId := map:get($queryParams, 'itemId')
-  let $texts := db:open(map:get($queryParams, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id=$itemId]]
-  let $lang := 'fr'
-  let $meta := {
-    'title' : synopsx.models.tei:getTitles($itemId, $lang), 
-    'author' : synopsx.models.tei:getAuthors($itemId),
-    'copyright'  : synopsx.models.tei:getCopyright($itemId),
-    'description' : synopsx.models.tei:getDescription($itemId, $lang),
-    'keywords' : synopsx.models.tei:getKeywords($itemId, $lang)
-    }
-  let $content as map(*) := map:merge(
-    map:entry( fn:generate-id($itemId), getHeader($itemId) )
-    )
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
-
 
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
@@ -100,7 +113,7 @@ declare function getArticle($queryParams as map(*)) {
 declare function getCorpusList($queryParams) {
   let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
   let $lang := 'fr'
-  let $meta := {
+  let $meta := map{
     'title' : 'Liste d’articles', 
     'quantity' : getQuantity($texts, 'article'), (: @todo internationalize :)
     'author' : getAuthors($texts),

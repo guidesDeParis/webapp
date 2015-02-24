@@ -10,9 +10,9 @@ module namespace gdp.mappings.tei2html = 'gdp.mappings.tei2html' ;
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 
- : see <https://github.com/ahn-ens-lyon/synopsx> 
+ : see https://github.com/ahn-ens-lyon/synopsx
  : It is distributed under the GNU General Public Licence, 
- : see <http://www.gnu.org/licenses/>
+ : see http://www.gnu.org/licenses/
  :
  : @todo assign html element in the namespace
  :)
@@ -72,13 +72,16 @@ declare function passthru($nodes as node(), $options) as item()* {
  :)
 
 declare function div($node as element(tei:div), $options) {
-  if ($node/@xml:id) then <div id="{ getXmlId($node, $options) }"></div> else (),
-  passthru($node, $options)
+  <div>
+    { if ($node/@xml:id) then attribute id { $node/@xml:id } else (),
+    passthru($node, $options)}
+  </div>
 };
 
-declare function head($node as element(tei:head), $options) as element() {   if ($node/parent::tei:div) then
+declare function head($node as element(tei:head), $options) as element() {   
+  if ($node/parent::tei:div) then
     let $type := $node/parent::tei:div/@type
-    let $level := count($node/ancestor::div) - 1
+    let $level := fn:count($node/ancestor::div) - 1
     return element { 'h' || $level } { passthru($node, $options) }
   else if ($node/parent::tei:figure) then
     if ($node/parent::tei:figure/parent::tei:p) then
@@ -95,17 +98,41 @@ declare function p($node as element(tei:p), $options) {
   <p>{ passthru($node, $options) }</p>
 };
 
+declare function list($node as element(tei:list), $options) {
+  <ul>{ passthru($node, $options) }</ul>
+};
+
+declare function gdp.mappings.tei2html:item($node as element(tei:list), $options) {
+  <li>{ passthru($node, $options) }</li>
+};
+
+declare function label($node as element(tei:label), $options) {
+  <dd>{ passthru($node, $options) }</dd>
+};
+
 (:~
  : ~:~:~:~:~:~:~:~:~
  : tei inline
  : ~:~:~:~:~:~:~:~:~
  :)
 declare function hi($node as element(tei:hi), $options) {
-  if ($node/@italic) then <em>{ passthru($node, $options) }</i> 
-  else if ($node/@bold) ,
+  if ($node/@rend='italic') then <em>{ passthru($node, $options) }</em> 
+  else if ($node/@rend='bold') then '' else (),
   passthru($node, $options)
 };
 
+declare function ref($node as element(tei:ref), $options) {
+  <a>{ passthru($node, $options) }</a>
+};
+
+declare function said($node as element(tei:said), $options) {
+  <quote>{ passthru($node, $options) }</quote>
+};
+
+
+declare function figure($node as element(tei:figure), $options) {
+  <figure>{ passthru($node, $options) }</figure>
+};
 
 (:~
  : ~:~:~:~:~:~:~:~:~
