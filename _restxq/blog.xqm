@@ -25,6 +25,8 @@ import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../..
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
 
+import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm';
+
 declare default function namespace 'gdp.blog' ;
 
 declare variable $gdp.blog:project := 'blog';
@@ -44,13 +46,6 @@ function index() {
   </rest:response>
 };
 
-declare 
- %restxq:path('toto')
-function context() {
- inspect:context()
-};
-
-
 (:~
  : resource function for the blog's home
  :
@@ -66,9 +61,9 @@ function blogHome() {
     'project' : 'gdp',
     'dbName' :  'blog',
     'model' : 'tei' ,
-    'function' : 'getTextsList'
+    'function' : 'getBlogHome'
     }
-  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
@@ -97,7 +92,7 @@ function blogPosts() {
     'model' : 'tei' ,
     'function' : 'getBlogPosts'
     }
-  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',

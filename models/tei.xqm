@@ -1,5 +1,5 @@
 xquery version "3.0" ;
-module namespace synopsx.models.tei = 'gdp.models.tei' ;
+module namespace gdp.models.tei = 'gdp.models.tei' ;
 
 (:~
  : This module is a TEI models library for paris' guidebooks edition
@@ -20,12 +20,41 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
 
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
+
 (:~
  : ~:~:~:~:~:~:~:~:~
  : tei blog
  : ~:~:~:~:~:~:~:~:~
  :)
  
+(:~
+ : this function built the blog home
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getBlogHome($queryParams as map(*)) {
+  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
+  let $lang := 'fr'
+  let $meta := map{
+    'title' : 'Home page du blog', 
+    'quantity' : getQuantity($expressions, 'expression'),
+    'author' : synopsx.models.tei:getAuthors($expressions),
+    'copyright'  : synopsx.models.tei:getCopyright($expressions),
+    'description' : synopsx.models.tei:getDescription($expressions, $lang),
+    'keywords' : synopsx.models.tei:getKeywords($expressions, $lang)
+    }
+  let $content := map:merge(
+    for $item in $expressions/tei:TEI
+    return  map:entry( fn:generate-id($item), getHeader($item) )
+    )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
 (:~
  : this function lists blog posts
  :
@@ -36,7 +65,7 @@ declare function getBlogPosts($queryParams as map(*)) {
   let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
   let $lang := 'fr'
   let $meta := map{
-    'title' : 'Liste des articles', 
+    'title' : 'Liste des articles de blog', 
     'quantity' : getQuantity($expressions, 'expression'),
     'author' : synopsx.models.tei:getAuthors($expressions),
     'copyright'  : synopsx.models.tei:getCopyright($expressions),
