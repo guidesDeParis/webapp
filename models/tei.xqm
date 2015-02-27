@@ -62,18 +62,18 @@ declare function getBlogHome($queryParams as map(*)) {
  : @return a map of two map
  :)
 declare function getBlogPosts($queryParams as map(*)) {
-  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
+  let $posts := db:open(map:get($queryParams, 'dbName'))//tei:TEI
   let $lang := 'fr'
   let $meta := map{
     'title' : 'Liste des articles de blog', 
-    'quantity' : getQuantity($expressions, 'expression'),
-    'author' : synopsx.models.tei:getAuthors($expressions),
-    'copyright'  : synopsx.models.tei:getCopyright($expressions),
-    'description' : synopsx.models.tei:getDescription($expressions, $lang),
-    'keywords' : synopsx.models.tei:getKeywords($expressions, $lang)
+    'quantity' : getQuantity($posts, ' articles de blog'),
+    'author' : synopsx.models.tei:getAuthors($posts),
+    'copyright'  : synopsx.models.tei:getCopyright($posts),
+    'description' : synopsx.models.tei:getDescription($posts, $lang),
+    'keywords' : synopsx.models.tei:getKeywords($posts, $lang)
     }
   let $content := map:merge(
-    for $item in $expressions/tei:TEI
+    for $item in $posts
     return  map:entry( fn:generate-id($item), getHeader($item) )
     )
   return  map{
@@ -86,18 +86,19 @@ declare function getBlogPosts($queryParams as map(*)) {
  : This function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getBlogItem($queryParams as map(*)) {
-  let $itemId := map:get($queryParams, 'entryId')
-  let $texts := db:open(map:get($queryParams, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id=$itemId]]
+  let $entryId := map:get($queryParams, 'entryId')
+  let $article := db:open(map:get($queryParams, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $lang := 'fr'
   let $meta := map{
-    'title' : synopsx.models.tei:getTitles($itemId, $lang), 
-    'author' : synopsx.models.tei:getAuthors($itemId),
-    'copyright'  : synopsx.models.tei:getCopyright($itemId),
-    'description' : synopsx.models.tei:getDescription($itemId, $lang),
-    'keywords' : synopsx.models.tei:getKeywords($itemId, $lang)
+    'title' : synopsx.models.tei:getTitles($article, $lang), 
+    'author' : synopsx.models.tei:getAuthors($article),
+    'copyright'  : synopsx.models.tei:getCopyright($article),
+    'description' : synopsx.models.tei:getDescription($article, $lang),
+    'keywords' : synopsx.models.tei:getKeywords($article, $lang)
     }
   let $content as map(*) := map:merge(
-    map:entry( fn:generate-id($itemId), getHeader($itemId) )
+    for $item in $article
+    return  map:entry( fn:generate-id($item), getHeader($item) )
     )
   return  map{
     'meta'    : $meta,
@@ -237,8 +238,9 @@ declare function getHeader($item as element()) {
     'title' : getTitles($item, $lang),
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item),
-    'abstract' : getAbstract($item, $lang)
-    (: ', teiAbstract' : getAbstract($item, $lang) :)
+    'abstract' : getAbstract($item, $lang),
+    'url' : getUrl($item, $lang),
+    'tei' : $item
   }
 };
 
@@ -443,7 +445,7 @@ declare function getXmlTeiById($queryParams){
   db:open(map:get($queryParams, 'dbName'))//tei:TEI[//tei:sourceDesc[@xml-id = map:get($queryParams, 'value')]]
 }; 
 
-(: (:~
+(:
  : this function get url
  : @param $content texts to process
  : @param $lang iso langcode starts
@@ -451,5 +453,5 @@ declare function getXmlTeiById($queryParams){
  : @todo print the real uri
  :)
 declare function getUrl($content as element()*, $lang as xs:string){
-  $G:PROJECTBLOGROOT || $content//tei:sourceDesc/@xml:id
-}; :)
+  'posts/' || $content//tei:sourceDesc/@xml:id
+};

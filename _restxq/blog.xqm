@@ -97,7 +97,7 @@ function blogPosts() {
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'page.xhtml',
-    'pattern' : 'blogArticle.xhtml',
+    'pattern' : 'blogList.xhtml',
     'sorting' : 'descending'
     (: specify an xslt mode and other kind of output options :)
     }
@@ -128,7 +128,8 @@ function blogItem($entryId as xs:string) {
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'page.xhtml',
-    'pattern' : 'blogArticle.xhtml'
+    'pattern' : 'blogArticle.xhtml',
+    'xquery' : 'xquery'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)

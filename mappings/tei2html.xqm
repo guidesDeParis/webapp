@@ -24,7 +24,7 @@ declare default function namespace 'gdp.mappings.tei2html' ;
 (:~
  : this function dispatches the treatment of the XML document
  :)
-declare function dispatch($node as node()*, $options) as item()* {
+declare function dispatch($node as node()*, $options as map(*) ) as item()* {
   typeswitch($node)
     case text() return $node
     case element(tei:TEI) return passthru($node, $options)
