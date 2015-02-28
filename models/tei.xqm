@@ -18,9 +18,10 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
  
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
+import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
+
 declare default function namespace 'gdp.models.tei' ;
 
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 
 (:~
  : ~:~:~:~:~:~:~:~:~
