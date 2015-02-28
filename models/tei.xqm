@@ -18,6 +18,7 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
  
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
+import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 
 declare default function namespace 'gdp.models.tei' ;
@@ -63,7 +64,8 @@ declare function getBlogHome($queryParams as map(*)) {
  : @return a map of two map
  :)
 declare function getBlogPosts($queryParams as map(*)) {
-  let $posts := db:open(map:get($queryParams, 'dbName'))//tei:TEI
+  (: let $posts := db:open(map:get($queryParams, 'dbName'))//tei:TEI :)
+  let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
   let $lang := 'fr'
   let $meta := map{
     'title' : 'Liste des articles de blog', 
@@ -431,7 +433,7 @@ declare function getTitles($content as element()*, $lang as xs:string){
  :)
 declare function getQuantity($content as element()*, $unit as xs:string){
   fn:normalize-space(
-    if (fn:count($content)>1) 
+    if (fn:count($content) > 1) 
       then fn:count($content) || ' ' || $unit || 's disponibles'
       else fn:count($content) || $unit || ' disponible'
     )

@@ -90,7 +90,8 @@ function blogPosts() {
     'project' : 'gdp',
     'dbName' :  'blog',
     'model' : 'tei' ,
-    'function' : 'getBlogPosts'
+    'function' : 'getBlogPosts',
+    'path' : 'desgodetsVariaBio.tei.xml'
     }
   let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
