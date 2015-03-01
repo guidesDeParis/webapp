@@ -1,12 +1,15 @@
-<article class="type-system-serif">
+<article class="article" xmlns="http://www.w3.org/1999/xhtml">
   <header>
-    <p class="type">Article de blog</p>
-    <h1>{title}</h1>
-    <h2>{subtitle}</h2>
-    <p class="meta">Publié le <span class="date">{date}</span>, par <span class="author">{author}</span></p>
-    <hr/>
+      <h1>{title}</h1>
+      <h2>{subtitle}</h2>
   </header>
+  <section class="abstract">{abstract}</section>
+  <section class="meta">
+    <ul class="date">{date}</ul>
+    <ul class="author">{autor}</ul>
+    <ul class="category">Categorie</ul>
+    <ul class="keywords">mot-clef1, mot-clef2</ul>
+    <ul class="url"><a href="{url}">{url}</a></ul>
+  </section>
   <section class="text">{tei}</section>
-  <hr/>
-  <p class="author">{author}</p>
 </article>
