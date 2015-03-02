@@ -154,11 +154,11 @@ function biblioListHtml($pattern as xs:string?) {
 declare 
   %restxq:path("/gdp/html/header")
 function getHtmlHeader() {
-  fn:doc($G:PROJECTS||'gdp/templates/inc_header.xhtml')
+  fn:doc($G:WORKSPACE||'gdp/templates/inc_header.xhtml')
   };
 
 declare 
   %restxq:path("/gdp/html/footer")
 function getHtmlFooter() {
-  fn:doc($G:PROJECTS||'gdp/templates/inc_footer.xhtml')
+  fn:doc($G:WORKSPACE||'gdp/templates/inc_footer.xhtml')
   };

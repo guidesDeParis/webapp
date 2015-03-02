@@ -67,8 +67,8 @@ function blogHome() {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'page.xhtml',
-    'pattern' : 'blogArticle.xhtml',
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsListSerif.xhtml',
     'sorting' : 'descending'
     (: specify an xslt mode and other kind of output options :)
     }
@@ -90,15 +90,14 @@ function blogPosts() {
     'project' : 'gdp',
     'dbName' :  'blog',
     'model' : 'tei' ,
-    'function' : 'getBlogPosts',
-    'path' : 'desgodetsVariaBio.tei.xml'
+    'function' : 'getBlogPosts'
     }
   let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'page.xhtml',
-    'pattern' : 'blogList.xhtml',
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsListSerif.xhtml',
     'sorting' : 'descending'
     (: specify an xslt mode and other kind of output options :)
     }
@@ -128,8 +127,8 @@ function blogItem($entryId as xs:string) {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
-    'layout' : 'page.xhtml',
-    'pattern' : 'blogArticle.xhtml',
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'xquery'
     (: 'xsl' : 'tei2html5.xsl' :)
     (: specify an xslt mode and other kind of output options :)
