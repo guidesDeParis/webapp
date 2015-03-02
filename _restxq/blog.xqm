@@ -61,7 +61,7 @@ function blogHome() {
     'project' : 'gdp',
     'dbName' :  'blog',
     'model' : 'tei' ,
-    'function' : 'getBlogHome'
+    'function' : 'getBlogPosts'
     }
   let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
