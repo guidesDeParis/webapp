@@ -92,7 +92,8 @@ function biblWork($workId) {
      'project' : 'gdpWebapp',
      'dbName' : 'gdp',
      'model' : 'tei',
-     'function' : 'getWork'
+     'function' : 'getWork',
+     'workId' : $workId
      }
     let $function := synopsx.lib.commons:getModelFunction($queryParams)
     let $data := fn:function-lookup($function, 1)($queryParams)
@@ -149,7 +150,8 @@ function biblExpression($expressionId) {
      'project' : 'gdpWebapp',
      'dbName' : 'gdp',
      'model' : 'tei',
-     'function' : 'getBibliographicalExpression'
+     'function' : 'getBibliographicalExpression',
+     'expressionId' : $expressionId
      }
     let $function := synopsx.lib.commons:getModelFunction($queryParams)
     let $data := fn:function-lookup($function, 1)($queryParams)
@@ -206,7 +208,8 @@ function biblItem($itemId) {
      'project' : 'gdpWebapp',
      'dbName' : 'gdp',
      'model' : 'tei',
-     'function' : 'getBibliographicalExpression'
+     'function' : 'getBibliographicalItem',
+     'itemId' : $itemId
      }
     let $function := synopsx.lib.commons:getModelFunction($queryParams)
     let $data := fn:function-lookup($function, 1)($queryParams)
