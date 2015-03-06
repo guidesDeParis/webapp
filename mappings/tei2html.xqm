@@ -2,31 +2,48 @@ xquery version '3.0' ;
 module namespace gdp.mappings.tei2html = 'gdp.mappings.tei2html' ;
 
 (:~
- : This module is a TEI to html function library
+ : This module is a TEI to html function library for SynopsX
  :
- : @author emchateau (Cluster Pasts in the Present)
+ : @version 2.0 (Constantia edition)
  : @since 2015-02-17 
- : @version 0.1
- : @see http://guidesdeparis.net
+ : @author synopsx team
  :
- : This module uses SynopsX publication framework 
- : see https://github.com/ahn-ens-lyon/synopsx
- : It is distributed under the GNU General Public Licence, 
- : see http://www.gnu.org/licenses/
+ : This file is part of SynopsX.
+ : created by AHN team (http://ahn.ens-lyon.fr)
  :
- : @todo assign html element in the namespace
+ : SynopsX is free software: you can redistribute it and/or modify
+ : it under the terms of the GNU General Public License as published by
+ : the Free Software Foundation, either version 3 of the License, or
+ : (at your option) any later version.
+ :
+ : SynopsX is distributed in the hope that it will be useful,
+ : but WITHOUT ANY WARRANTY; without even the implied warranty of
+ : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ : See the GNU General Public License for more details.
+ : You should have received a copy of the GNU General Public License along 
+ : with SynopsX. If not, see http://www.gnu.org/licenses/
  :)
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0';
 
 declare default function namespace 'gdp.mappings.tei2html' ;
 
+
+(:~
+ : this function 
+ :)
+declare function entry($content as node()*, $options as xs:string) as item() {
+  <div>{ dispatch($content, $options) }</div>
+};
+
+
 (:~
  : this function dispatches the treatment of the XML document
  :)
-declare function dispatch($node as node()*, $options as map(*) ) as item()* {
+declare function dispatch($node as node()*, $options as xs:string) as item()* {
   typeswitch($node)
     case text() return $node
+    case element(tei:teiHeader) return ''
     case element(tei:TEI) return passthru($node, $options)
     case element(tei:text) return passthru($node, $options)
     case element(tei:front) return passthru($node, $options)
@@ -52,7 +69,6 @@ declare function dispatch($node as node()*, $options as map(*) ) as item()* {
     (: case element(tei:author) return getResponsability($node, $options) :)
     (: case element(tei:editor) return getResponsability($node, $options) :)
     case element(tei:persName) return persName($node, $options)
-    case element(tei:head) return '' (: bof :)
     default return passthru($node, $options)
 };
 
@@ -71,17 +87,17 @@ declare function passthru($nodes as node(), $options) as item()* {
  : ~:~:~:~:~:~:~:~:~
  :)
 
-declare function div($node as element(tei:div), $options) {
+declare function div($node as element(tei:div)+, $options) {
   <div>
     { if ($node/@xml:id) then attribute id { $node/@xml:id } else (),
     passthru($node, $options)}
   </div>
 };
 
-declare function head($node as element(tei:head), $options) as element() {   
+declare function head($node as element(tei:head)+, $options) as element() {   
   if ($node/parent::tei:div) then
     let $type := $node/parent::tei:div/@type
-    let $level := fn:count($node/ancestor::div) - 1
+    let $level := fn:count($node/ancestor::div)
     return element { 'h' || $level } { passthru($node, $options) }
   else if ($node/parent::tei:figure) then
     if ($node/parent::tei:figure/parent::tei:p) then
@@ -94,20 +110,25 @@ declare function head($node as element(tei:head), $options) as element() {
   else  passthru($node, $options)
 };
 
-declare function p($node as element(tei:p), $options) {
+declare function p($node as element(tei:p)+, $options) {
   <p>{ passthru($node, $options) }</p>
 };
 
-declare function list($node as element(tei:list), $options) {
-  <ul>{ passthru($node, $options) }</ul>
+declare function list($node as element(tei:list)+, $options) {
+  switch ($node) 
+  case $node/@type='ordered' return <ol>{ passthru($node, $options) }</ol>
+  case $node[child::tei:label] return <dl>{ passthru($node, $options) }</dl>
+  default return <ul>{ passthru($node, $options) }</ul>
 };
 
-declare function gdp.mappings.tei2html:item($node as element(tei:list), $options) {
-  <li>{ passthru($node, $options) }</li>
+declare function gdp.mappings.tei2html:item($node as element(tei:item)+, $options) {
+  switch ($node)
+  case $node[parent::*/tei:label] return <dd>{ passthru($node, $options) }</dd>
+  default return <li>{ passthru($node, $options) }</li>
 };
 
-declare function label($node as element(tei:label), $options) {
-  <dd>{ passthru($node, $options) }</dd>
+declare function label($node as element(tei:label)+, $options) {
+  <dt>{ passthru($node, $options) }</dt>
 };
 
 (:~
@@ -115,10 +136,17 @@ declare function label($node as element(tei:label), $options) {
  : tei inline
  : ~:~:~:~:~:~:~:~:~
  :)
-declare function hi($node as element(tei:hi), $options) {
-  if ($node/@rend='italic') then <em>{ passthru($node, $options) }</em> 
-  else if ($node/@rend='bold') then '' else (),
-  passthru($node, $options)
+declare function hi($node as element(tei:hi)+, $options) {
+  switch ($node)
+  case ($node/@rend='italic' or $node/@rend='it') return <em>{ passthru($node, $options) }</em> 
+  case ($node/@rend='bold' or $node/@rend='b') return <strong>{ passthru($node, $options) }</strong>
+  case ($node/@rend='superscript' or $node/@rend='sup') return <sup>{ passthru($node, $options) }</sup>
+  case ($node/@rend='underscript' or $node/@rend='sub') return <sub>{ passthru($node, $options) }</sub>
+  case ($node/@rend='underline' or $node/@rend='u') return <u>{ passthru($node, $options) }</u>
+  case ($node/@rend='strikethrough') return <del class="hi">{ passthru($node, $options) }</del>
+  case ($node/@rend='caps' or $node/@rend='uppercase') return <span calss="uppercase">{ passthru($node, $options) }</span>
+  case ($node/@rend='smallcaps' or $node/@rend='sc') return <span class="small-caps">{ passthru($node, $options) }</span>
+  default return <span class="{$node/@rend}">{ passthru($node, $options) }</span>
 };
 
 declare function ref($node as element(tei:ref), $options) {

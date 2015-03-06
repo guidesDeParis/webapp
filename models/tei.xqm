@@ -15,11 +15,11 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
  : see http://www.gnu.org/licenses/
  :
  :)
- 
-declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
+
+declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
 
@@ -42,10 +42,10 @@ declare function getBlogHome($queryParams as map(*)) {
   let $meta := map{
     'title' : 'Home page du blog', 
     'quantity' : getQuantity($expressions, 'expression'),
-    'author' : synopsx.models.tei:getAuthors($expressions),
-    'copyright'  : synopsx.models.tei:getCopyright($expressions),
-    'description' : synopsx.models.tei:getDescription($expressions, $lang),
-    'keywords' : synopsx.models.tei:getKeywords($expressions, $lang)
+    'author' : getAuthors($expressions),
+    'copyright'  : getCopyright($expressions),
+    'description' : getDescription($expressions, $lang),
+    'keywords' : getKeywords($expressions, $lang)
     }
   let $content := map:merge(
     for $item in $expressions/tei:TEI
@@ -70,10 +70,10 @@ declare function getBlogPosts($queryParams as map(*)) {
   let $meta := map{
     'title' : 'Liste des articles de blog', 
     'quantity' : getQuantity($posts, ' articles de blog'),
-    'author' : synopsx.models.tei:getAuthors($posts),
-    'copyright'  : synopsx.models.tei:getCopyright($posts),
-    'description' : synopsx.models.tei:getDescription($posts, $lang),
-    'keywords' : synopsx.models.tei:getKeywords($posts, $lang)
+    'author' : getAuthors($posts),
+    'copyright'  : getCopyright($posts),
+    'description' : getDescription($posts, $lang),
+    'keywords' : getKeywords($posts, $lang)
     }
   let $content := map:merge(
     for $item in $posts
@@ -93,11 +93,11 @@ declare function getBlogItem($queryParams as map(*)) {
   let $article := db:open(map:get($queryParams, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $lang := 'fr'
   let $meta := map{
-    'title' : synopsx.models.tei:getTitles($article, $lang), 
-    'author' : synopsx.models.tei:getAuthors($article),
-    'copyright'  : synopsx.models.tei:getCopyright($article),
-    'description' : synopsx.models.tei:getDescription($article, $lang),
-    'keywords' : synopsx.models.tei:getKeywords($article, $lang)
+    'title' : getTitles($article, $lang), 
+    'author' : getAuthors($article),
+    'copyright'  : getCopyright($article),
+    'description' : getDescription($article, $lang),
+    'keywords' : getKeywords($article, $lang)
     }
   let $content as map(*) := map:merge(
     for $item in $article
@@ -124,10 +124,10 @@ declare function getBibliographicalExpressionsList($queryParams as map(*)) {
   let $meta := map{
     'title' : 'Liste des expressions', 
     'quantity' : getQuantity($expressions, 'expression'),
-    'author' : synopsx.models.tei:getAuthors($expressions),
-    'copyright'  : synopsx.models.tei:getCopyright($expressions),
-    'description' : synopsx.models.tei:getDescription($expressions, $lang),
-    'keywords' : synopsx.models.tei:getKeywords($expressions, $lang)
+    'author' : getAuthors($expressions),
+    'copyright'  : getCopyright($expressions),
+    'description' : getDescription($expressions, $lang),
+    'keywords' : getKeywords($expressions, $lang)
     }
   let $content := map:merge(
     for $item in $expressions/tei:biblStruct 

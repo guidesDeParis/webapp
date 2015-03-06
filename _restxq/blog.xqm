@@ -25,7 +25,7 @@ import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../..
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm';
 
-import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
+import module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'gdp.blog' ;
 
@@ -72,7 +72,7 @@ function blogHome() {
     'sorting' : 'descending'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    return gdp.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }; 
  
 (:~
@@ -101,7 +101,7 @@ function blogPosts() {
     'sorting' : 'descending'
     (: specify an xslt mode and other kind of output options :)
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return gdp.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   };
  
 (:~
@@ -129,11 +129,11 @@ function blogItem($entryId as xs:string) {
     'lang' : 'fr',
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
-    'xquery' : 'xquery'
+    'xquery' : 'tei2html'
     (: 'xsl' : 'tei2html5.xsl' :)
     (: specify an xslt mode and other kind of output options :)
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return gdp.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   };
 
 (:~
