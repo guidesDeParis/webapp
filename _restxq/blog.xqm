@@ -22,7 +22,6 @@ import module namespace restxq = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
 
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm';
 
 import module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;

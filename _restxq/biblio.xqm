@@ -22,7 +22,7 @@ import module namespace restxq = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../../synopsx/globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
 
-import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../../synopsx/mappings/htmlWrapping.xqm' ; 
+import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../../synopsx/mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'gdp.biblio';
 
@@ -65,7 +65,8 @@ function biblWorks() {
      'model' : 'tei',
      'function' : 'getWorksList'
      }
-    let $data := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $function := synopsx.lib.commons:getModelFunction($queryParams)
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
       'lang' : 'fr',
       'layout' : 'page.html',
@@ -93,7 +94,8 @@ function biblWork($workId) {
      'model' : 'tei',
      'function' : 'getWork'
      }
-    let $data := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $function := synopsx.lib.commons:getModelFunction($queryParams)
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
       'lang' : 'fr',
       'layout' : 'page.html',
@@ -120,7 +122,8 @@ function biblExpressions() {
      'model' : 'tei',
      'function' : 'getBibliographicalExpressionsList'
      }
-    let $data := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $function := synopsx.lib.commons:getModelFunction($queryParams)
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
       'lang' : 'fr',
       'layout' : 'page.xhtml',
@@ -148,7 +151,8 @@ function biblExpression($expressionId) {
      'model' : 'tei',
      'function' : 'getBibliographicalExpression'
      }
-    let $data := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $function := synopsx.lib.commons:getModelFunction($queryParams)
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
       'lang' : 'fr',
       'layout' : 'page.html',
@@ -175,7 +179,8 @@ function biblItems() {
      'model' : 'tei',
      'function' : 'getBibliographicalItemsList'
      }
-    let $data := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $function := synopsx.lib.commons:getModelFunction($queryParams)
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
       'lang' : 'fr',
       'layout' : 'page.html',
@@ -203,7 +208,8 @@ function biblItem($itemId) {
      'model' : 'tei',
      'function' : 'getBibliographicalExpression'
      }
-    let $data := synopsx.lib.commons:getFunctionModulePrefix($queryParams, 1)
+    let $function := synopsx.lib.commons:getModelFunction($queryParams)
+    let $data := fn:function-lookup($function, 1)($queryParams)
     let $outputParams := map {
       'lang' : 'fr',
       'layout' : 'page.html',

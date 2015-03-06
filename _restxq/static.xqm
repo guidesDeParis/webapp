@@ -16,6 +16,7 @@ module namespace gdp.static = 'gdp.static' ;
  :
  :)
 
+import module namespace restxq = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 
 declare default function namespace 'gdp.static' ;
