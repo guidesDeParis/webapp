@@ -90,7 +90,8 @@ function blogPosts() {
     'dbName' :  'blog',
     'model' : 'tei' ,
     'function' : 'getBlogPosts',
-    'sorting' : 'title'
+    'sorting' : 'title',
+    'order' : 'ascending'
     }
   let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
@@ -117,7 +118,7 @@ declare
 function blogItem($entryId as xs:string) {
   let $queryParams := map {
     'project' : 'gdp',
-    'dbName' :  'blog',
+    'dbName' : 'blog',
     'model' : 'tei',
     'function' : 'getBlogItem',
     'entryId' : $entryId

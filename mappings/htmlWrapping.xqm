@@ -81,6 +81,31 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
  : @todo use $outputParams to use an xslt
  :)
 declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
+  let $sorting := map:get($queryParams, 'sorting')
+  let $order := map:get($queryParams, 'order')
+  let $meta := map:get($data, 'meta')
+  let $contents := map:get($data, 'content')
+  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
+  for $content in $contents
+  order by 
+    if ($order = 'descending') then map:get($content, $sorting) else () ascending,
+    if ($order = 'descending') then () else map:get($content, $sorting) descending
+  return <p>{ map:get($content, 'title') } 1</p>
+};
+
+(:~
+ : this function iterates the pattern template with contents
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query
+ : @param $outputParams the serialization params
+ : @return instantiate the pattern with $data
+ :
+ : @todo modify to replace mixed content like "{quantity} éléments"
+ : @todo treat in the same loop @* and text()
+ : @todo use $outputParams to use an xslt
+ :)
+declare function patternOld($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data, 'content')
   let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
