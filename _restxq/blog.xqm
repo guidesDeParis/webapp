@@ -68,7 +68,7 @@ function blogHome() {
     'lang' : 'fr',
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsListSerif.xhtml',
-    'sorting' : 'descending'
+    'sorting' : 'h1'
     (: specify an xslt mode and other kind of output options :)
     }
     return gdp.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
