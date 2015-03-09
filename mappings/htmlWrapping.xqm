@@ -114,12 +114,12 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
  : @todo treat in the same loop @* and text()
  : @todo use $outputParams to use an xslt
  :)
-declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as document-node()* {
+declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data, 'content')
   let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
-  return map:for-each($contents, function($key, $content) {
-    fn:doc($pattern) update (
+  let $sequence := map:for-each($contents, function($key, $content) {
+    fn:doc($pattern)/* update (
       for $text in .//@*
         where fn:starts-with($text, '{') and fn:ends-with($text, '}')
         let $key := fn:replace($text, '\{|\}', '')
@@ -131,9 +131,12 @@ declare function patternNew($queryParams as map(*), $data as map(*), $outputPara
         let $value := map:get($content, $key) 
         return if ($value instance of node()* and $value != empty) 
           then replace node $text with render($outputParams, $value)
-          else replace node $text with $value          
+          else replace node $text with $value
       )
   })
+  for $element in $sequence
+  order by $element//*:h1
+  return $element
 };
 
 (:~
