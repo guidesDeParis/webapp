@@ -111,34 +111,9 @@ declare function getBlogItem($queryParams as map(*)) {
 
 (:~
  : ~:~:~:~:~:~:~:~:~
- : tei blog
+ : tei edition
  : ~:~:~:~:~:~:~:~:~
  :)
- 
-(:~
- : This function creates a map of two maps : one for metadata, one for content data
- :)
-declare function getBibliographicalExpressionsList($queryParams as map(*)) {
-  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:TEI
-  let $lang := 'fr'
-  let $meta := map{
-    'title' : 'Liste des expressions', 
-    'quantity' : getQuantity($expressions, 'expression'),
-    'author' : getAuthors($expressions),
-    'copyright'  : getCopyright($expressions),
-    'description' : getDescription($expressions, $lang),
-    'keywords' : getKeywords($expressions, $lang)
-    }
-  let $content := map:merge(
-    for $item in $expressions/tei:biblStruct 
-    return  map:entry( fn:generate-id($item), getHeader($item) )
-    )
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
-
 
 (:~
  : This function creates a map of two maps : one for metadata, one for content data
@@ -180,6 +155,36 @@ declare function getTextsList($queryParams) {
     }
   let $content as map(*) := map:merge(
     for $item in $texts
+    return  map:entry( fn:generate-id($item), getHeader($item) )
+    )
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : ~:~:~:~:~:~:~:~:~
+ : tei biblio
+ : ~:~:~:~:~:~:~:~:~
+ :)
+ 
+(:~
+ : This function creates a map of two maps : one for metadata, one for content data
+ :)
+declare function getBibliographicalExpressionsList($queryParams as map(*)) {
+  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:TEI
+  let $lang := 'fr'
+  let $meta := map{
+    'title' : 'Liste des expressions', 
+    'quantity' : getQuantity($expressions, 'expression'),
+    'author' : getAuthors($expressions),
+    'copyright'  : getCopyright($expressions),
+    'description' : getDescription($expressions, $lang),
+    'keywords' : getKeywords($expressions, $lang)
+    }
+  let $content := map:merge(
+    for $item in $expressions/tei:biblStruct 
     return  map:entry( fn:generate-id($item), getHeader($item) )
     )
   return  map{

@@ -61,7 +61,7 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
        let $key := fn:replace($text, '\{|\}', '')
        let $value := map:get($meta, $key)
        return if ($key = 'content') 
-         then replace node $text with pattern($queryParams, $data, $outputParams)
+         then replace node $text with patternNew($queryParams, $data, $outputParams)
          else if ($value instance of node()* and $value != empty) 
            then replace node $text with render($outputParams, $value)
            else replace node $text with $value
@@ -82,7 +82,41 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
  :)
 declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as document-node()* {
   let $meta := map:get($data, 'meta')
-  let $contents := map:get($data,'content')
+  let $contents := map:get($data, 'content')
+  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
+  return map:for-each($contents, function($key, $content) {
+    fn:doc($pattern) update (
+      for $text in .//@*
+        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($content, $key) 
+        return replace value of node $text with fn:string($value) ,
+      for $text in .//text()
+        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($content, $key) 
+        return if ($value instance of node()* and $value != empty) 
+          then replace node $text with render($outputParams, $value)
+          else replace node $text with $value          
+      )
+  })
+};
+
+(:~
+ : this function iterates the pattern template with contents
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query
+ : @param $outputParams the serialization params
+ : @return instantiate the pattern with $data
+ :
+ : @todo modify to replace mixed content like "{quantity} éléments"
+ : @todo treat in the same loop @* and text()
+ : @todo use $outputParams to use an xslt
+ :)
+declare function patternNew($queryParams as map(*), $data as map(*), $outputParams as map(*)) as document-node()* {
+  let $meta := map:get($data, 'meta')
+  let $contents := map:get($data, 'content')
   let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
   return map:for-each($contents, function($key, $content) {
     fn:doc($pattern) update (
