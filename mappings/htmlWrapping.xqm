@@ -100,22 +100,26 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
           else replace node $text with $value
       )
   })
-  return sorting($sequence, $outputParams)
+  return sorting($queryParams, $sequence)
 };
 
 (:~
  : this function sort a sequence based on the outputParams
  :
- : @todo make it better !
+ : @param $queryParams the query parameters
+ : @param $sequence a sequence of elements
+ : @return a sequence of elements ordered according to the query parameters
+ :
+ : @todo add options
  :)
-declare function sorting($sequence as element()*, $outputParams as map(*)) as element()* {
-  let $sorting := map:get($outputParams, 'sorting')
-  let $order := map:get($outputParams, 'order')
+declare function sorting($queryParams as map(*), $sequence as element()*) as element()* {
+  let $sorting := map:get($queryParams, 'sorting')
+  let $order := map:get($queryParams, 'order')
   for $item in $sequence
   order by
     switch ($sorting)
-    case $sorting = 'title' return $item//*:h1
-    default return $item//*:h1
+    case $sorting eq 'title' return $item//*:h1/text()
+    default return ''
   return $item
 };
 

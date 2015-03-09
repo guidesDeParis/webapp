@@ -89,15 +89,15 @@ function blogPosts() {
     'project' : 'gdp',
     'dbName' :  'blog',
     'model' : 'tei' ,
-    'function' : 'getBlogPosts'
+    'function' : 'getBlogPosts',
+    'sorting' : 'title'
     }
   let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'lang' : 'fr',
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsListSerif.xhtml',
-    'sorting' : 'descending'
+    'pattern' : 'refillsListSerif.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return gdp.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
