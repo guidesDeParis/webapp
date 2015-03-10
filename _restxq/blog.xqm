@@ -24,7 +24,7 @@ import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../..
 
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm';
 
-import module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' at '../mappings/htmlWrapping.xqm' ;
+import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
 
 declare default function namespace 'gdp.blog' ;
 
@@ -71,7 +71,7 @@ function blogHome() {
     'sorting' : 'h1'
     (: specify an xslt mode and other kind of output options :)
     }
-    return gdp.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   }; 
  
 (:~
@@ -101,7 +101,7 @@ function blogPosts() {
     'pattern' : 'refillsListSerif.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
-  return gdp.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   };
  
 (:~
@@ -133,7 +133,7 @@ function blogItem($entryId as xs:string) {
     (: 'xsl' : 'tei2html5.xsl' :)
     (: specify an xslt mode and other kind of output options :)
     }
-  return gdp.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   };
 
 (:~
