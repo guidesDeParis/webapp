@@ -72,13 +72,12 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
  : this function iterates the pattern template with contents
  :
  : @param $queryParams the query params defined in restxq
- : @param $data the result of the query
+ : @param $data the result of the query to dispacth
  : @param $outputParams the serialization params
  : @return instantiate the pattern with $data
  :
  : @todo modify to replace mixed content like "{quantity} éléments"
  : @todo treat in the same loop @* and text()
- : @todo use $outputParams to use an xslt
  :)
 declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
   let $sorting := map:get($queryParams, 'sorting')
@@ -87,10 +86,37 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
   let $contents := map:get($data, 'content')
   let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
   for $content in $contents
-  order by 
+  order by (: @see http://jaketrent.com/post/xquery-dynamic-order/ :)
     if ($order = 'descending') then map:get($content, $sorting) else () ascending,
     if ($order = 'descending') then () else map:get($content, $sorting) descending
-  return <p>{ map:get($content, 'title') } 1</p>
+  let $regex := '\{(.*?)\}'
+  return
+    fn:doc($pattern)/* update (
+      for $text in .//@*
+        where fn:matches($text, $regex)
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($content, $key) 
+      return replace value of node $text with fn:string($value) ,
+      for $text in .//text()
+        where fn:matches($text, $regex)
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($content, $key)
+      return if ($value instance of node()* and $value != empty) 
+          then replace node $text with render($outputParams, $value)
+          else replace node $text with $value
+      )
+};
+
+declare function inject($text as xs:string, $queryParams as map(*), $meta as map(*), $outputParams as map(*)){
+  let $input as map(*)*:= ($queryParams,$meta,$outputParams)(:sequence of map:)
+  let $map := map:merge($input)(:create a unique map:)
+  let $tokens := fn:tokenize($text, '\{|\}')
+  let $new := fn:string-join( 
+    for $token in $tokens
+      let $value := map:get($map, $token)
+        return if(fn:empty($value)) then $token
+        else $value)
+        return $new
 };
 
 (:~
@@ -105,11 +131,11 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
  : @todo treat in the same loop @* and text()
  : @todo use $outputParams to use an xslt
  :)
-declare function patternOld($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
+declare function patternOld($queryParams as map(*), $data as map(*), $outputParams as map(*)) as document-node()* {
   let $meta := map:get($data, 'meta')
   let $contents := map:get($data, 'content')
   let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
-  let $sequence := map:for-each($contents, function($key, $content) {
+  return map:for-each($contents, function($key, $content) {
     fn:doc($pattern)/* update (
       for $text in .//@*
         where fn:starts-with($text, '{') and fn:ends-with($text, '}')
@@ -125,27 +151,6 @@ declare function patternOld($queryParams as map(*), $data as map(*), $outputPara
           else replace node $text with $value
       )
   })
-  return sorting($queryParams, $sequence)
-};
-
-(:~
- : this function sort a sequence based on the outputParams
- :
- : @param $queryParams the query parameters
- : @param $sequence a sequence of elements
- : @return a sequence of elements ordered according to the query parameters
- :
- : @todo add options
- :)
-declare function sorting($queryParams as map(*), $sequence as element()*) as element()* {
-  let $sorting := map:get($queryParams, 'sorting')
-  let $order := map:get($queryParams, 'order')
-  for $item in $sequence
-  order by
-    switch ($sorting)
-    case $sorting eq 'title' return $item//*:h1/text()
-    default return ''
-  return $item
 };
 
 (:~
