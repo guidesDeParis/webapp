@@ -42,30 +42,30 @@ declare default function namespace 'gdp.mappings.htmlWrapping' ;
  : @param $outputParams the serialization params
  : @return an updated HTML document and instantiate pattern
  :
- : @todo modify to replace mixted content like "{quantity} éléments" 
- : @todo treat in the same loop @* and text() ?
  :)
-declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)){
+declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element() {
   let $meta := map:get($data, 'meta')
-  let $contents := map:get($data,'content')
+  let $content := map:get($data, 'content')
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
-  let $wrap := fn:doc($layout)
-  return $wrap update ( 
-    for $text in .//@*
-      where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-      let $key := fn:replace($text, '\{|\}', '')
-      let $value := map:get($meta, $key)
-      return replace value of node $text with fn:string($value),
-     for $text in .//text()
-       where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-       let $key := fn:replace($text, '\{|\}', '')
-       let $value := map:get($meta, $key)
-       return if ($key = 'content') 
-         then replace node $text with pattern($queryParams, $data, $outputParams)
-         else if ($value instance of node()* and $value != empty) 
+  let $wrap := fn:doc($layout)/*
+  let $regex := '\{(.*?)\}'
+  return
+    $wrap update (
+      for $text in .//@*
+        where fn:matches($text, $regex)
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($meta, $key) 
+      return replace value of node $text with fn:string($value) ,
+      for $text in .//text()
+        where fn:matches($text, $regex)
+        let $key := fn:replace($text, '\{|\}', '')
+        let $value := map:get($meta, $key)
+        return if ($key = 'content') 
+          then replace node $text with pattern($queryParams, $data, $outputParams)
+          else if ($value instance of node()* and $value != empty) 
            then replace node $text with render($outputParams, $value)
-           else replace node $text with $value
-     )
+           else replace node $text with inject($value, $meta)
+      )
 };
 
 (:~
@@ -76,8 +76,6 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
  : @param $outputParams the serialization params
  : @return instantiate the pattern with $data
  :
- : @todo modify to replace mixed content like "{quantity} éléments"
- : @todo treat in the same loop @* and text()
  :)
 declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
   let $sorting := map:get($queryParams, 'sorting')
@@ -101,56 +99,30 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key)
-      return if ($value instance of node()* and $value != empty) 
+        return if ($value instance of node()* and $value != empty) 
           then replace node $text with render($outputParams, $value)
-          else replace node $text with $value
+          else replace node $text with inject($text, $content)
       )
-};
-
-declare function inject($text as xs:string, $queryParams as map(*), $meta as map(*), $outputParams as map(*)){
-  let $input as map(*)*:= ($queryParams,$meta,$outputParams)(:sequence of map:)
-  let $map := map:merge($input)(:create a unique map:)
-  let $tokens := fn:tokenize($text, '\{|\}')
-  let $new := fn:string-join( 
-    for $token in $tokens
-      let $value := map:get($map, $token)
-        return if(fn:empty($value)) then $token
-        else $value)
-        return $new
 };
 
 (:~
- : this function iterates the pattern template with contents
+ : this function update the text with input content
  :
- : @param $queryParams the query params defined in restxq
- : @param $data the result of the query
- : @param $outputParams the serialization params
- : @return instantiate the pattern with $data
+ : @param $text the text node to process
+ : @param $input the content to dispatch
+ : @return an updated text
  :
- : @todo modify to replace mixed content like "{quantity} éléments"
- : @todo treat in the same loop @* and text()
- : @todo use $outputParams to use an xslt
  :)
-declare function patternOld($queryParams as map(*), $data as map(*), $outputParams as map(*)) as document-node()* {
-  let $meta := map:get($data, 'meta')
-  let $contents := map:get($data, 'content')
-  let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
-  return map:for-each($contents, function($key, $content) {
-    fn:doc($pattern)/* update (
-      for $text in .//@*
-        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-        let $key := fn:replace($text, '\{|\}', '')
-        let $value := map:get($content, $key) 
-        return replace value of node $text with fn:string($value) ,
-      for $text in .//text()
-        where fn:starts-with($text, '{') and fn:ends-with($text, '}')
-        let $key := fn:replace($text, '\{|\}', '')
-        let $value := map:get($content, $key) 
-        return if ($value instance of node()* and $value != empty) 
-          then replace node $text with render($outputParams, $value)
-          else replace node $text with $value
-      )
-  })
+declare function inject($text as xs:string, $input as map(*)) as xs:string {
+  let $tokens := fn:tokenize($text, '\{|\}')
+  let $updated := fn:string-join( 
+    for $token in $tokens
+    let $value := map:get($input, $token)
+    return if (fn:empty($value)) 
+      then $token
+      else $value
+    )
+  return $updated
 };
 
 (:~
@@ -160,7 +132,7 @@ declare function patternOld($queryParams as map(*), $data as map(*), $outputPara
  : @param $outputParams the serialization params
  : @return an html serialization
  :
- : @todo
+ : @todo check the xslt with an xslt 1.0
  :)
 declare function render($outputParams as map(*), $value ) as element()* {
   let $xsl :=  map:get($outputParams, 'xsl')
