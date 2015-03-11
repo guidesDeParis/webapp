@@ -60,12 +60,12 @@ function editionHome() {
   let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'lang' : 'fr',
-    'layout' : 'page.xhtml',
-    'pattern' : 'article'
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsArticleSerif.xhtml',
+    'xquery' : 'tei2html'
     (: specify an xslt mode and other kind of output options :)
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams) (: give $data instead of $queryParams:)
+    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 }; 
 
 (:~
@@ -80,15 +80,14 @@ declare
   %output:html-version("5.0")
 function corpus() {
   let $queryParams := map {
-     'project' : 'gdp',
-     'dbName' : 'gdp',
-     'model' : 'tei',
-     'function' : 'getCorpusList'
-     }
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getCorpusList'
+    }
   let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'lang' : 'fr',
     'layout' : 'page.html',
     'pattern' : 'article.xhtml'
     (: specify an xslt mode and other kind of output options :)
@@ -105,7 +104,7 @@ function corpus() {
  :)
 declare 
   %restxq:path("/gdp/texts")
-(: %restxq:query-param("pattern", "{$pattern}") :)
+  (: %restxq:query-param("pattern", "{$pattern}") :)
 function texts() {
   let $queryParams := map {
     'project' :'gdp',
@@ -116,13 +115,12 @@ function texts() {
   let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'lang' : 'fr',
     'layout' : 'inc_blogListSerif.xhtml',
     'pattern' : 'inc_blogArticleSerif.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
-  };
+};
 
 (:~
  : this resource function is a bibliographical list for testing
@@ -143,22 +141,21 @@ function biblioListHtml($pattern as xs:string?) {
   let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'lang' : 'fr',
     'layout' : 'inc_blogListSerif.xhtml',
     'pattern' : 'inc_blogArticleSerif.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
-  };
+};
 
 declare 
   %restxq:path("/gdp/html/header")
 function getHtmlHeader() {
   fn:doc($G:WORKSPACE||'gdp/templates/inc_header.xhtml')
-  };
+};
 
 declare 
   %restxq:path("/gdp/html/footer")
 function getHtmlFooter() {
   fn:doc($G:WORKSPACE||'gdp/templates/inc_footer.xhtml')
-  };
+};

@@ -59,21 +59,21 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function biblWorks() {
-    let $queryParams := map {
-     'project' : 'gdpWebapp',
-     'dbName' : 'gdp',
-     'model' : 'tei',
-     'function' : 'getWorksList'
-     }
-    let $function := synopsx.lib.commons:getModelFunction($queryParams)
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'page.html',
-      'pattern' : 'article.xhtml'
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  let $queryParams := map { 
+    'project' : 'gdpWebapp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getWorksList'
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsArticleSerif.xhtml',
+    'xquery' : 'tei2html'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -88,22 +88,22 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function biblWork($workId) {
-    let $queryParams := map {
-     'project' : 'gdpWebapp',
-     'dbName' : 'gdp',
-     'model' : 'tei',
-     'function' : 'getWork',
-     'workId' : $workId
-     }
-    let $function := synopsx.lib.commons:getModelFunction($queryParams)
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'page.html',
-      'pattern' : 'article.xhtml'
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  let $queryParams := map {
+    'project' : 'gdpWebapp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getWork',
+    'workId' : $workId
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsArticleSerif.xhtml',
+    'xquery' : 'tei2html'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -117,21 +117,21 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function biblExpressions() {
-    let $queryParams := map {
-     'project' : 'gdpWebapp',
-     'dbName' : 'gdp',
-     'model' : 'tei',
-     'function' : 'getBibliographicalExpressionsList'
-     }
-    let $function := synopsx.lib.commons:getModelFunction($queryParams)
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'page.xhtml',
-      'pattern' : 'blogArticle.xhtml'
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  let $queryParams := map {
+    'project' : 'gdpWebapp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalExpressionsList'
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsArticleSerif.xhtml',
+    'xquery' : 'tei2html'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -146,22 +146,22 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function biblExpression($expressionId) {
-    let $queryParams := map {
-     'project' : 'gdpWebapp',
-     'dbName' : 'gdp',
-     'model' : 'tei',
-     'function' : 'getBibliographicalExpression',
-     'expressionId' : $expressionId
-     }
-    let $function := synopsx.lib.commons:getModelFunction($queryParams)
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'page.html',
-      'pattern' : 'article.xhtml'
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  let $queryParams := map {
+    'project' : 'gdpWebapp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalExpression',
+    'expressionId' : $expressionId
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsArticleSerif.xhtml',
+    'xquery' : 'tei2html'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -175,21 +175,21 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function biblItems() {
-    let $queryParams := map {
-     'project' : 'gdpWebapp',
-     'dbName' : 'gdp',
-     'model' : 'tei',
-     'function' : 'getBibliographicalItemsList'
-     }
-    let $function := synopsx.lib.commons:getModelFunction($queryParams)
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'page.html',
-      'pattern' : 'article.xhtml'
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  let $queryParams := map {
+    'project' : 'gdpWebapp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalItemsList'
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsArticleSerif.xhtml',
+    'xquery' : 'tei2html'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -204,20 +204,20 @@ declare
   %output:method("html")
   %output:html-version("5.0")
 function biblItem($itemId) {
-    let $queryParams := map {
-     'project' : 'gdpWebapp',
-     'dbName' : 'gdp',
-     'model' : 'tei',
-     'function' : 'getBibliographicalItem',
-     'itemId' : $itemId
-     }
-    let $function := synopsx.lib.commons:getModelFunction($queryParams)
-    let $data := fn:function-lookup($function, 1)($queryParams)
-    let $outputParams := map {
-      'lang' : 'fr',
-      'layout' : 'page.html',
-      'pattern' : 'article.xhtml'
-      (: specify an xslt mode and other kind of output options :)
-      }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  let $queryParams := map {
+    'project' : 'gdpWebapp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalItem',
+    'itemId' : $itemId
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsArticleSerif.xhtml',
+    'xquery' : 'tei2html'
+    (: specify an xslt mode and other kind of output options :)
+    }
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };

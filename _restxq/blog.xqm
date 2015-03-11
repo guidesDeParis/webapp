@@ -58,18 +58,18 @@ declare
 function blogHome() {
   let $queryParams := map {
     'project' : 'gdp',
-    'dbName' :  'blog',
+    'dbName' : 'blog',
     'model' : 'tei' ,
-    'function' : 'getBlogPosts'
+    'function' : 'getBlogPosts',
+    'sorting' : 'date',
+    'order' : 'descending'
     }
   let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'lang' : 'fr',
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsListSerif.xhtml',
-    'sorting' : 'h1'
-    (: specify an xslt mode and other kind of output options :)
+    'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   }; 
@@ -90,15 +90,15 @@ function blogPosts() {
     'dbName' :  'blog',
     'model' : 'tei' ,
     'function' : 'getBlogPosts',
-    'sorting' : 'title',
-    'order' : 'ascending'
+    'sorting' : 'date',
+    'order' : 'descending'
     }
   let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'lang' : 'fr',
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsListSerif.xhtml'
+    'pattern' : 'refillsListSerif.xhtml',
+    'xquery' : 'tei2html'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
@@ -126,11 +126,9 @@ function blogItem($entryId as xs:string) {
   let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'lang' : 'fr',
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
-    (: 'xsl' : 'tei2html5.xsl' :)
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
@@ -154,7 +152,7 @@ function blogItem($entryId as xs:string) {
 declare 
   %restxq:path('/blog/search')
 function search() {
- 'toto'
+ 'todo'
   };
 
 (:~
