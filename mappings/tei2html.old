@@ -24,7 +24,9 @@ module namespace gdp.mappings.tei2html = 'gdp.mappings.tei2html' ;
  : with SynopsX. If not, see http://www.gnu.org/licenses/
  :)
 
-declare namespace tei = 'http://www.tei-c.org/ns/1.0';
+declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
+
+declare default element namespace "http://www.w3.org/1999/xhtml" ;
 
 declare default function namespace 'gdp.mappings.tei2html' ;
 
@@ -33,7 +35,7 @@ declare default function namespace 'gdp.mappings.tei2html' ;
  : this function 
  :)
 declare function entry($content as node()*, $options as xs:string) as item() {
-  <div>{ dispatch($content, $options) }</div>
+  <toto>{ dispatch($content, $options) }</toto>
 };
 
 
