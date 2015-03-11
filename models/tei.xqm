@@ -321,21 +321,21 @@ declare function getBibliographicalExpression($queryParams) {
 declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $works := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@type='work']
+  let $bibliographicalItems := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct
   let $meta := map{
-    'title' : 'Liste des œuvres', 
-    'quantity' : getQuantity($works, 'œuvre'),
-    'author' : getAuthors($works, $lang),
-    'copyright' : getCopyright($works, $lang),
-    'description' : getDescription($works, $lang),
-    'keywords' : getKeywords($works, $lang) 
+    'title' : 'Liste des items bibliographiques', 
+    'quantity' : getQuantity($bibliographicalItems, 'œuvre'),
+    'author' : getAuthors($bibliographicalItems, $lang),
+    'copyright' : getCopyright($bibliographicalItems, $lang),
+    'description' : getDescription($bibliographicalItems, $lang),
+    'keywords' : getKeywords($bibliographicalItems, $lang) 
     }
-  let $content := for $work in $works return map {
-    'title' : getTitles($work, $lang),
-    'date' : getDate($work, $dateFormat),
-    'author' : getAuthors($work, $lang),
-    'abstract' : getAbstract($work, $lang),
-    'tei' : $work
+  let $content := for $bibliographicalItem in $bibliographicalItems return map {
+    'title' : getTitles($bibliographicalItem, $lang),
+    'date' : getDate($bibliographicalItem, $dateFormat),
+    'author' : getAuthors($bibliographicalItem, $lang),
+    'abstract' : getAbstract($bibliographicalItem, $lang),
+    'tei' : $bibliographicalItem
     }
   return  map{
     'meta'    : $meta,
@@ -355,7 +355,7 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $bibliographicalItem := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalItemId]
   let $meta := map{
-    'title' : 'Œuvre',
+    'title' : 'Item bibliographique',
     'author' : getAuthors($bibliographicalItem, $lang),
     'copyright' : getCopyright($bibliographicalItem, $lang),
     'description' : getDescription($bibliographicalItem, $lang),

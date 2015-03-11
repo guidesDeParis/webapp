@@ -17,12 +17,12 @@ module namespace gdp.blog = 'gdp.blog' ;
  : @qst give webpath by dates and pages ?
  :)
 
-import module namespace restxq = 'http://exquery.org/ns/restxq';
+import module namespace restxq = 'http://exquery.org/ns/restxq' ;
 
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
 
-import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm';
+import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
 
