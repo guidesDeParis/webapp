@@ -192,6 +192,36 @@ declare function getTextsList($queryParams) {
 };
 
 (:~
+ : this function get the texts list
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getModel($queryParams) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $model := synopsx.lib.commons:getDb($queryParams)//tei:TEI
+  let $meta := map{
+    'title' : 'Schéma ODD', 
+    'author' : getAuthors($model, $lang),
+    'copyright' : getCopyright($model, $lang),
+    'description' : getDescription($model, $lang),
+    'keywords' : getKeywords($model, $lang)
+    }
+  let $content := map {
+    'title' : getTitles($model, $lang),
+    'date' : getDate($model, $dateFormat),
+    'author' : getAuthors($model, $lang),
+    'abstract' : getAbstract($model, $lang),
+    'tei' : $model
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
  : ~:~:~:~:~:~:~:~:~
  : tei biblio
  : ~:~:~:~:~:~:~:~:~
