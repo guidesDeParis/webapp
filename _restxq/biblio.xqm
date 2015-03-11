@@ -71,7 +71,6 @@ function biblWorks() {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
-    (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
@@ -101,7 +100,6 @@ function biblWork($workId) {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
-    (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
@@ -129,7 +127,6 @@ function biblExpressions() {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
-    (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
@@ -159,7 +156,6 @@ function biblExpression($expressionId) {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
-    (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
@@ -187,7 +183,6 @@ function biblItems() {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
-    (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
@@ -217,7 +212,6 @@ function biblItem($itemId) {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
-    (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };

@@ -57,13 +57,12 @@ function editionHome() {
     'model' : 'tei', 
     'function' : 'getTextsList'
     }
-  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHomeHtml5.xhtml',
     'pattern' : 'refillsBullet.xhtml',
     'xquery' : 'tei2html'
-    (: specify an xslt mode and other kind of output options :)
     }
     return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 }; 
@@ -85,12 +84,12 @@ function corpus() {
     'model' : 'tei',
     'function' : 'getCorpusList'
     }
-  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsCards.xhtml'
-    (: specify an xslt mode and other kind of output options :)
+    'pattern' : 'refillsCards.xhtml',
+    'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
@@ -112,12 +111,12 @@ function texts() {
     'model' : 'tei',
     'function' : 'getTextsList'
     }
-  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'inc_blogListSerif.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml'
-    (: specify an xslt mode and other kind of output options :)
+    'pattern' : 'inc_blogArticleSerif.xhtml',
+    'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
@@ -138,12 +137,12 @@ function biblioListHtml($pattern as xs:string?) {
     'model' : 'tei',
     'function' : 'getRespList'
     }
-  let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'inc_blogListSerif.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml'
-    (: specify an xslt mode and other kind of output options :)
+    'pattern' : 'inc_blogArticleSerif.xhtml',
+    'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };

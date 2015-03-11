@@ -99,7 +99,6 @@ function blogPosts() {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsListSerif.xhtml',
     'xquery' : 'tei2html'
-    (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   };
@@ -129,7 +128,6 @@ function blogItem($entryId as xs:string) {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
-    (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
   };
