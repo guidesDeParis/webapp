@@ -25,25 +25,7 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
 
-(:~
- : this function creates a map for a corpus item with teiHeader 
- :
- : @param $item a corpus item
- : @return a map with content for each item
- : @rmq subdivised with let to construct complex queries (EC2014-11-10)
- :)
-declare function getHeader($item as element()) as map(*) {
-  let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
-  return map {
-    'title' : getTitles($item, $lang),
-    'date' : getDate($item, $dateFormat),
-    'author' : getAuthors($item),
-    'abstract' : getAbstract($item, $lang),
-    'url' : getUrl($item, $lang),
-    'tei' : $item
-  }
-};
+
 
 (:~
  : this function creates a map for a corpus item with teiHeader 

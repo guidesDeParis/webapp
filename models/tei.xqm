@@ -39,20 +39,24 @@ declare default function namespace 'gdp.models.tei' ;
  : @return a map of two map
  :)
 declare function getBlogHome($queryParams as map(*)) as map(*) {
-  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
+  let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
   let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
   let $meta := map{
     'title' : 'Home page du blog', 
-    'quantity' : getQuantity($expressions, 'expression'),
-    'author' : getAuthors($expressions),
-    'copyright'  : getCopyright($expressions),
-    'description' : getDescription($expressions, $lang),
-    'keywords' : getKeywords($expressions, $lang)
+    'quantity' : getQuantity($posts, 'expression'),
+    'author' : getAuthors($posts, $lang),
+    'copyright' : getCopyright($posts, $lang),
+    'description' : getDescription($posts, $lang),
+    'keywords' : getKeywords($posts, $lang) 
     }
-  let $content := map:merge(
-    for $item in $expressions/tei:TEI
-    return  map:entry( fn:generate-id($item), getHeader($item) )
-    )
+  let $content := for $item in $posts return map {
+    'title' : getTitles($posts, $lang),
+    'date' : getDate($posts, $dateFormat),
+    'author' : getAuthors($posts, $lang),
+    'abstract' : getAbstract($posts, $lang),
+    'tei' : $posts
+    }
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -68,15 +72,22 @@ declare function getBlogHome($queryParams as map(*)) as map(*) {
 declare function getBlogPosts($queryParams as map(*)) as map(*) {
   let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
   let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
   let $meta := map{
     'title' : 'Liste des articles de blog', 
     'quantity' : getQuantity($posts, ' articles de blog'),
-    'author' : getAuthors($posts),
-    'copyright'  : getCopyright($posts),
+    'author' : getAuthors($posts, $lang),
+    'copyright' : getCopyright($posts, $lang),
     'description' : getDescription($posts, $lang),
     'keywords' : getKeywords($posts, $lang)
     }
-  let $content := for $item in $posts return getHeader($item)
+  let $content := for $item in $posts return map {
+    'title' : getTitles($item, $lang),
+    'date' : getDate($item, $dateFormat),
+    'author' : getAuthors($item, $lang),
+    'abstract' : getAbstract($item, $lang),
+    'tei' : $item
+    }
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -91,19 +102,23 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
  :)
 declare function getBlogItem($queryParams as map(*)) {
   let $entryId := map:get($queryParams, 'entryId')
-  let $article := db:open(map:get($queryParams, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $lang := 'fr'
+  let $article := db:open(map:get($queryParams, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
+  let $dateFormat := 'jjmmaaa'
   let $meta := map{
     'title' : getTitles($article, $lang), 
-    'author' : getAuthors($article),
-    'copyright'  : getCopyright($article),
+    'author' : getAuthors($article, $lang),
+    'copyright' : getCopyright($article, $lang),
     'description' : getDescription($article, $lang),
     'keywords' : getKeywords($article, $lang)
     }
-  let $content as map(*) := map:merge(
-    for $item in $article
-    return  map:entry( fn:generate-id($item), getHeader($item) )
-    )
+  let $content := for $item in $article return map {
+    'title' : getTitles($item, $lang),
+    'date' : getDate($item, $dateFormat),
+    'author' : getAuthors($item, $lang),
+    'abstract' : getAbstract($item, $lang),
+    'tei' : $item
+  }
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -120,13 +135,13 @@ declare function getBlogItem($queryParams as map(*)) {
  : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getCorpusList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
   let $lang := 'fr'
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
   let $meta := map{
     'title' : 'Liste d’articles', 
     'quantity' : getQuantity($texts, 'article'), (: @todo internationalize :)
-    'author' : getAuthors($texts),
-    'copyright'  : getCopyright($texts),
+    'author' : getAuthors($texts, $lang),
+    'copyright'  : getCopyright($texts, $lang),
     'description' : getDescription($texts, $lang),
     'keywords' : getKeywords($texts, $lang)
     }
@@ -145,12 +160,12 @@ declare function getCorpusList($queryParams) {
  : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getTextsList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:TEI/tei:teiHeader
   let $lang := 'fr'
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:TEI/tei:teiHeader
   let $meta := map{
     'title' : 'Liste des textes', 
-    'author' : getAuthors($texts),
-    'copyright' : getCopyright($texts),
+    'author' : getAuthors($texts, $lang),
+    'copyright' : getCopyright($texts, $lang),
     'description' : getDescription($texts, $lang),
     'keywords' : getKeywords($texts, $lang)
     }
@@ -174,13 +189,13 @@ declare function getTextsList($queryParams) {
  : This function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getBibliographicalExpressionsList($queryParams as map(*)) {
-  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:TEI
   let $lang := 'fr'
+  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:TEI
   let $meta := map{
     'title' : 'Liste des expressions', 
     'quantity' : getQuantity($expressions, 'expression'),
-    'author' : getAuthors($expressions),
-    'copyright'  : getCopyright($expressions),
+    'author' : getAuthors($expressions, $lang),
+    'copyright'  : getCopyright($expressions, $lang),
     'description' : getDescription($expressions, $lang),
     'keywords' : getKeywords($expressions, $lang)
     }
@@ -198,8 +213,8 @@ declare function getBibliographicalExpressionsList($queryParams as map(*)) {
  : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getBiblStructList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:listBibl
   let $lang := 'fr'
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:listBibl
   let $meta := map{
     'title' : 'Bibliographie'
     }
@@ -218,8 +233,8 @@ declare function getBiblStructList($queryParams) {
  : this function creates a map of two maps : one for metadata, one for content data
  :)
 declare function getRespList($queryParams) {
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
   let $lang := 'fr'
+  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
   let $meta := map{
     'title' : 'Responsables de l’édition'
     }
