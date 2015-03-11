@@ -31,10 +31,10 @@ declare default function namespace 'gdp.models.tei' ;
  :)
  
 (:~
- : this function built the blog home
+ : this function get the blog home
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map with meta and content
  :)
 declare function getBlogHome($queryParams as map(*)) as map(*) {
   let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
@@ -62,7 +62,7 @@ declare function getBlogHome($queryParams as map(*)) as map(*) {
 };
 
 (:~
- : this function lists blog posts
+ : this function get the blog posts list
  :
  : @param $queryParams the request params sent by restxq
  : @return a map with meta and content
@@ -93,15 +93,16 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
 };
 
 (:~
- : this function get a blog post
+ : this function get a blog post by ID
  :
  : @param $queryParams the request params sent by restxq
+ : @param $entryId the blog post ID
  : @return a map with meta and content
  :)
 declare function getBlogItem($queryParams as map(*)) {
+  let $entryId := map:get($queryParams, 'entryId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $entryId := map:get($queryParams, 'entryId')
   let $article := synopsx.lib.commons:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $meta := map{
     'title' : getTitles($article, $lang), 
@@ -130,26 +131,29 @@ declare function getBlogItem($queryParams as map(*)) {
  :)
 
 (:~
- : this function creates a map of two maps : one for metadata, one for content data
+ : this function get the corpus list
+ :
+ : @param $queryParams the request params sent by restxq 
+ : @return a map with meta and content
  :)
 declare function getCorpusList($queryParams) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus
+  let $corpora := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus
   let $meta := map{
     'title' : 'Liste d’articles', 
-    'quantity' : getQuantity($texts, 'article'), (: @todo internationalize :)
-    'author' : getAuthors($texts, $lang),
-    'copyright'  : getCopyright($texts, $lang),
-    'description' : getDescription($texts, $lang),
-    'keywords' : getKeywords($texts, $lang)
+    'quantity' : getQuantity($corpora, 'article'), (: @todo internationalize :)
+    'author' : getAuthors($corpora, $lang),
+    'copyright'  : getCopyright($corpora, $lang),
+    'description' : getDescription($corpora, $lang),
+    'keywords' : getKeywords($corpora, $lang)
     }
-  let $content := for $text in $texts return map {
-    'title' : getTitles($texts, $lang),
-    'date' : getDate($texts, $dateFormat),
-    'author' : getAuthors($texts, $lang),
-    'abstract' : getAbstract($texts, $lang),
-    'tei' : $texts
+  let $content := for $corpus in $corpora return map {
+    'title' : getTitles($corpus, $lang),
+    'date' : getDate($corpus, $dateFormat),
+    'author' : getAuthors($corpus, $lang),
+    'abstract' : getAbstract($corpus, $lang),
+    'tei' : $corpus
     }
   return  map{
     'meta'    : $meta,
@@ -158,7 +162,10 @@ declare function getCorpusList($queryParams) {
 };
 
 (:~
- : this function creates a map of two maps : one for metadata, one for content data
+ : this function get the texts list
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
  :)
 declare function getTextsList($queryParams) {
   let $lang := 'fr'
@@ -189,27 +196,62 @@ declare function getTextsList($queryParams) {
  : tei biblio
  : ~:~:~:~:~:~:~:~:~
  :)
+
+(:~
+ : this function get the bibliographical works list
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $bibliographicalWorks := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@type='work']
+  let $meta := map{
+    'title' : 'Liste des œuvres', 
+    'quantity' : getQuantity($bibliographicalWorks, 'œuvre'),
+    'author' : getAuthors($bibliographicalWorks, $lang),
+    'copyright' : getCopyright($bibliographicalWorks, $lang),
+    'description' : getDescription($bibliographicalWorks, $lang),
+    'keywords' : getKeywords($bibliographicalWorks, $lang) 
+    }
+  let $content := for $bibliographicalWork in $bibliographicalWorks return map {
+    'title' : getTitles($bibliographicalWork, $lang),
+    'date' : getDate($bibliographicalWork, $dateFormat),
+    'author' : getAuthors($bibliographicalWork, $lang),
+    'abstract' : getAbstract($bibliographicalWork, $lang),
+    'tei' : $bibliographicalWork
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
  
 (:~
- : This function creates a map of two maps : one for metadata, one for content data
+ : this function get the bibliographical work by ID
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
  :)
-declare function getBibliographicalExpressionsList($queryParams as map(*)) {
+declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
+  let $bibliographicalWorkId := map:get($queryParams, 'workId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $expressions := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct
+  let $bibliographicalWork := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalWorkId]
   let $meta := map{
-    'title' : 'Liste des expressions', 
-    'quantity' : getQuantity($expressions, 'expression'),
-    'author' : getAuthors($expressions, $lang),
-    'copyright'  : getCopyright($expressions, $lang),
-    'description' : getDescription($expressions, $lang),
-    'keywords' : getKeywords($expressions, $lang)
+    'title' : 'Œuvre',
+    'author' : getAuthors($bibliographicalWork, $lang),
+    'copyright' : getCopyright($bibliographicalWork, $lang),
+    'description' : getDescription($bibliographicalWork, $lang),
+    'keywords' : getKeywords($bibliographicalWork, $lang) 
     }
-  let $content := for $expression in $expressions return map {
-    'title' : getTitles($expression, $lang),
-    'date' : getDate($expression, $dateFormat),
-    'author' : getAuthors($expression, $lang),
-    'tei' : $expression
+  let $content := map {
+    'title' : getTitles($bibliographicalWork, $lang),
+    'date' : getDate($bibliographicalWork, $dateFormat),
+    'author' : getAuthors($bibliographicalWork, $lang),
+    'abstract' : getAbstract($bibliographicalWork, $lang),
+    'tei' : $bibliographicalWork
     }
   return  map{
     'meta'    : $meta,
@@ -218,21 +260,24 @@ declare function getBibliographicalExpressionsList($queryParams as map(*)) {
 };
 
 (:~
- : this function creates a map of two maps : one for metadata, one for content data
+ : this function get the bibliographical expressions list
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
  :)
-declare function getBiblStructList($queryParams) {
+declare function getBibliographicalExpressionsList($queryParams) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct
+  let $bibliographicalExpressions := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@type='expression']
   let $meta := map{
-    'title' : 'Bibliographie'
+    'title' : 'Liste des expressions'
     }
-  let $content := for $text in $texts return map {
-    'title' : getTitles($text, $lang),
-    'date' : getDate($text, $dateFormat),
-    'author' : getAuthors($text, $lang),
-    'abstract' : getAbstract($text, $lang),
-    'tei' : $text
+  let $content := for $bibliographicalExpression in $bibliographicalExpressions return map {
+    'title' : getTitles($bibliographicalExpression, $lang),
+    'date' : getDate($bibliographicalExpression, $dateFormat),
+    'author' : getAuthors($bibliographicalExpression, $lang),
+    'abstract' : getAbstract($bibliographicalExpression, $lang),
+    'tei' : $bibliographicalExpression
     }
   return  map{
     'meta'    : $meta,
@@ -241,21 +286,87 @@ declare function getBiblStructList($queryParams) {
 };
 
 (:~
- : this function creates a map of two maps : one for metadata, one for content data
+ : this function get the bibliographical expression by ID
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
  :)
-declare function getRespList($queryParams) {
+declare function getBibliographicalExpression($queryParams) {
+  let $bibliographicalExpressionId := map:get($queryParams, 'expressionId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:respStmt
+  let $bibliographicalExpression := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalExpressionId]
   let $meta := map{
-    'title' : 'Responsables de l’édition'
+    'title' : 'Expression'
     }
-  let $content := for $text in $texts return map {
-    'title' : getTitles($text, $lang),
-    'date' : getDate($text, $dateFormat),
-    'author' : getAuthors($text, $lang),
-    'abstract' : getAbstract($text, $lang),
-    'tei' : $text
+  let $content := map {
+    'title' : getTitles($bibliographicalExpression, $lang),
+    'date' : getDate($bibliographicalExpression, $dateFormat),
+    'author' : getAuthors($bibliographicalExpression, $lang),
+    'abstract' : getAbstract($bibliographicalExpression, $lang),
+    'tei' : $bibliographicalExpression
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the bibliographical item list
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $works := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@type='work']
+  let $meta := map{
+    'title' : 'Liste des œuvres', 
+    'quantity' : getQuantity($works, 'œuvre'),
+    'author' : getAuthors($works, $lang),
+    'copyright' : getCopyright($works, $lang),
+    'description' : getDescription($works, $lang),
+    'keywords' : getKeywords($works, $lang) 
+    }
+  let $content := for $work in $works return map {
+    'title' : getTitles($work, $lang),
+    'date' : getDate($work, $dateFormat),
+    'author' : getAuthors($work, $lang),
+    'abstract' : getAbstract($work, $lang),
+    'tei' : $work
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+ 
+(:~
+ : this function get the bibliographical item by ID
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
+  let $bibliographicalItemId := map:get($queryParams, 'itemId')
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $bibliographicalItem := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalItemId]
+  let $meta := map{
+    'title' : 'Œuvre',
+    'author' : getAuthors($bibliographicalItem, $lang),
+    'copyright' : getCopyright($bibliographicalItem, $lang),
+    'description' : getDescription($bibliographicalItem, $lang),
+    'keywords' : getKeywords($bibliographicalItem, $lang) 
+    }
+  let $content := map {
+    'title' : getTitles($bibliographicalItem, $lang),
+    'date' : getDate($bibliographicalItem, $dateFormat),
+    'author' : getAuthors($bibliographicalItem, $lang),
+    'abstract' : getAbstract($bibliographicalItem, $lang),
+    'tei' : $bibliographicalItem
     }
   return  map{
     'meta'    : $meta,
