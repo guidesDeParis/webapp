@@ -40,7 +40,7 @@ declare function getText($item as element()) as map(*) {
   return map {
     'title' : getTitles($item, $lang),
     'date' : getDate($item, $dateFormat),
-    'author' : getAuthors($item),
+    'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'url' : getUrl($item, $lang),
     'tei' : $item
@@ -60,7 +60,7 @@ declare function getBiblStruct($item as element()) {
   return map {
     'title' : getBiblTitles($item, $lang),
     'date' : getBiblDate($item, $dateFormat),
-    'author' : getBiblAuthors($item),
+    'author' : getBiblAuthors($item, $lang),
     'tei' : $item
   }
 };
@@ -75,7 +75,7 @@ declare function getBiblStruct($item as element()) {
 declare function getResp($item as element()) {
   let $lang := 'fr'
   return map {
-    'name' : getName($item),
+    'name' : getName($item, $lang),
     'resp' : $item//tei:resp/text()
   }
 };

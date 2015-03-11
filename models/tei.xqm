@@ -17,14 +17,12 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
  :)
 
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
-import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 
 import module 'gdp.models.tei' at 'teiContent.xqm' , 'teiBuilder.xqm' ;
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
-
 
 (:~
  : ~:~:~:~:~:~:~:~:~
@@ -50,12 +48,12 @@ declare function getBlogHome($queryParams as map(*)) as map(*) {
     'description' : getDescription($posts, $lang),
     'keywords' : getKeywords($posts, $lang) 
     }
-  let $content := for $item in $posts return map {
-    'title' : getTitles($posts, $lang),
-    'date' : getDate($posts, $dateFormat),
-    'author' : getAuthors($posts, $lang),
-    'abstract' : getAbstract($posts, $lang),
-    'tei' : $posts
+  let $content := for $post in $posts return map {
+    'title' : getTitles($post, $lang),
+    'date' : getDate($post, $dateFormat),
+    'author' : getAuthors($post, $lang),
+    'abstract' : getAbstract($post, $lang),
+    'tei' : $post
     }
   return  map{
     'meta'    : $meta,
@@ -70,9 +68,9 @@ declare function getBlogHome($queryParams as map(*)) as map(*) {
  : @return a map with meta and content
  :)
 declare function getBlogPosts($queryParams as map(*)) as map(*) {
-  let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
+  let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
   let $meta := map{
     'title' : 'Liste des articles de blog', 
     'quantity' : getQuantity($posts, ' articles de blog'),
@@ -81,12 +79,12 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
     'description' : getDescription($posts, $lang),
     'keywords' : getKeywords($posts, $lang)
     }
-  let $content := for $item in $posts return map {
-    'title' : getTitles($item, $lang),
-    'date' : getDate($item, $dateFormat),
-    'author' : getAuthors($item, $lang),
-    'abstract' : getAbstract($item, $lang),
-    'tei' : $item
+  let $content := for $post in $posts return map {
+    'title' : getTitles($post, $lang),
+    'date' : getDate($post, $dateFormat),
+    'author' : getAuthors($post, $lang),
+    'abstract' : getAbstract($post, $lang),
+    'tei' : $post
     }
   return  map{
     'meta'    : $meta,
@@ -101,10 +99,10 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
  : @return a map with meta and content
  :)
 declare function getBlogItem($queryParams as map(*)) {
-  let $entryId := map:get($queryParams, 'entryId')
   let $lang := 'fr'
-  let $article := db:open(map:get($queryParams, 'dbName'))/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $dateFormat := 'jjmmaaa'
+  let $entryId := map:get($queryParams, 'entryId')
+  let $article := synopsx.lib.commons:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $meta := map{
     'title' : getTitles($article, $lang), 
     'author' : getAuthors($article, $lang),
@@ -118,7 +116,7 @@ declare function getBlogItem($queryParams as map(*)) {
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'tei' : $item
-  }
+    }
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -136,7 +134,8 @@ declare function getBlogItem($queryParams as map(*)) {
  :)
 declare function getCorpusList($queryParams) {
   let $lang := 'fr'
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:teiCorpus
+  let $dateFormat := 'jjmmaaa'
+  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus
   let $meta := map{
     'title' : 'Liste d’articles', 
     'quantity' : getQuantity($texts, 'article'), (: @todo internationalize :)
@@ -145,11 +144,13 @@ declare function getCorpusList($queryParams) {
     'description' : getDescription($texts, $lang),
     'keywords' : getKeywords($texts, $lang)
     }
-  let $content := map:merge(
-    for $item in $texts/tei:teiHeader 
-    order by $item//tei:publicationStmt/tei:date/@when (: sans effet :)
-    return  map:entry( fn:generate-id($item), getHeader($item) )
-    )
+  let $content := for $text in $texts return map {
+    'title' : getTitles($texts, $lang),
+    'date' : getDate($texts, $dateFormat),
+    'author' : getAuthors($texts, $lang),
+    'abstract' : getAbstract($texts, $lang),
+    'tei' : $texts
+    }
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -161,7 +162,8 @@ declare function getCorpusList($queryParams) {
  :)
 declare function getTextsList($queryParams) {
   let $lang := 'fr'
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:TEI/tei:teiHeader
+  let $dateFormat := 'jjmmaaa'
+  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:TEI/tei:teiHeader
   let $meta := map{
     'title' : 'Liste des textes', 
     'author' : getAuthors($texts, $lang),
@@ -169,10 +171,13 @@ declare function getTextsList($queryParams) {
     'description' : getDescription($texts, $lang),
     'keywords' : getKeywords($texts, $lang)
     }
-  let $content as map(*) := map:merge(
-    for $item in $texts
-    return  map:entry( fn:generate-id($item), getHeader($item) )
-    )
+  let $content := for $text in $texts return map {
+    'title' : getTitles($texts, $lang),
+    'date' : getDate($texts, $dateFormat),
+    'author' : getAuthors($texts, $lang),
+    'abstract' : getAbstract($texts, $lang),
+    'tei' : $texts
+    }
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -190,7 +195,8 @@ declare function getTextsList($queryParams) {
  :)
 declare function getBibliographicalExpressionsList($queryParams as map(*)) {
   let $lang := 'fr'
-  let $expressions := db:open(map:get($queryParams, 'dbName'))//tei:TEI
+  let $dateFormat := 'jjmmaaa'
+  let $expressions := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct
   let $meta := map{
     'title' : 'Liste des expressions', 
     'quantity' : getQuantity($expressions, 'expression'),
@@ -199,10 +205,12 @@ declare function getBibliographicalExpressionsList($queryParams as map(*)) {
     'description' : getDescription($expressions, $lang),
     'keywords' : getKeywords($expressions, $lang)
     }
-  let $content := map:merge(
-    for $item in $expressions/tei:biblStruct 
-    return  map:entry( fn:generate-id($item), getHeader($item) )
-    )
+  let $content := for $expression in $expressions return map {
+    'title' : getTitles($expression, $lang),
+    'date' : getDate($expression, $dateFormat),
+    'author' : getAuthors($expression, $lang),
+    'tei' : $expression
+    }
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -214,15 +222,18 @@ declare function getBibliographicalExpressionsList($queryParams as map(*)) {
  :)
 declare function getBiblStructList($queryParams) {
   let $lang := 'fr'
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:listBibl
+  let $dateFormat := 'jjmmaaa'
+  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct
   let $meta := map{
     'title' : 'Bibliographie'
     }
-  let $content as map(*) := map:merge(
-    for $item in $texts/tei:biblStruct
-    order by fn:number(getBiblDate($item, $lang))
-    return  map:entry( fn:generate-id($item), getBiblStruct($item) )
-    )
+  let $content := for $text in $texts return map {
+    'title' : getTitles($text, $lang),
+    'date' : getDate($text, $dateFormat),
+    'author' : getAuthors($text, $lang),
+    'abstract' : getAbstract($text, $lang),
+    'tei' : $text
+    }
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -234,14 +245,18 @@ declare function getBiblStructList($queryParams) {
  :)
 declare function getRespList($queryParams) {
   let $lang := 'fr'
-  let $texts := db:open(map:get($queryParams, 'dbName'))//tei:respStmt
+  let $dateFormat := 'jjmmaaa'
+  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:respStmt
   let $meta := map{
     'title' : 'Responsables de l’édition'
     }
-  let $content as map(*) := map:merge(
-    for $item in $texts
-    return  map:entry( fn:generate-id($item), getResp($item) )
-    )
+  let $content := for $text in $texts return map {
+    'title' : getTitles($text, $lang),
+    'date' : getDate($text, $dateFormat),
+    'author' : getAuthors($text, $lang),
+    'abstract' : getAbstract($text, $lang),
+    'tei' : $text
+    }
   return  map{
     'meta'    : $meta,
     'content' : $content

@@ -127,6 +127,20 @@ declare function getBiblTitles($content as element()*, $lang as xs:string){
 };
 
 (:~
+ : this function get bibliographical title
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a string
+ :)
+declare function getBiblTitle($content as element()*, $lang as xs:string){
+  fn:string-join(
+    for $title in $content//tei:title
+      return fn:normalize-space($title),
+    ', ')
+};
+
+(:~
  : this function get description
  :
  : @param $content texts to process

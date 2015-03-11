@@ -60,8 +60,8 @@ function editionHome() {
   let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
+    'layout' : 'refillsHomeHtml5.xhtml',
+    'pattern' : 'refillsBullet.xhtml',
     'xquery' : 'tei2html'
     (: specify an xslt mode and other kind of output options :)
     }
@@ -88,8 +88,8 @@ function corpus() {
   let $function := xs:QName(synopsx.lib.commons:getModelFunction($queryParams))
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'page.html',
-    'pattern' : 'article.xhtml'
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsCards.xhtml'
     (: specify an xslt mode and other kind of output options :)
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)

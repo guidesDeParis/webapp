@@ -14,83 +14,81 @@
    </head>
    <body>
      <header class="navigation" id="nav">
-       <div class="navigation-wrapper">
-         <a href="/home" class="logo">
-           <img src="/gdp/static/img/monument.svg" alt="Logo Image"/>
-         </a>
-         <a href="" class="navigation-menu-button" id="js-mobile-menu">MENU</a>
-       <div class="nav">
-       <ul id="navigation-menu">
-         <li class="nav-link"><a href="/blog">Blog</a></li>
-         <li class="nav-link"><a href="/about">À propos</a></li>
-         <li class="nav-link more">
-           <a href="/gdp">Les Guides</a>
-           <ul class="submenu">
-             <li><a href="/gdp">Consulter</a></li>
-             <li><a href="/gdp/cartography">Cartographie</a></li>
-             <li><a href="/gdp/index">Index</a></li>
-             <li><a href="/gdp/bibliography">Bibliographie</a></li>
-           </ul>
-         </li>
-       </ul>
-    </div>
-    <div class="navigation-tools">
-      <div class="search-bar">
-        <div class="search-and-submit">
-          <input type="search" placeholder="Enter Search" />
-          <button type="submit">
-            <img src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon.png" alt="Search Icon"/>
-          </button>
+      <div class="navigation-wrapper">
+        <a href="/home" class="logo">
+          <img src="/gdp/static/img/monument.svg" alt="Logo Image"/>
+        </a>
+        <a href="" class="navigation-menu-button" id="js-mobile-menu">MENU</a>
+      <div class="nav">
+        <ul id="navigation-menu">
+          <li class="nav-link"><a href="/about">À propos</a></li>
+          <li class="nav-link"><a href="/blog">Blog</a></li>
+          <li class="nav-link more">
+            <a href="/gdp">Les Guides</a>
+            <ul class="submenu">
+              <li><a href="/gdp/corpus">Consulter</a></li>
+              <li><a href="/gdp/cartography">Cartographie</a></li>
+              <li><a href="/gdp/index">Index</a></li>
+              <li><a href="/gdp/bibliography">Bibliographie</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="navigation-tools">
+        <div class="search-bar">
+          <div class="search-and-submit">
+            <input type="search" placeholder="Enter Search" />
+            <button type="submit">
+              <img src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon.png" alt="Search Icon"/>
+            </button>
+          </div>
         </div>
+        <a href="javascript:void(0)" class="sign-up">Sign Up</a>
       </div>
-      <a href="javascript:void(0)" class="sign-up">Sign Up</a>
     </div>
-  </div>
-</header>
-<main>
-  <div class="hero">
-    <div class="hero-inner">
-      <a href="/home" class="hero-logo"><img src="/gdp/static/img/monument.svg" alt="Logo Image"/></a>
-      <div class="hero-copy">
-        <h1>Les Guides de Paris</h1>
-        <p>Corpus des XVII et XVIII<sup>e</sup> siècles.</p>	
+  </header>
+  <main>
+    <div class="hero">
+      <div class="hero-inner">
+        <a href="/home" class="hero-logo"><img src="/gdp/static/img/monument.svg" alt="Logo Image"/></a>
+        <div class="hero-copy">
+          <h1>Les Guides de Paris</h1>
+          <p>Corpus des XVII et XVIII<sup>e</sup> siècles.</p>	
+        </div>
+        <a href="/gdp/corpus"><button>Consulter</button></a>
       </div>
-      <a href="/gdp"><button>Consulter</button></a>
     </div>
-  </div>
-  <div>{content}</div>
-</main>
-<footer class="footer">
-  <div class="footer-logo">
-    <img src="/gdp/static/img/monument.svg" alt="Logo image"/>
-  </div>
-  <div class="footer-links">
-    <ul>
-      <li><h3>Contenu</h3></li>
-      <li><a href="/gdp">Les Guides</a></li>
-      <li><a href="/blog">Blog</a></li>
-      <li><a href="/about">À propos</a></li>
-    </ul>
-    <ul>
-      <li><h3>Suivez-nous</h3></li>
-      <li><a href="javascript:void(0)">Facebook</a></li>
-      <li><a href="https://twitter.com/emchateau">Twitter</a></li>
-      <li><a href="https://github.com/guidesDeParis/">GitHub</a></li>
-    </ul>
-    <ul>
-      <li><h3>Informations légales</h3></li>
-      <li><a href="javascript:void(0)">Conditions d'utilisation</a></li>
-      <li><a href="javascript:void(0)">Politique de confidentialité</a></li>
-    </ul>
-  </div>
-
-  <hr/>
-
-  <p>"Fluctuat nec mergitur" – Il est battu par les flots, mais ne sombre pas.</p>
-</footer>
-     <!-- script menu -->
-     <script><![CDATA[
-      $(document).ready(function() {
+    <div>{content}</div>
+  </main>
+  <footer class="footer">
+    <div class="footer-logo">
+      <img src="/gdp/static/img/monument.svg" alt="Logo image"/>
+    </div>
+    <div class="footer-links">
+      <ul>
+        <li><h3>Contenu</h3></li>
+        <li><a href="/gdp">Les Guides</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/about">À propos</a></li>
+      </ul>
+      <ul>
+        <li><h3>Suivez-nous</h3></li>
+        <li><a href="javascript:void(0)">Facebook</a></li>
+        <li><a href="https://twitter.com/emchateau">Twitter</a></li>
+        <li><a href="https://github.com/guidesDeParis/">GitHub</a></li>
+      </ul>
+      <ul>
+        <li><h3>Informations légales</h3></li>
+        <li><a href="javascript:void(0)">Conditions d'utilisation</a></li>
+        <li><a href="javascript:void(0)">Politique de confidentialité</a></li>
+      </ul>
+    </div>
+    <hr/>
+    <p>"Fluctuat nec mergitur" – Il est battu par les flots, mais ne sombre pas.</p>
+  </footer>
+  <!-- script menu -->
+  <script><![CDATA[
+  $(document).ready(function() {
   var menu = $('#navigation-menu');
   var menuToggle = $('#js-mobile-menu');
   var signUp = $('.sign-up');
@@ -111,8 +109,8 @@
     });
     $(this).addClass("active-nav-item");
     $(".nav .more").removeClass("active-nav-item");
+    });
   });
-});
   ]]></script>
-   </body>
+  </body>
 </html>
