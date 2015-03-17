@@ -84,6 +84,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
     'date' : getDate($post, $dateFormat),
     'author' : getAuthors($post, $lang),
     'abstract' : getAbstract($post, $lang),
+    'url' : getUrl($post, $lang),
     'tei' : $post
     }
   return  map{
