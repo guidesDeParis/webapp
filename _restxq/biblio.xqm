@@ -74,7 +74,7 @@ function biblWorks() {
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -101,7 +101,7 @@ function biblHome() {
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -130,7 +130,7 @@ function biblWork($workId) {
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -157,7 +157,7 @@ function biblExpressions() {
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -186,7 +186,7 @@ function biblExpression($expressionId) {
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -213,7 +213,7 @@ function biblItems() {
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -242,5 +242,5 @@ function biblItem($itemId) {
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };

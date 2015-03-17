@@ -71,7 +71,7 @@ function blogHome() {
     'pattern' : 'refillsListSerif.xhtml',
     'xquery' : 'tei2html'
     }
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   }; 
  
 (:~
@@ -100,7 +100,7 @@ function blogPosts() {
     'pattern' : 'refillsListSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   };
  
 (:~
@@ -129,7 +129,7 @@ function blogItem($entryId as xs:string) {
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
   };
 
 (:~

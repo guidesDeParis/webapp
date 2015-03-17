@@ -65,7 +65,7 @@ function editionHome() {
     'pattern' : 'refillsBullet.xhtml',
     'xquery' : 'tei2html'
     }
-    return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 }; 
 
 (:~
@@ -92,7 +92,7 @@ function corpus() {
     'pattern' : 'refillsCards.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 
@@ -122,7 +122,7 @@ function biblioListHtml($pattern as xs:string?) {
     'pattern' : 'inc_blogArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -152,7 +152,7 @@ function texts() {
     'pattern' : 'inc_blogArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 (:~
@@ -181,7 +181,7 @@ function model() {
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
 declare 
