@@ -41,7 +41,7 @@ declare default function namespace 'gdp.biblio';
  :
  : @return redirect to the works list
  :)
-declare %restxq:path("/gdp/bibliography")
+declare %restxq:path("gdp/bibliography")
 function bibliography(){
   <rest:response>
     <http:response status="303" message="See Other">
@@ -60,21 +60,12 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblWorks() {
-  let $queryParams := map { 
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei',
-    'function' : 'getBibliographicalList'
-    }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+function biblHome() {
+  <rest:response>
+    <http:response status="303" message="See Other">
+      <http:header name="location" value="/gdp/bibliography/works"/>
+    </http:response>
+  </rest:response>
 };
 
 (:~
@@ -87,7 +78,7 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblHome() {
+function biblWorks() {
   let $queryParams := map { 
     'project' : 'gdp',
     'dbName' : 'gdp',

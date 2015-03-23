@@ -36,7 +36,7 @@ declare default function namespace 'gdp.models.tei' ;
  : @return a tei abstract
  :)
 declare function getAbstract($content as element()*, $lang as xs:string){
-  $content//tei:projectDesc
+  $content//tei:div[@type='abstract']
 };
 
 (:~
@@ -48,10 +48,8 @@ declare function getAbstract($content as element()*, $lang as xs:string){
  :)
 declare function getAuthors($content as element()*, $lang as xs:string) {
   fn:string-join(
-    fn:distinct-values(
-      for $name in $content//tei:titleStmt//tei:name//text()
-        return fn:string-join($name, ' - ')
-      ), 
+      for $name in $content//tei:titleStmt//tei:respStmt[tei:resp[@key='aut']]
+      return getName($name, $lang),
     ', ')
 };
 
@@ -183,6 +181,17 @@ declare function getName($named as element()*, $lang as xs:string) {
 };
 
 (:~
+ : this function get subtitle
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a string of comma separated titles
+ :)
+declare function getSubtitle($content as element()*, $lang as xs:string){
+  $content//tei:titleStmt//tei:title[@type = 'sub']
+};
+
+(:~
  : this function get titles
  :
  : @param $content texts to process
@@ -194,6 +203,17 @@ declare function getTitles($content as element()*, $lang as xs:string){
     for $title in $content//tei:titleStmt//tei:title
       return fn:normalize-space($title[fn:starts-with(@xml:lang, $lang)]),
     ', ')
+};
+
+(:~
+ : this function get title
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a string of comma separated titles
+ :)
+declare function getTitle($content as element()*, $lang as xs:string){
+  $content//tei:titleStmt//tei:title[@type = 'main']
 };
 
 (:~
