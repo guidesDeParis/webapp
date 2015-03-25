@@ -188,6 +188,18 @@ declare function getDescription($content as element()*, $lang as xs:string) {
     ', ')
 };
 
+(:
+ : this function get text items url
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a string of comma separated titles
+ : @todo print the real uri
+ :)
+declare function getItemUrl($content as element()*, $lang as xs:string){
+   $content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
+};
+
 (:~
  : this function get keywords
  :

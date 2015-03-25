@@ -291,6 +291,39 @@ declare function getTextsList($queryParams) {
 };
 
 (:~
+ : this function get text by ID
+ :
+ : @param $queryParams the request params sent by restxq 
+ : @return a map with meta and content
+ :)
+declare function getTextById($queryParams as map(*)) as map(*) {
+  let $textId := map:get($queryParams, 'textId')
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $text := synopsx.lib.commons:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $meta := map{
+    'title' : 'Liste des items disponibles', 
+    'quantity' : getQuantity($text, 'manifestation'), (: @todo internationalize :)
+    'author' : getAuthors($text, $lang),
+    'copyright'  : getCopyright($text, $lang),
+    'description' : getDescription($text, $lang),
+    'keywords' : getKeywords($text, $lang)
+    }
+  let $content := for $item in $text//tei:div return map {
+    'title' : $item/tei:head[1],
+    'date' : getDate($item, $dateFormat),
+    'author' : getAuthors($item, $lang),
+    'abstract' : getAbstract($item, $lang),
+    'tei' : $item,
+    'url' : getItemUrl($item, $lang)
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
  : this function get the texts list
  :
  : @param $queryParams the request params sent by restxq
