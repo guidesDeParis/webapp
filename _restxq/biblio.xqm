@@ -89,7 +89,7 @@ function biblWorks() {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
+    'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)

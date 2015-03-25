@@ -92,7 +92,7 @@ declare function getCopyright($content as element()*, $lang as xs:string) {
  :)
 declare function getDate($content as element()*, $dateFormat as xs:string){
   fn:normalize-space(
-    $content//tei:publicationStmt/tei:date
+    ($content//tei:publicationStmt/tei:date)[1]
   )
 };
 
@@ -108,6 +108,30 @@ declare function getBiblDate($content as element()*, $dateFormat as xs:string){
   fn:normalize-space(
     $content//tei:imprint/tei:date
   )
+};
+
+(:~
+ : this function get bibliographical expressions
+ :
+ : @param $content texts to process
+ : @param $dateFormat a normalized date format code
+ : @return a date string in the specified format
+ : @todo formats
+ :)
+declare function getBiblExpressions($content as element()*, $dateFormat as xs:string){
+  $content/following::tei:biblStruct[@xml:id = fn:substring($content//tei:relationGrp/tei:relation[@type="expression"]/@corresp, 2)]
+};
+
+(:~
+ : this function get bibliographical expressions
+ :
+ : @param $content texts to process
+ : @param $dateFormat a normalized date format code
+ : @return a date string in the specified format
+ : @todo formats
+ :)
+declare function getBiblManifestations($content as element()*, $dateFormat as xs:string){
+  $content/following::tei:biblStruct[@xml:id = fn:substring($content//tei:relationGrp/tei:relation[@type="manifestations"]/@corresp, 2)]
 };
 
 (:~
@@ -136,6 +160,18 @@ declare function getBiblTitle($content as element()*, $lang as xs:string){
     for $title in $content//tei:title
       return fn:normalize-space($title),
     ', ')
+};
+
+(:
+ : this function get corpus url
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a string of comma separated titles
+ : @todo print the real uri
+ :)
+declare function getCorpusUrl($content as element()*, $lang as xs:string){
+  'corpus/' || $content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
 };
 
 (:~
@@ -189,6 +225,18 @@ declare function getName($named as element()*, $lang as xs:string) {
  :)
 declare function getSubtitle($content as element()*, $lang as xs:string){
   $content//tei:titleStmt//tei:title[@type = 'sub']
+};
+
+(:
+ : this function get text url
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a string of comma separated titles
+ : @todo print the real uri
+ :)
+declare function getTextUrl($content as element()*, $lang as xs:string){
+  '/gdp/texts/' || $content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
 };
 
 (:~

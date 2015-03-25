@@ -56,7 +56,7 @@ function editionHome() {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
-    'function' : 'getTextsList'
+    'function' : 'getHome'
     }
   let $function := synopsx.lib.commons:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
@@ -95,7 +95,63 @@ function corpus() {
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
 
+(:~
+ : resource function for a corpus ID
+ :
+ : @param $corpusId the corpus ID
+ : @return an html representation of the corpus resource
+ :)
+declare 
+  %restxq:path('/gdp/corpus/{$corpusId}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function corpusItem($corpusId as xs:string) {
+  let $queryParams := map {
+    'corpusId' : $corpusId,
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getCorpusById'
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsCards.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+};
 
+(:~
+ : resource function for a corpus ID
+ :
+ : @param $corpusId the corpus ID
+ : @return an html representation of the corpus resource
+ :)
+declare 
+  %restxq:path('/gdp/texts/{$textId}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function textItem($textId as xs:string) {
+  let $queryParams := map {
+    'textId' : $textId,
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getTextById'
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsListTextSerif.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+};
 (:~
  : this resource function is a bibliographical list for testing
  : @return an html representation of the bibliographical list
@@ -178,7 +234,65 @@ function model() {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
+    'pattern' : 'refillsPageSerif.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+};
+
+(:~
+ : this resource function is a about page
+ : @return an html representation of the bibliographical list
+ : @param $pattern a GET param giving the name of the calling HTML tag
+ : @todo use this tag !
+ :)
+declare 
+  %restxq:path("/about")
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function about() {
+  let $queryParams := map {
+    'project' :'gdp',
+    'dbName' : 'blog',
+    'model' : 'tei',
+    'function' : 'getAbout',
+    'entryId' : 'gdpPresentation2014'
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsPageSerif.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+};
+
+(:~
+ : this resource function is a about page
+ : @return an html representation of the bibliographical list
+ : @param $pattern a GET param giving the name of the calling HTML tag
+ : @todo use this tag !
+ :)
+declare 
+  %restxq:path("/documentation")
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function documentation() {
+  let $queryParams := map {
+    'project' :'gdp',
+    'dbName' : 'gdp',
+    'path' : '/schema/gdpSchemaTEI.odd.xml',
+    'model' : 'tei',
+    'function' : 'getModel'
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsPageSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
