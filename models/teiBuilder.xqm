@@ -90,7 +90,7 @@ declare function getCopyright($content as element()*, $lang as xs:string) {
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getDate($content as element()*, $dateFormat as xs:string){
+declare function getDate($content as element()*, $dateFormat as xs:string) {
   fn:normalize-space(
     ($content//tei:publicationStmt/tei:date)[1]
   )
@@ -104,7 +104,7 @@ declare function getDate($content as element()*, $dateFormat as xs:string){
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getBiblDate($content as element()*, $dateFormat as xs:string){
+declare function getBiblDate($content as element()*, $dateFormat as xs:string) {
   fn:normalize-space(
     $content//tei:imprint/tei:date
   )
@@ -118,8 +118,13 @@ declare function getBiblDate($content as element()*, $dateFormat as xs:string){
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getBiblExpressions($content as element()*, $dateFormat as xs:string){
-  $content/following::tei:biblStruct[@xml:id = fn:substring($content//tei:relationGrp/tei:relation[@type="expression"]/@corresp, 2)]
+declare function getBiblExpressions($content as element(), $dateFormat as xs:string) {
+  let $id := $content/@xml:id
+  return <tei:biblStruct>
+    {fn:distinct-values(
+      db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]
+    )}
+    </tei:biblStruct>
 };
 
 (:~
@@ -130,8 +135,8 @@ declare function getBiblExpressions($content as element()*, $dateFormat as xs:st
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getBiblManifestations($content as element()*, $dateFormat as xs:string){
-  $content/following::tei:biblStruct[@xml:id = fn:substring($content//tei:relationGrp/tei:relation[@type="manifestations"]/@corresp, 2)]
+declare function getBiblManifestations($content as element()*, $dateFormat as xs:string) {
+  $content/following::tei:biblStruct[@xml:id = fn:substring-after($content//tei:relationGrp/tei:relation[@type="manifestations"]/@corresp, '#')]
 };
 
 (:~
@@ -196,8 +201,12 @@ declare function getDescription($content as element()*, $lang as xs:string) {
  : @return a string of comma separated titles
  : @todo print the real uri
  :)
-declare function getItemUrl($content as element()*, $lang as xs:string){
-   $content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
+declare function getItemUrl($queryParams, $content as element()*, $lang as xs:string){
+  let $textId := map:get($queryParams, 'textId')
+  return 
+    fn:normalize-space(
+      '/gdp/texts/' || $textId || $content/@xml:id/text()
+    )
 };
 
 (:~
@@ -310,6 +319,6 @@ declare function getXmlTeiById($queryParams){
  : @return a string of comma separated titles
  : @todo print the real uri
  :)
-declare function getUrl($content as element()*, $lang as xs:string){
-  'posts/' || $content//tei:sourceDesc/@xml:id
+declare function getUrl($content as item(), $path as xs:string, $lang as xs:string){
+  $path || $content
 };

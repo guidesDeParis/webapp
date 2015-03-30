@@ -42,7 +42,7 @@ declare function getText($item as element()) as map(*) {
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
-    'url' : getUrl($item, $lang),
+    'url' : getUrl($item//tei:sourceDesc/@xml:id, 'texts/', $lang),
     'tei' : $item
   }
 };

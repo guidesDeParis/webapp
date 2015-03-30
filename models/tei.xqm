@@ -87,7 +87,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
     'date' : getDate($post, $dateFormat),
     'author' : getAuthors($post, $lang),
     'abstract' : getAbstract($post, $lang),
-    'url' : getUrl($post, $lang),
+    'url' : getUrl($post//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
     'tei' : $post
     }
   return  map{
@@ -315,7 +315,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'tei' : $item,
-    'url' : getItemUrl($item, $lang)
+    'url' : getItemUrl($queryParams, $item, $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -381,7 +381,8 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     'title' : 'Œuvre',
     'tei' : $bibliographicalWork,
     'expressions' : getBiblExpressions($bibliographicalWork, $lang),
-    'manifestations' : getBiblManifestations($bibliographicalWork, $lang)
+    'manifestations' : getBiblManifestations($bibliographicalWork, $lang),
+    'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -396,23 +397,23 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
  : @return a map of two map
  :)
 declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
-  let $bibliographicalWorkId := map:get($queryParams, 'workId')
+  let $workId := map:get($queryParams, 'workId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalWork := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalWorkId]
+  let $bibliographicalWork := fn:distinct-values(synopsx.lib.commons:getDb($queryParams)//tei:bibl[fn:string(@xml:id) = $workId ])
   let $meta := map{
-    'title' : 'Œuvre',
+    'title' : 'Œuvre', 
     'author' : getAuthors($bibliographicalWork, $lang),
     'copyright' : getCopyright($bibliographicalWork, $lang),
     'description' : getDescription($bibliographicalWork, $lang),
     'keywords' : getKeywords($bibliographicalWork, $lang) 
     }
   let $content := map {
-    'title' : getTitles($bibliographicalWork, $lang),
-    'date' : getDate($bibliographicalWork, $dateFormat),
-    'author' : getAuthors($bibliographicalWork, $lang),
-    'abstract' : getAbstract($bibliographicalWork, $lang),
-    'tei' : $bibliographicalWork
+    'title' : 'Œuvre',
+    'tei' : $bibliographicalWork,
+    'expressions' : getBiblExpressions($bibliographicalWork, $lang),
+    (: 'manifestations' : getBiblManifestations($bibliographicalWork, $lang), :)
+    'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -438,7 +439,8 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'date' : getDate($bibliographicalExpression, $dateFormat),
     'author' : getAuthors($bibliographicalExpression, $lang),
     'abstract' : getAbstract($bibliographicalExpression, $lang),
-    'tei' : $bibliographicalExpression
+    'tei' : $bibliographicalExpression,
+    'url' : getUrl($bibliographicalExpression/@xml:id, '/gdp/bibliography/expressions/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -465,7 +467,8 @@ declare function getBibliographicalExpression($queryParams) {
     'date' : getDate($bibliographicalExpression, $dateFormat),
     'author' : getAuthors($bibliographicalExpression, $lang),
     'abstract' : getAbstract($bibliographicalExpression, $lang),
-    'tei' : $bibliographicalExpression
+    'tei' : $bibliographicalExpression,
+    'url' : getUrl($bibliographicalExpression/@xml:id, '/gdp/bibliography/expressions/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -496,7 +499,8 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
     'date' : getDate($bibliographicalItem, $dateFormat),
     'author' : getAuthors($bibliographicalItem, $lang),
     'abstract' : getAbstract($bibliographicalItem, $lang),
-    'tei' : $bibliographicalItem
+    'tei' : $bibliographicalItem,
+    'url' : getUrl($bibliographicalItem/@xml:id, '/gdp/bibliography/manifestations/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -527,7 +531,8 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
     'date' : getDate($bibliographicalItem, $dateFormat),
     'author' : getAuthors($bibliographicalItem, $lang),
     'abstract' : getAbstract($bibliographicalItem, $lang),
-    'tei' : $bibliographicalItem
+    'tei' : $bibliographicalItem,
+    'url' : getUrl($bibliographicalItem/@xml:id, '/gdp/bibliography/manifestations/', $lang)
     }
   return  map{
     'meta'    : $meta,
