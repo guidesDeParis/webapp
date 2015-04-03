@@ -400,7 +400,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
   let $workId := map:get($queryParams, 'workId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalWork := fn:distinct-values(synopsx.lib.commons:getDb($queryParams)//tei:bibl[fn:string(@xml:id) = $workId ])
+  let $bibliographicalWork := synopsx.lib.commons:getDb($queryParams)//tei:bibl[fn:string(@xml:id) = $workId ]
   let $meta := map{
     'title' : 'Œuvre', 
     'author' : getAuthors($bibliographicalWork, $lang),
