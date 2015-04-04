@@ -89,7 +89,7 @@ function corpus() {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsCards.xhtml',
+    'pattern' : 'corpusList.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)

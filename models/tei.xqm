@@ -219,6 +219,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
     'tei' : $corpus,
+    'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte'),
     'url' : getCorpusUrl($corpus, $lang)
     }
   return  map{

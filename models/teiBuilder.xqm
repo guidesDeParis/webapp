@@ -224,6 +224,16 @@ declare function getKeywords($content as element()*, $lang as xs:string) {
 };
 
 (:~
+ : this function get the numbers of texts
+ :
+ : @param $corpus a corpus item
+ : @return a number of texts
+ :)
+declare function getTextsQuantity($corpus as element(), $lang) {
+  fn:count($corpus//tei:TEI)
+};
+
+(:~
  : this function serialize persName
  :
  : @param $named named content to process
@@ -297,7 +307,7 @@ declare function getQuantity($content as element()*, $unit as xs:string){
   fn:normalize-space(
     if (fn:count($content) > 1) 
       then fn:count($content) || ' ' || $unit || 's disponibles'
-      else fn:count($content) || $unit || ' disponible'
+      else fn:count($content) || ' ' || $unit || ' disponible'
     )
 };
 
