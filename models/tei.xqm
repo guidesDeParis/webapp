@@ -219,7 +219,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte'),
-    'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, 'http://localhost:8984/gdp/corpus/', $lang),
+    'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/corpus/', $lang),
     'tei' : $corpus
     }
   return  map{
@@ -252,8 +252,9 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'date' : getDate($text, $dateFormat),
     'author' : getAuthors($text, $lang),
     'abstract' : getAbstract($text, $lang),
+    'biblio' : getRef($text, $lang),
     'tei' : $text,
-    'url' : getTextUrl($text, $lang)
+    'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -279,10 +280,11 @@ declare function getTextsList($queryParams) {
     'keywords' : getKeywords($texts, $lang)
     }
   let $content := for $text in $texts return map {
-    'title' : getTitles($texts, $lang),
-    'date' : getDate($texts, $dateFormat),
-    'author' : getAuthors($texts, $lang),
-    'abstract' : getAbstract($texts, $lang),
+    'title' : getTitles($text, $lang),
+    'date' : getDate($text, $dateFormat),
+    'author' : getAuthors($text, $lang),
+    'abstract' : getAbstract($text, $lang),
+    'biblio' : getRef($text, $lang),
     'tei' : $text
     }
   return  map{

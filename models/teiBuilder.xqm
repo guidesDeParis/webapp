@@ -240,11 +240,22 @@ declare function getTextsQuantity($corpus as element(), $lang) {
  : @param $lang iso langcode starts
  : @return concatenate forename and surname
  :)
-declare function getName($named as element()*, $lang as xs:string) {
+declare function getName($named as element()*, $lang as xs:string) as xs:string {
   fn:normalize-space(
     for $person in $named/tei:persName 
       return ($person/tei:forename || ' ' || $person/tei:surname)
     )
+};
+
+(:~
+ : this function serialize persName
+ :
+ : @param $named named content to process
+ : @param $lang iso langcode starts
+ : @return concatenate forename and surname
+ :)
+declare function getRef($content as element()*, $lang as xs:string) as element()* { 
+  db:open('gdp')//tei:biblStruct[@xml:id = 'biblioSauval1724']
 };
 
 (:~
@@ -330,5 +341,5 @@ declare function getXmlTeiById($queryParams){
  : @todo print the real uri
  :)
 declare function getUrl($content as item(), $path as xs:string, $lang as xs:string){
-  $path || $content
+  'http://localhost:8984' || $path || $content
 };
