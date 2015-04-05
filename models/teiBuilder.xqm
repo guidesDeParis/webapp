@@ -273,13 +273,13 @@ declare function getTextUrl($content as element()*, $lang as xs:string){
 (:~
  : this function get titles
  :
- : @param $content texts to process
+ : @param $content tei content to treat
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
  :)
 declare function getTitles($content as element()*, $lang as xs:string){
   fn:string-join(
-    for $title in $content//tei:titleStmt//tei:title
+    for $title in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt//tei:title
       return fn:normalize-space($title[fn:starts-with(@xml:lang, $lang)]),
     ', ')
 };
