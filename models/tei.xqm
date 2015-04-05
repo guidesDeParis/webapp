@@ -206,7 +206,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $corpora := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus
   let $meta := map{
-    'title' : 'Liste d’articles', 
+    'title' : 'Liste des corpus', 
     'quantity' : getQuantity($corpora, 'article'), (: @todo internationalize :)
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
@@ -219,7 +219,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte'),
-    'url' : getCorpusUrl($corpus, $lang),
+    'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, 'http://localhost:8984/gdp/corpus/', $lang),
     'tei' : $corpus
     }
   return  map{
@@ -238,22 +238,22 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $corpusId := map:get($queryParams, 'corpusId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $corpora := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader//tei:sourceDesc[@xml:id = $corpusId]]/tei:TEI
+  let $corpus := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader//tei:sourceDesc[@xml:id = $corpusId]]
   let $meta := map{
     'title' : 'Liste des textes disponibles', 
-    'quantity' : getQuantity($corpora, 'manifestation'), (: @todo internationalize :)
-    'author' : getAuthors($corpora, $lang),
-    'copyright'  : getCopyright($corpora, $lang),
-    'description' : getDescription($corpora, $lang),
-    'keywords' : getKeywords($corpora, $lang)
-    }
-  let $content := for $corpus in $corpora return map {
-    'title' : getTitles($corpus, $lang),
-    'date' : getDate($corpus, $dateFormat),
+    'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte'),
     'author' : getAuthors($corpus, $lang),
-    'abstract' : getAbstract($corpus, $lang),
-    'tei' : $corpus,
-    'url' : getTextUrl($corpus, $lang)
+    'copyright'  : getCopyright($corpus, $lang),
+    'description' : getDescription($corpus, $lang),
+    'keywords' : getKeywords($corpus, $lang)
+    }
+  let $content := for $text in $corpus/tei:TEI return map {
+    'title' : getTitles($text, $lang),
+    'date' : getDate($text, $dateFormat),
+    'author' : getAuthors($text, $lang),
+    'abstract' : getAbstract($text, $lang),
+    'tei' : $text,
+    'url' : getTextUrl($text, $lang)
     }
   return  map{
     'meta'    : $meta,
