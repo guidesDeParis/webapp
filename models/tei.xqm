@@ -204,16 +204,17 @@ declare function getHome($queryParams as map(*)) as map(*) {
 declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $corpora := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus
+  let $corpora := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus
   let $meta := map{
     'title' : 'Liste des corpus', 
-    'quantity' : getQuantity($corpora, 'article'), (: @todo internationalize :)
+    'quantity' : getQuantity($corpora/tei:teiCorpus, 'corpu'), (: @todo internationalize :)
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
-    'keywords' : getKeywords($corpora, $lang)
+    'keywords' : getKeywords($corpora, $lang),
+    'tei' : $corpora/tei:teiHeader
     }
-  let $content := for $corpus in $corpora return map {
+  let $content := for $corpus in $corpora/tei:teiCorpus return map {
     'title' : getTitles($corpus, $lang),
     'date' : getDate($corpus, $dateFormat),
     'author' : getAuthors($corpus, $lang),
@@ -252,7 +253,9 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'date' : getDate($text, $dateFormat),
     'author' : getAuthors($text, $lang),
     'abstract' : getAbstract($text, $lang),
-    'biblio' : getRef($text, $lang),
+    'biblio' : getRef($text, $lang)/tei:monogr,
+    'format' : getRef($text, $lang)//tei:dim[@type = 'format'],
+    'itemsNb' : fn:string(fn:count($corpus/tei:TEI//tei:div[@type = 'item'])),
     'tei' : $text,
     'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang)
     }

@@ -25,8 +25,6 @@ declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
 
-
-
 (:~
  : this function creates a map for a corpus item with teiHeader 
  :

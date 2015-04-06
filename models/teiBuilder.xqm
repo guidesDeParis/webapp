@@ -253,9 +253,10 @@ declare function getName($named as element()*, $lang as xs:string) as xs:string 
  : @param $named named content to process
  : @param $lang iso langcode starts
  : @return concatenate forename and surname
+ : @bug why does the request brings back two results ?
  :)
 declare function getRef($content as element()*, $lang as xs:string) as element()* { 
-  db:open('gdp')//tei:biblStruct[@xml:id = 'biblioSauval1724']
+  (db:open('gdp')//tei:biblStruct[@xml:id = 'biblioSauval1724'])[1]
 };
 
 (:~
