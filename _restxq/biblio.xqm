@@ -118,7 +118,7 @@ function biblWork($workId) {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
+    'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
@@ -145,7 +145,7 @@ function biblExpressions() {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
+    'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
@@ -174,7 +174,7 @@ function biblExpression($expressionId) {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
+    'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
@@ -201,7 +201,7 @@ function biblItems() {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
+    'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
@@ -230,7 +230,7 @@ function biblItem($itemId) {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
+    'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)

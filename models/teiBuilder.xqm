@@ -128,15 +128,20 @@ declare function getBiblExpressions($content as element(), $dateFormat as xs:str
 };
 
 (:~
- : this function get bibliographical expressions
+ : this function get bibliographical manifestations
  :
  : @param $content texts to process
  : @param $dateFormat a normalized date format code
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getBiblManifestations($content as element()*, $dateFormat as xs:string) {
-  $content/following::tei:biblStruct[@xml:id = fn:substring-after($content//tei:relationGrp/tei:relation[@type="manifestations"]/@corresp, '#')]
+declare function getBiblManifestations($content as element(), $dateFormat as xs:string) {
+  let $id := $content/@xml:id
+  return <tei:biblStruct>
+  {for $refId in db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]/@xml:id
+      return fn:distinct-values(db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][@corresp = '#' || $refId]])
+    }
+    </tei:biblStruct>
 };
 
 (:~

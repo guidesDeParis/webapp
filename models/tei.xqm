@@ -406,20 +406,22 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
   let $workId := map:get($queryParams, 'workId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalWork := synopsx.lib.commons:getDb($queryParams)//tei:bibl[fn:string(@xml:id) = $workId ]
+  let $bibliographicalWork := (synopsx.lib.commons:getDb($queryParams)//tei:bibl[fn:string(@xml:id) = $workId ])[1]
   let $meta := map{
     'title' : 'Œuvre', 
     'author' : getAuthors($bibliographicalWork, $lang),
     'copyright' : getCopyright($bibliographicalWork, $lang),
     'description' : getDescription($bibliographicalWork, $lang),
-    'keywords' : getKeywords($bibliographicalWork, $lang) 
+    'keywords' : getKeywords($bibliographicalWork, $lang),
+    'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang) 
     }
   let $content := map {
     'title' : 'Œuvre',
     'tei' : $bibliographicalWork,
+    'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang),
     'expressions' : getBiblExpressions($bibliographicalWork, $lang),
-    (: 'manifestations' : getBiblManifestations($bibliographicalWork, $lang), :)
-    'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang)
+    'expressionsUrl' : getBiblExpressions($bibliographicalWork, $lang),
+    'manifestations' : getBiblManifestations($bibliographicalWork, $lang)
     }
   return  map{
     'meta'    : $meta,
