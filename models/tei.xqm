@@ -315,13 +315,52 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     'description' : getDescription($text, $lang),
     'keywords' : getKeywords($text, $lang)
     }
-  let $content := for $item in $text//tei:div return map {
+  let $content := for $item in $text//tei:div[@type = 'item'] return map {
     'title' : $item/tei:head[1],
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'tei' : $item,
-    'url' : getItemUrl($queryParams, $item, $lang)
+    'url' : getUrl(if ($item/@xml:id) then $item/@xml:id else 'toto' , '/gdp/texts/' || $textId || '/', $lang)   
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get item by ID
+ :
+ : @param $queryParams the request params sent by restxq 
+ : @return a map with meta and content
+ :)
+declare function getItemById($queryParams as map(*)) as map(*) {
+  let $textId := map:get($queryParams, 'textId')
+  let $itemId := map:get($queryParams, 'itemId')
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $text := (synopsx.lib.commons:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]])[1]
+  let $item := $text//tei:div[@xml:id = $itemId]
+  let $meta := map{
+    'title' : 'Liste des items disponibles', 
+    'quantity' : getQuantity($item, 'item'), (: @todo internationalize :)
+    'author' : getAuthors($item, $lang),
+    'copyright'  : getCopyright($item, $lang),
+    'description' : getDescription($item, $lang),
+    'keywords' : getKeywords($item, $lang)
+    }
+  let $content := map {
+    'title' : $item/tei:head[1],
+    'date' : getDate($item, $dateFormat),
+    'author' : getAuthors($item, $lang),
+    'abstract' : getAbstract($item, $lang),
+    'tei' : $item,
+    'url' : getUrl($item/@xml:id, '/gdp/texts/' || $textId || '/', $lang),
+    'itemBeforeTitle' : (getItemBefore($item, $lang)/tei:head)[1],
+    'itemBeforeUrl' : getUrl(getItemAfter($item, $lang)/@xml:id, '/gdp/texts/', $lang),
+    'itemAfterTitle' : (getItemAfter($item, $lang)/tei:head)[1],
+    'itemAfterUrl' : getUrl(getItemAfter($item, $lang)/@xml:id, '/gdp/texts/', $lang)
     }
   return  map{
     'meta'    : $meta,

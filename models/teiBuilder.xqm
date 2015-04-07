@@ -120,11 +120,9 @@ declare function getBiblDate($content as element()*, $dateFormat as xs:string) {
  :)
 declare function getBiblExpressions($content as element(), $dateFormat as xs:string) {
   let $id := $content/@xml:id
-  return <tei:biblStruct>
-    {fn:distinct-values(
+  return fn:distinct-values(
       db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]
-    )}
-    </tei:biblStruct>
+    )
 };
 
 (:~
@@ -136,12 +134,8 @@ declare function getBiblExpressions($content as element(), $dateFormat as xs:str
  : @todo formats
  :)
 declare function getBiblManifestations($content as element(), $dateFormat as xs:string) {
-  let $id := $content/@xml:id
-  return <tei:biblStruct>
-  {for $refId in db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]/@xml:id
-      return fn:distinct-values(db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][@corresp = '#' || $refId]])
-    }
-    </tei:biblStruct>
+  for $refId in db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]/@xml:id
+  return fn:distinct-values(db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][@corresp = '#' || $refId]])
 };
 
 (:~
@@ -309,7 +303,29 @@ declare function getTitles($content as element()*, $lang as xs:string){
  : @return a string of comma separated titles
  :)
 declare function getTitle($content as element()*, $lang as xs:string){
-  $content//tei:titleStmt//tei:title[@type = 'main']
+  ($content//tei:titleStmt//tei:title[@type = 'main'])[1]
+};
+
+(:~
+ : this function get item after
+ :
+ : @param 
+ : @param $lang iso langcode starts
+ : @return a div
+ :)
+declare function getItemAfter($item as element()*, $lang as xs:string){
+  ($item/following-sibling::tei:div[@type = 'item'])[1]
+};
+
+(:~
+ : this function get item before
+ :
+ : @param 
+ : @param $lang iso langcode starts
+ : @return a div
+ :)
+declare function getItemBefore($item as element()*, $lang as xs:string){
+  $item/preceding-sibling::tei:div[@type = 'item']
 };
 
 (:~

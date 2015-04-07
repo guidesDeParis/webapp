@@ -152,6 +152,37 @@ function textItem($textId as xs:string) {
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
 };
+
+(:~
+ : resource function for a text item by ID
+ :
+ : @param $corpusId the text item ID
+ : @return an html representation of the text item
+ :)
+declare 
+  %restxq:path('/gdp/texts/{$textId}/{$itemId}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function textItem($textId as xs:string, $itemId as xs:string) {
+  let $queryParams := map {
+    'textId' : $textId,
+    'itemId' : $itemId,
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getItemById'
+    }
+  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsItemSerif.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+};
+
 (:~
  : this resource function is a bibliographical list for testing
  : @return an html representation of the bibliographical list
