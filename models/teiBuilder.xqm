@@ -313,8 +313,8 @@ declare function getTitle($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a div
  :)
-declare function getItemAfter($item as element()*, $lang as xs:string){
-  ($item/following-sibling::tei:div[@type = 'item'])[1]
+declare function getItemAfter($item as element(), $lang as xs:string) as element() {
+  $item/following-sibling::tei:div[@type = 'item'][1]
 };
 
 (:~
@@ -324,8 +324,8 @@ declare function getItemAfter($item as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a div
  :)
-declare function getItemBefore($item as element()*, $lang as xs:string){
-  $item/preceding-sibling::tei:div[@type = 'item']
+declare function getItemBefore($item as element(), $lang as xs:string) as element() {
+  $item/preceding-sibling::tei:div[@type = 'item'][1]
 };
 
 (:~

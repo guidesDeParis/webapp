@@ -342,6 +342,8 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $text := (synopsx.lib.commons:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]])[1]
   let $item := $text//tei:div[@xml:id = $itemId]
+  let $itemAfter := getItemAfter($item, $lang)
+  let $itemBefore := getItemBefore($item, $lang)
   let $meta := map{
     'title' : 'Liste des items disponibles', 
     'quantity' : getQuantity($item, 'item'), (: @todo internationalize :)
@@ -358,9 +360,9 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'tei' : $item,
     'url' : getUrl($item/@xml:id, '/gdp/texts/' || $textId || '/', $lang),
     'itemBeforeTitle' : (getItemBefore($item, $lang)/tei:head)[1],
-    'itemBeforeUrl' : getUrl(getItemAfter($item, $lang)/@xml:id, '/gdp/texts/', $lang),
+    'itemBeforeUrl' : getUrl($itemBefore/@xml:id, '/gdp/texts/' || $textId || '/', $lang),
     'itemAfterTitle' : (getItemAfter($item, $lang)/tei:head)[1],
-    'itemAfterUrl' : getUrl(getItemAfter($item, $lang)/@xml:id, '/gdp/texts/', $lang)
+    'itemAfterUrl' : getUrl($itemAfter/@xml:id, '/gdp/texts/' || $textId || '/', $lang)
     }
   return  map{
     'meta'    : $meta,
