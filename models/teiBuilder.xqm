@@ -199,12 +199,14 @@ declare function getDescription($content as element()*, $lang as xs:string) {
  : @param $lang iso langcode starts
  : @return a comma separated list of 90 first caracters of div[@type='abstract']
  :)
-declare function getOtherEditions($ref as node() ) as element()* {
-  let $corresp := $ref//tei:relation[@type = 'expression']/@corresp
+declare function getOtherEditions($ref as node()? ) as element()* {
+  let $corresp := $ref//tei:relation[@type]/@corresp
   return 
-    switch ($ref)
-    case $ref/@type = 'manifestation' return <p>todo</p>
-    default return <tei:biblStruct>{db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][@corresp = $corresp ]]}</tei:biblStruct>
+    if ($ref/@type = 'expression') 
+    then <tei:biblStruct>
+        {db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][fn:substring-after(@corresp, '#') = $ref/@xml:id]]}
+      </tei:biblStruct>
+    else <tei:biblStruct>{db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][@corresp = $corresp ]]}</tei:biblStruct>
 };
 
 (:

@@ -219,7 +219,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'date' : getDate($corpus, $dateFormat),
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
-    'editionsQuantity' : getRef($corpus),
+    'editionsQuantity' : fn:string(fn:count(getOtherEditions(getRef($corpus))/tei:biblStruct)),
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte'),
     'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/corpus/', $lang),
     'tei' : $corpus
@@ -258,7 +258,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'itemsNb' : fn:string(fn:count($corpus/tei:TEI//tei:div[@type = 'item'])),
     'tei' : $text,
     'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang),
-    'otherEditions' : getOtherEditions(getRef($text))
+    'otherEditions' : fn:string(fn:count(getOtherEditions(getRef($text))/tei:biblStruct))
     }
   return  map{
     'meta'    : $meta,
