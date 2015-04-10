@@ -192,6 +192,21 @@ declare function getDescription($content as element()*, $lang as xs:string) {
     ', ')
 };
 
+(:~
+ : this function get the number of editions
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a comma separated list of 90 first caracters of div[@type='abstract']
+ :)
+declare function getOtherEditions($ref as node() ) as element()* {
+  let $corresp := $ref//tei:relation[@type = 'expression']/@corresp
+  return 
+    switch ($ref)
+    case $ref/@type = 'manifestation' return <p>todo</p>
+    default return <tei:biblStruct>{db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][@corresp = $corresp ]]}</tei:biblStruct>
+};
+
 (:
  : this function get text items url
  :
@@ -247,15 +262,16 @@ declare function getName($named as element()*, $lang as xs:string) as xs:string 
 };
 
 (:~
- : this function serialize persName
+ : this function get the bibliographical reference of a text or a corpus
  :
- : @param $named named content to process
- : @param $lang iso langcode starts
- : @return concatenate forename and surname
+ : @param $content a tei or teiCorpus document
+ : @return a bibliographical tei element
  : @bug why does the request brings back two results ?
+ : @todo suppress the explicit DB selection
  :)
-declare function getRef($content as element()*, $lang as xs:string) as element()* { 
-  (db:open('gdp')//tei:biblStruct[@xml:id = 'biblioSauval1724'])[1]
+declare function getRef($content as element()) {
+  let $refId := fn:substring-after($content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/@copyOf, '#')
+  return (db:open('gdp')//tei:biblStruct[@xml:id = $refId] | db:open('gdp')//tei:bibl[@xml:id = $refId])[1]
 };
 
 (:~
@@ -313,7 +329,7 @@ declare function getTitle($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a div
  :)
-declare function getItemAfter($item as element(), $lang as xs:string) as element() {
+declare function getItemAfter($item as element(), $lang as xs:string) as element()? {
   $item/following-sibling::tei:div[@type = 'item'][1]
 };
 
@@ -324,7 +340,7 @@ declare function getItemAfter($item as element(), $lang as xs:string) as element
  : @param $lang iso langcode starts
  : @return a div
  :)
-declare function getItemBefore($item as element(), $lang as xs:string) as element() {
+declare function getItemBefore($item as element(), $lang as xs:string) as element()? {
   $item/preceding-sibling::tei:div[@type = 'item'][1]
 };
 

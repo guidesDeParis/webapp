@@ -219,6 +219,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'date' : getDate($corpus, $dateFormat),
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
+    'editionsQuantity' : getRef($corpus),
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte'),
     'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/corpus/', $lang),
     'tei' : $corpus
@@ -252,12 +253,12 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'title' : getTitles($text, $lang),
     'date' : getDate($text, $dateFormat),
     'author' : getAuthors($text, $lang),
-    'abstract' : getAbstract($text, $lang),
-    'biblio' : getRef($text, $lang)/tei:monogr,
-    'format' : getRef($text, $lang)//tei:dim[@type = 'format'],
+    'biblio' : getRef($text)/tei:monogr,
+    'format' : getRef($text)//tei:dim[@type = 'format'],
     'itemsNb' : fn:string(fn:count($corpus/tei:TEI//tei:div[@type = 'item'])),
     'tei' : $text,
-    'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang)
+    'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang),
+    'otherEditions' : getOtherEditions(getRef($text))
     }
   return  map{
     'meta'    : $meta,
@@ -287,7 +288,7 @@ declare function getTextsList($queryParams) {
     'date' : getDate($text, $dateFormat),
     'author' : getAuthors($text, $lang),
     'abstract' : getAbstract($text, $lang),
-    'biblio' : getRef($text, $lang),
+    'biblio' : getRef($text),
     'tei' : $text
     }
   return  map{
@@ -342,8 +343,6 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $text := (synopsx.lib.commons:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]])[1]
   let $item := $text//tei:div[@xml:id = $itemId]
-  let $itemAfter := getItemAfter($item, $lang)
-  let $itemBefore := getItemBefore($item, $lang)
   let $meta := map{
     'title' : 'Liste des items disponibles', 
     'quantity' : getQuantity($item, 'item'), (: @todo internationalize :)
@@ -360,9 +359,9 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'tei' : $item,
     'url' : getUrl($item/@xml:id, '/gdp/texts/' || $textId || '/', $lang),
     'itemBeforeTitle' : (getItemBefore($item, $lang)/tei:head)[1],
-    'itemBeforeUrl' : getUrl($itemBefore/@xml:id, '/gdp/texts/' || $textId || '/', $lang),
+    'itemBeforeUrl' : getUrl(getItemBefore($item, $lang)/@xml:id, '/gdp/texts/' || $textId || '/', $lang),
     'itemAfterTitle' : (getItemAfter($item, $lang)/tei:head)[1],
-    'itemAfterUrl' : getUrl($itemAfter/@xml:id, '/gdp/texts/' || $textId || '/', $lang)
+    'itemAfterUrl' : getUrl(getItemBefore($item, $lang)/@xml:id, '/gdp/texts/' || $textId || '/', $lang)
     }
   return  map{
     'meta'    : $meta,
