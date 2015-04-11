@@ -235,6 +235,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
+ : @todo suppress @xml:id filter on div
  :)
 declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $corpusId := map:get($queryParams, 'corpusId')
@@ -255,7 +256,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($text, $lang),
     'biblio' : getRef($text)/tei:monogr,
     'format' : getRef($text)//tei:dim[@type = 'format'],
-    'itemsNb' : fn:string(fn:count($corpus/tei:TEI//tei:div[@type = 'item'])),
+    'itemsNb' : fn:string(fn:count($corpus/tei:TEI//tei:div[@type = 'item' and @xml:id])),
     'tei' : $text,
     'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang),
     'otherEditions' : fn:string(fn:count(getOtherEditions(getRef($text))/tei:biblStruct))
@@ -302,6 +303,7 @@ declare function getTextsList($queryParams) {
  :
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
+ : @todo suppress the @xml:id filter on div
  :)
 declare function getTextById($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
@@ -316,7 +318,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     'description' : getDescription($text, $lang),
     'keywords' : getKeywords($text, $lang)
     }
-  let $content := for $item in $text//tei:div[@type = 'item'] return map {
+  let $content := for $item in $text//tei:div[@type = 'item' and @xml:id] return map {
     'title' : $item/tei:head[1],
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
@@ -344,7 +346,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $text := (synopsx.lib.commons:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]])[1]
   let $item := $text//tei:div[@xml:id = $itemId]
   let $meta := map{
-    'title' : 'Liste des items disponibles', 
+    'title' : 'Item', 
     'quantity' : getQuantity($item, 'item'), (: @todo internationalize :)
     'author' : getAuthors($item, $lang),
     'copyright'  : getCopyright($item, $lang),
@@ -353,6 +355,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     }
   let $content := map {
     'title' : $item/tei:head[1],
+    'rubrique' : 'Rubrique',
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),

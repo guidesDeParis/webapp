@@ -9,13 +9,15 @@
   <section class="text">{tei}</section>
   <hr/>
   <p><a href="{url}">{url}</a></p>
-  <ul>
-    <li>{itemBeforeTitle}</li>
-    <li><a href="{itemBeforeUrl}">{itemBeforeUrl}</a></li>
-  </ul>
-  <ul>
-    <li>{itemAfterTitle}</li>
-    <li><a href="{itemAfterUrl}">{itemAfterUrl}</a></li>
-  </ul>
+  <section class="post-nav">
+    <div class="post-before">
+      <strong>Avant</strong><br/>
+      <a href="{itemBeforeUrl}" rel="prev">{itemBeforeTitle}</a>
+    </div>
+    <div class="post-after">
+      <strong>Après</strong><br/>
+      <a href="{itemAfterUrl}" rel="next">{itemAfterTitle}</a>
+    </div>
+  </section>
   <p class="author">{author}</p>
 </article>
