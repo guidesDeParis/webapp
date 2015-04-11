@@ -1183,6 +1183,81 @@ p {
     max-width: 35em;
     text-align: center; }
 
+.post-nav {
+  clear: both;
+  margin-top: 20px;
+  paddingpadding-top: 30px;
+  border-top: 1px solid whiteSmoke; }
+
+.post-nav div {
+  position: relative;
+  display: block;
+  width: 100%;
+  color: #999;
+  font-size: 14px; }
+
+.post-nav div strong {
+  color: #BBB;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 700; }
+
+.post-nav .post-after {
+  float: right;
+  padding-right: 40px;
+  text-align: right; }
+
+.post-nav .post-before {
+  float: left;
+  padding-left: 40px;
+  text-align: left; }
+
+.post-nav .post-before a::after {
+  content: '\00AB';
+  left: 0px; }
+
+.post-nav .post-after a::after {
+  content: '\00BB';
+  right: 0px; }
+
+.post-nav div.post-after {
+  text-align: right; }
+
+.post-nav div a::after {
+  position: absolute;
+  top: 50%;
+  margin-top: -30px;
+  height: 100%;
+  color: #F4F5F7;
+  font-weight: normal;
+  font-size: 56px;
+  font-family: Arial, sans-serif;
+  line-height: 1; }
+
+.post-nav div a {
+  display: block;
+  font-weight: bold; }
+
+.post-nav a {
+  color: #237dac; }
+
+header.header {
+  max-width: 68em;
+  margin-left: auto;
+  margin-right: auto;
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 57.35098%;
+  margin-left: 8.5298%;
+  margin-top: 9em; }
+  header.header:after {
+    content: "";
+    display: table;
+    clear: both; }
+  header.header:last-child {
+    margin-right: 0; }
+
 article {
   max-width: 68em;
   margin-left: auto;
@@ -1201,13 +1276,13 @@ article > * {
   article > *:last-child {
     margin-right: 0; }
 
-article.type-system-serif {
+header, article.type-system-serif {
   text-align: left; }
-  article.type-system-serif:after {
+  header:after, article.type-system-serif:after {
     content: "";
     display: table;
     clear: both; }
-  article.type-system-serif .type {
+  header .type, article.type-system-serif .type {
     border-bottom: 1px solid;
     display: inline-block;
     font-family: "Merriweather Sans", sans-serif;
@@ -1217,15 +1292,15 @@ article.type-system-serif {
     padding: .3em 0;
     text-align: left;
     text-transform: uppercase; }
-  article.type-system-serif h1 {
+  header h1, article.type-system-serif h1 {
     font-family: "Lusitana", serif;
     font-size: 2em;
     font-weight: 700;
     margin-bottom: .5em; }
     @media screen and (min-width: 40em) {
-      article.type-system-serif h1 {
+      header h1, article.type-system-serif h1 {
         font-size: 2.6em; } }
-  article.type-system-serif h2 {
+  header h2, article.type-system-serif h2 {
     font-family: "Merriweather", serif;
     font-style: italic;
     font-size: 1em;
@@ -1233,9 +1308,9 @@ article.type-system-serif {
     line-height: 1.6em;
     margin-bottom: .9em; }
     @media screen and (min-width: 40em) {
-      article.type-system-serif h2 {
+      header h2, article.type-system-serif h2 {
         font-size: 1.2em; } }
-  article.type-system-serif code {
+  header code, article.type-system-serif code {
     white-space: nowrap;
     font-family: monaco;
     background: #F7F7F7;
@@ -1244,27 +1319,27 @@ article.type-system-serif {
     padding: .1em .4em;
     font-size: .75em;
     font-style: normal; }
-  article.type-system-serif h3 {
+  header h3, article.type-system-serif h3 {
     font-family: "Lusitana", serif;
     font-size: 1.4em;
     font-weight: 400;
     line-height: 1.3em;
     margin-bottom: .4em; }
-  article.type-system-serif p.date {
+  header p.date, article.type-system-serif p.date {
     color: rgba(57, 57, 64, 0.4);
     font-family: "Merriweather", serif;
     font-style: italic;
     font-size: .9em;
     margin-bottom: .3em; }
-  article.type-system-serif p {
+  header p, article.type-system-serif p {
     font-family: "Merriweather", serif;
     line-height: 1.6em;
     font-size: .9em;
     margin-bottom: 1.5em; }
-    article.type-system-serif p span {
+    header p span, article.type-system-serif p span {
       font-family: "Merriweather Sans", sans-serif;
       font-weight: 700; }
-  article.type-system-serif a.read-more {
+  header a.read-more, article.type-system-serif a.read-more {
     display: inline-block;
     font-family: "Merriweather Sans", sans-serif;
     font-weight: 700;
@@ -1272,16 +1347,16 @@ article.type-system-serif {
     text-transform: uppercase;
     margin-left: .2em;
     position: relative; }
-    article.type-system-serif a.read-more span {
+    header a.read-more span, article.type-system-serif a.read-more span {
       font-family: "Lusitana", serif;
       font-style: normal;
       position: absolute;
       font-size: 1.5em;
       top: -1px;
       right: -12px; }
-  article.type-system-serif hr {
+  header hr, article.type-system-serif hr {
     width: 3em; }
-  article.type-system-serif p.author {
+  header p.author, article.type-system-serif p.author {
     font-family: "Merriweather", serif;
     font-style: italic; }
 

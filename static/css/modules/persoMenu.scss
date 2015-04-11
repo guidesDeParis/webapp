@@ -25,7 +25,7 @@ nav.navigation {
     @include clearfix;
     @include outer-container;
     position: relative;
-    z-index: 9999;
+    z-index: 9999;    
   }
 
   .logo {

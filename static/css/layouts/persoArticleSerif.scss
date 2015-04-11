@@ -1,3 +1,10 @@
+header.header {
+  @include outer-container;
+  @include span-columns(7);
+  @include shift(1);
+  margin-top: 9em;
+}
+
 article {
   @include outer-container;
 }
@@ -9,7 +16,7 @@ article > * {
 
 
 
-article.type-system-serif {
+header, article.type-system-serif {
   $serif: 'Lusitana', serif;
   $serif-2: 'Merriweather', serif;
   $sans-serif: 'Merriweather Sans', sans-serif;

@@ -1,0 +1,69 @@
+.post-nav {
+  clear: both;
+  margin-top: 20px;
+  paddingpadding-top: 30px;
+  border-top: 1px solid whiteSmoke;
+}
+
+.post-nav div {
+  position: relative;
+  display: block;
+  width: 100%;
+  color: #999;
+  font-size: 14px;
+}
+
+.post-nav div strong {
+  color: #BBB;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.post-nav .post-after {
+  float: right;
+  padding-right: 40px;
+  text-align: right;
+}
+
+.post-nav .post-before {
+  float:left;
+  padding-left: 40px;
+  text-align: left;
+}
+
+
+.post-nav .post-before a::after {
+  content: '\00AB';
+  left: 0px;
+}
+
+.post-nav .post-after a::after {
+  content: '\00BB';
+  right: 0px;
+}
+
+.post-nav div.post-after {
+    text-align: right;
+}
+
+.post-nav div a::after {
+  position: absolute;
+  top: 50%;
+  margin-top: -30px;
+  height: 100%;
+  color: #F4F5F7;
+  font-weight: normal;
+  font-size: 56px;
+  font-family: Arial, sans-serif;
+  line-height: 1;
+}
+
+.post-nav div a {
+  display: block;
+  font-weight: bold;
+}
+
+.post-nav a {
+  color: #237dac;
+}
