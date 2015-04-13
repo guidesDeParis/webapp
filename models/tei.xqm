@@ -122,7 +122,11 @@ declare function getBlogItem($queryParams as map(*)) {
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
-    'tei' : $item
+    'tei' : $item,
+    'itemBeforeTitle' : getTitles(getTextBefore($queryParams, $item, $lang), 'fr')
+    (: 'itemBeforeUrl' : getUrl(getTextBefore($queryParams, $item, $lang)/@xml:id, '/blog/', $lang), :)
+    (: 'itemAfterTitle' : (getTextAfter($queryParams, $item, $lang)/tei:head)[1],
+    'itemAfterUrl' : getUrl(getTextAfter($queryParams, $item, $lang)/@xml:id, '/blog/', $lang) :)
     }
   return  map{
     'meta'    : $meta,

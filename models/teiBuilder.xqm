@@ -209,22 +209,6 @@ declare function getOtherEditions($ref as node()? ) as element()* {
     else <tei:biblStruct>{db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][@corresp = $corresp ]]}</tei:biblStruct>
 };
 
-(:
- : this function get text items url
- :
- : @param $content texts to process
- : @param $lang iso langcode starts
- : @return a string of comma separated titles
- : @todo print the real uri
- :)
-declare function getItemUrl($queryParams, $content as element()*, $lang as xs:string){
-  let $textId := map:get($queryParams, 'textId')
-  return 
-    fn:normalize-space(
-      '/gdp/texts/' || $textId || $content/@xml:id/text()
-    )
-};
-
 (:~
  : this function get keywords
  :
@@ -261,6 +245,35 @@ declare function getName($named as element()*, $lang as xs:string) as xs:string 
     for $person in $named/tei:persName 
       return ($person/tei:forename || ' ' || $person/tei:surname)
     )
+};
+
+(:~
+ : this function get post before
+ :
+ : @param $queryParams the query parameters
+ : @text the TEI document to process
+ : @param $lang iso langcode starts
+ : @return a blog post
+ :)
+declare function getTextBefore($queryParams as map(*), $text as element(), $lang as xs:string) as element()? {
+  let $entryId := map:get($queryParams, 'entryId')
+  let $sequence := 
+    for $text in synopsx.lib.commons:getDb($queryParams)/tei:TEI
+    order by $text/tei:teiHeader//tei:publicationStmt/tei:date//@when 
+    return $text
+  let $position := fn:index-of($sequence, $sequence[//tei:sourceDesc[@xml:id = $entryId]])
+  return $sequence[fn:position() = $position - 1]
+};
+
+(:~
+ : this function get post after
+ :
+ : @param 
+ : @param $lang iso langcode starts
+ : @return a blog post
+ :)
+declare function getTextAfter($queryParams as map(*), $text as element(), $lang as xs:string) as element()? {
+  <div/>
 };
 
 (:~
