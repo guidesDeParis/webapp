@@ -98,6 +98,20 @@ declare function getDate($content as element()*, $dateFormat as xs:string) {
 
 (:~
  : this function get date
+ : @param $content texts to process
+ : @param $dateFormat a normalized date format code
+ : @return a date string in the specified format
+ : @todo formats
+ :)
+declare function getEditionDates($content as element()*, $dateFormat as xs:string) {
+  let $dates := for $date in $content//*:date/fn:substring(@when, 1, 4) 
+    where $date != '' 
+    return xs:double($date)
+  return fn:min($dates) || '-' || fn:max($dates)
+};
+
+(:~
+ : this function get date
  :
  : @param $content texts to process
  : @param $dateFormat a normalized date format code
@@ -269,11 +283,18 @@ declare function getTextBefore($queryParams as map(*), $text as element(), $lang
  : this function get post after
  :
  : @param 
+ : @text the TEI document to process
  : @param $lang iso langcode starts
  : @return a blog post
  :)
 declare function getTextAfter($queryParams as map(*), $text as element(), $lang as xs:string) as element()? {
-  <div/>
+  let $entryId := map:get($queryParams, 'entryId')
+  let $sequence := 
+    for $text in synopsx.lib.commons:getDb($queryParams)/tei:TEI
+    order by $text/tei:teiHeader//tei:publicationStmt/tei:date//@when 
+    return $text
+  let $position := fn:index-of($sequence, $sequence[//tei:sourceDesc[@xml:id = $entryId]])
+  return $sequence[fn:position() = $position + 1]
 };
 
 (:~

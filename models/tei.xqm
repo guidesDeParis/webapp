@@ -123,10 +123,10 @@ declare function getBlogItem($queryParams as map(*)) {
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'tei' : $item,
-    'itemBeforeTitle' : getTitles(getTextBefore($queryParams, $item, $lang), 'fr')
+    'itemBeforeTitle' : getTitles(getTextBefore($queryParams, $item, $lang), 'fr'),
     (: 'itemBeforeUrl' : getUrl(getTextBefore($queryParams, $item, $lang)/@xml:id, '/blog/', $lang), :)
-    (: 'itemAfterTitle' : (getTextAfter($queryParams, $item, $lang)/tei:head)[1],
-    'itemAfterUrl' : getUrl(getTextAfter($queryParams, $item, $lang)/@xml:id, '/blog/', $lang) :)
+    'itemAfterTitle' : getTitles(getTextAfter($queryParams, $item, $lang), 'fr')
+    (: 'itemAfterUrl' : getUrl(getTextAfter($queryParams, $item, $lang)/@xml:id, '/blog/', $lang) :)
     }
   return  map{
     'meta'    : $meta,
@@ -220,7 +220,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     }
   let $content := for $corpus in $corpora/tei:teiCorpus return map {
     'title' : getTitles($corpus, $lang),
-    'date' : getDate($corpus, $dateFormat),
+    'date' : getEditionDates(getOtherEditions(getRef($corpus))/tei:biblStruct, $dateFormat),
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
     'editionsQuantity' : fn:string(fn:count(getOtherEditions(getRef($corpus))/tei:biblStruct)),
@@ -256,7 +256,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     }
   let $content := for $text in $corpus/tei:TEI return map {
     'title' : getTitles($text, $lang),
-    'date' : getDate($text, $dateFormat),
+    'date' : getEditionDates(getOtherEditions(getRef($text))/tei:biblStruct, $dateFormat),
     'author' : getAuthors($text, $lang),
     'biblio' : getRef($text)/tei:monogr,
     'format' : getRef($text)//tei:dim[@type = 'format'],
