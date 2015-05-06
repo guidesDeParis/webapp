@@ -92,7 +92,7 @@ function corpus() {
     'pattern' : 'corpusList.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
 
 (:~

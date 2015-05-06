@@ -28,7 +28,7 @@ module namespace gdp.mappings.htmlWrapping = 'gdp.mappings.htmlWrapping' ;
 import module namespace G = "synopsx.globals" at '../../../globals.xqm' ;
 import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ; 
 
-import module namespace gdp.mappings.tei2html = 'gdp.mappings.tei2html' at 'tei2html.xqm' ; 
+import module namespace synopsx.mappings.tei2html = 'synopsx.mappings.tei2html' at '../../../mappings/tei2html.xqm' ; 
 
 declare namespace html = 'http://www.w3.org/1999/xhtml' ;
 
@@ -41,30 +41,49 @@ declare default function namespace 'gdp.mappings.htmlWrapping' ;
  : @param $data the result of the query
  : @param $outputParams the serialization params
  : @return an updated HTML document and instantiate pattern
+ 
+ : @todo treat in the same loop @* and text() ?
+ @todo add handling of outputParams (for example {class} attribute or call to an xslt)
+ :)
+
+
+(:~
+ : this function wrap the content in an HTML layout
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query
+ : @param $outputParams the serialization params
+ : @return an updated HTML document and instantiate pattern
  :
  :)
 declare function wrapper($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element() {
   let $meta := map:get($data, 'meta')
-  let $content := map:get($data, 'content')
   let $layout := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'layout'))
-  let $wrap := fn:doc($layout)/*
+  let $wrap := fn:doc($layout)
   let $regex := '\{(.*?)\}'
   return
-    $wrap update (
+    $wrap/* update (
+      (: keys :)      
       for $text in .//@*
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($meta, $key) 
-      return replace value of node $text with fn:string($value) ,
+      return replace value of node $text with fn:string($value),
       for $text in .//text()
         where fn:matches($text, $regex)
-        let $key := fn:replace($text, '\{|\}', '')
-        let $value := map:get($meta, $key)
+        let $key := fn:replace($text, '\{|\}', '')        
         return if ($key = 'content') 
           then replace node $text with pattern($queryParams, $data, $outputParams)
-          else if ($value instance of node()* and $value != empty) 
-           then replace node $text with render($outputParams, $value)
-           else replace node $text with inject($value, $meta)
+          else 
+           let $value := map:get($meta, $key)
+           return if ($value instance of node()* and $value) 
+           then replace node $text with render($queryParams, $outputParams, $value)
+           else replace node $text with inject($text, $meta),      
+     (: inc :)
+     (: todo : call wrapping, rendering and injecting functions for these inc layouts too :)
+      for $text in .//*[@data-url] 
+            let $inc := fn:doc(synopsx.lib.commons:getLayoutPath($queryParams, $text/@data-url || '.xhtml'))
+            return replace node $text with $inc/*
       )
 };
 
@@ -76,11 +95,13 @@ declare function wrapper($queryParams as map(*), $data as map(*), $outputParams 
  : @param $outputParams the serialization params
  : @return instantiate the pattern with $data
  :
+ : @bug default for sorting
  :)
 declare function pattern($queryParams as map(*), $data as map(*), $outputParams as map(*)) as element()* {
-  let $sorting := map:get($queryParams, 'sorting')
+ let $sorting := if (map:get($queryParams, 'sorting')) 
+    then map:get($queryParams, 'sorting') 
+    else ''
   let $order := map:get($queryParams, 'order')
-  let $meta := map:get($data, 'meta')
   let $contents := map:get($data, 'content')
   let $pattern := synopsx.lib.commons:getLayoutPath($queryParams, map:get($outputParams, 'pattern'))
   for $content in $contents
@@ -89,7 +110,7 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
     if ($order = 'descending') then () else map:get($content, $sorting) descending
   let $regex := '\{(.*?)\}'
   return
-    fn:doc($pattern)/* update (
+   (:  fn:doc($pattern)/* update (
       for $text in .//@*
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
@@ -99,10 +120,11 @@ declare function pattern($queryParams as map(*), $data as map(*), $outputParams 
         where fn:matches($text, $regex)
         let $key := fn:replace($text, '\{|\}', '')
         let $value := map:get($content, $key)
-        return if ($value instance of node()* and $value != empty) 
-          then replace node $text with render($outputParams, $value)
+        return if ($value instance of node()* and $value) 
+          then replace node $text with render($queryParams, $outputParams, $value)
           else replace node $text with inject($text, $content)
-      )
+      ) :)
+      'toto'
 };
 
 (:~
@@ -134,14 +156,14 @@ declare function inject($text as xs:string, $input as map(*)) as xs:string {
  :
  : @todo check the xslt with an xslt 1.0
  :)
-declare function render($outputParams as map(*), $value ) as element()* {
-  let $xsl :=  map:get($outputParams, 'xsl')
+declare function render($queryParams, $outputParams as map(*), $value as node()* ) as element()* {
   let $xquery := map:get($outputParams, 'xquery')
+  let $xsl :=  map:get($outputParams, 'xsl')
   let $options := 'option'
   return 
     if ($xquery) 
-    then gdp.mappings.tei2html:entry($value, $options)
+      then synopsx.mappings.tei2html:entry($value, $options)
     else if ($xsl) 
-      then xslt:transform($value, $G:FILES || 'xsl/' || $xsl)
-      else <p>rien</p>
+      then xslt:transform($value, synopsx.lib.commons:getXsltPath($queryParams, $xsl))/*
+      else $value
 };
