@@ -226,7 +226,8 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'editionsQuantity' : fn:count(getOtherEditions(getRef($corpus))/tei:biblStruct),
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte'),
     'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/corpus/', $lang),
-    'tei' : $corpus
+    'tei' : $corpus,
+    'editions' : (getOtherEditions(getRef($corpus))/tei:biblStruct)
     }
   return  map{
     'meta'    : $meta,
