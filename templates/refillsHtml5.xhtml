@@ -7,9 +7,7 @@
     <meta name="keywords" content="{keywords}"/>
     <link rel="copyright" href="{copyright}"/>
     <link href="/gdp/static/css/main.css" rel="stylesheet" />
-    <!-- 
-    <script src="plugin.js"></script>
-    -->
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     <!-- ajouter js pour lt IE 9 -->
   </head>
   <body>
@@ -81,7 +79,8 @@
     <p>"Fluctuat nec mergitur" – Il est battu par les flots, mais ne sombre pas.</p>
   </footer>
   <!-- script menu -->
-  <script><![CDATA[
+  <script type="text/javascript">
+  <![CDATA[
   $(document).ready(function() {
   var menu = $('#navigation-menu');
   var menuToggle = $('#js-mobile-menu');
@@ -105,6 +104,19 @@
     $(".nav .more").removeClass("active-nav-item");
     });
   });
-  ]]></script>
+  //]]>
+  </script>
+  <script type="text/javascript">
+  <![CDATA[
+  $(document).ready(function() {
+  var expanderTrigger = document.getElementById("js-expander-trigger");
+  var expanderContent = document.getElementById("js-expander-content");
+
+  $('#js-expander-trigger').click(function(){
+    $(this).toggleClass("expander-hidden");
+  });
+});
+  //]]>
+  </script>
   </body>
 </html>
