@@ -135,7 +135,7 @@ declare function getBiblDate($content as element()*, $dateFormat as xs:string) {
 declare function getBiblExpressions($content as element(), $dateFormat as xs:string) {
   let $id := $content/@xml:id
   return fn:distinct-values(
-      db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]
+      db:open('gdp')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]
     )
 };
 
@@ -148,8 +148,8 @@ declare function getBiblExpressions($content as element(), $dateFormat as xs:str
  : @todo formats
  :)
 declare function getBiblManifestations($content as element(), $dateFormat as xs:string) {
-  for $refId in db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]/@xml:id
-  return fn:distinct-values(db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][@corresp = '#' || $refId]])
+  for $refId in db:open('gdp')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]/@xml:id
+  return fn:distinct-values(db:open('gdp')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'expression'][@corresp = '#' || $refId]])
 };
 
 (:~
@@ -217,10 +217,9 @@ declare function getOtherEditions($ref as node()? ) as element()* {
   let $corresp := $ref//tei:relation[@type]/@corresp
   return 
     if ($ref/@type = 'expression') 
-    then <tei:biblStruct>
-        {db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][fn:substring-after(@corresp, '#') = $ref/@xml:id]]}
-      </tei:biblStruct>
-    else <tei:biblStruct>{db:open('gdp')//tei:biblStruct[tei:relationGrp/tei:relation[@type = 'expression'][@corresp = $corresp ]]}</tei:biblStruct>
+    then <tei:listBibl>{db:open('gdp')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'expression'][fn:substring-after(@corresp, '#') = $ref/@xml:id]]}
+      </tei:listBibl>
+    else <tei:listBibl>{db:open('gdp')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'expression'][@corresp = $corresp ]]}</tei:listBibl>
 };
 
 (:~
