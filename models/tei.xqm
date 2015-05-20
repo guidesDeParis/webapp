@@ -42,7 +42,7 @@ declare function getBlogHome($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $meta := map{
     'title' : 'Home page du blog', 
-    'quantity' : getQuantity($posts, 'expression'),
+    'quantity' : getQuantity($posts, 'expression', 'expressions'),
     'author' : getAuthors($posts, $lang),
     'copyright' : getCopyright($posts, $lang),
     'description' : getDescription($posts, $lang),
@@ -74,7 +74,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
   let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
   let $meta := map{
     'title' : 'Liste des articles de blog', 
-    'quantity' : getQuantity($posts, ' articles de blog'),
+    'quantity' : getQuantity($posts, 'article de blog', 'articles de blogs'),
     'author' : getAuthors($posts, $lang),
     'copyright' : getCopyright($posts, $lang),
     'description' : getDescription($posts, $lang),
@@ -185,7 +185,7 @@ declare function getHome($queryParams as map(*)) as map(*) {
   let $corpora := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus
   let $meta := map{
     'title' : 'Accueil', 
-    'quantity' : getQuantity($corpora, 'article'), (: @todo internationalize :)
+    'quantity' : getQuantity($corpora, 'article', 'articles'), (: @todo internationalize :)
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
@@ -211,7 +211,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $corpora := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus
   let $meta := map{
     'title' : 'Liste des corpus', 
-    'quantity' : getQuantity($corpora/tei:teiCorpus, 'corpu'), (: @todo internationalize :)
+    'quantity' : getQuantity($corpora/tei:teiCorpus, 'corpus disponible', 'corpora disponibles'), (: @todo internationalize :)
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
@@ -224,7 +224,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
     'editionsQuantity' : fn:count(getOtherEditions(getRef($corpus))/tei:biblStruct),
-    'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte'),
+    'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte disponible', 'textes disponibles'),
     'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/corpus/', $lang),
     'tei' : $corpus,
     'editions' : (getOtherEditions(getRef($corpus))/tei:biblStruct)
@@ -249,7 +249,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $corpus := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader//tei:sourceDesc[@xml:id = $corpusId]]
   let $meta := map{
     'title' : 'Liste des textes disponibles', 
-    'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte'),
+    'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte', 'textes'),
     'author' : getAuthors($corpus, $lang),
     'copyright'  : getCopyright($corpus, $lang),
     'description' : getDescription($corpus, $lang),
@@ -317,7 +317,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
   let $text := synopsx.lib.commons:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
     'title' : 'Liste des items disponibles', 
-    'quantity' : getQuantity($text, 'manifestation'), (: @todo internationalize :)
+    'quantity' : getQuantity($text, 'manifestation disponibles', 'manifestations disponibles'), (: @todo internationalize :)
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
@@ -352,7 +352,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $item := $text//tei:div[@xml:id = $itemId]
   let $meta := map{
     'title' : 'Item', 
-    'quantity' : getQuantity($item, 'item'), (: @todo internationalize :)
+    'quantity' : getQuantity($item, 'item disponible', 'items disponibles'), (: @todo internationalize :)
     'author' : getAuthors($item, $lang),
     'copyright'  : getCopyright($item, $lang),
     'description' : getDescription($item, $lang),
@@ -425,7 +425,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
   let $bibliographicalWorks := synopsx.lib.commons:getDb($queryParams)//tei:bibl[@type='work']
   let $meta := map{
     'title' : 'Liste des œuvres', 
-    'quantity' : getQuantity($bibliographicalWorks, 'œuvre'),
+    'quantity' : getQuantity($bibliographicalWorks, 'œuvre', 'œuvres'),
     'author' : getAuthors($bibliographicalWorks, $lang),
     'copyright' : getCopyright($bibliographicalWorks, $lang),
     'description' : getDescription($bibliographicalWorks, $lang),
@@ -544,7 +544,7 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
   let $bibliographicalItems := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct
   let $meta := map{
     'title' : 'Liste des items bibliographiques', 
-    'quantity' : getQuantity($bibliographicalItems, 'œuvre'),
+    'quantity' : getQuantity($bibliographicalItems, 'item', 'items'),
     'author' : getAuthors($bibliographicalItems, $lang),
     'copyright' : getCopyright($bibliographicalItems, $lang),
     'description' : getDescription($bibliographicalItems, $lang),

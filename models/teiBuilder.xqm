@@ -384,15 +384,16 @@ declare function getItemBefore($item as element(), $lang as xs:string) as elemen
  : this function built a quantity message
  :
  : @param $content texts to process
- : @param $unit a unit
+ : @param $unit a single unit label
+ : @param $units a plural unit label
  : @return concatenate quantity and a message
  : @todo to internationalize
  :)
-declare function getQuantity($content as element()*, $unit as xs:string){
+declare function getQuantity($content as element()*, $unit as xs:string, $units as xs:string){
   fn:normalize-space(
     if (fn:count($content) > 1) 
-      then fn:count($content) || ' ' || $unit || 's disponibles'
-      else fn:count($content) || ' ' || $unit || ' disponible'
+      then fn:count($content) || ' ' || $units
+      else fn:count($content) || ' ' || $unit
     )
 };
 
