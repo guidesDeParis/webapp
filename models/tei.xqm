@@ -228,7 +228,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte disponible', 'textes disponibles'),
     'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/corpus/', $lang),
     'tei' : $corpus,
-    'editions' : (getOtherEditions(getRef($corpus))/*)
+    'editions' : getOtherEditions(getRef($corpus))
     }
   return  map{
     'meta'    : $meta,
@@ -250,7 +250,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $corpus := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader//tei:sourceDesc[@xml:id = $corpusId]]
   let $meta := map{
     'title' : 'Liste des textes disponibles', 
-    'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte', 'textes'),
+    'quantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
     'author' : getAuthors($corpus, $lang),
     'copyright'  : getCopyright($corpus, $lang),
     'description' : getDescription($corpus, $lang),
@@ -265,7 +265,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'itemsNb' : fn:string(fn:count($corpus/tei:TEI//tei:div[@type = 'item' and @xml:id])),
     'tei' : $text,
     'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang),
-    'otherEditions' : fn:string(fn:count(getOtherEditions(getRef($text))/tei:biblStruct))
+    'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct)
     }
   return  map{
     'meta'    : $meta,

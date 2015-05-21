@@ -121,7 +121,7 @@ function corpusItem($corpusId as xs:string) {
     'pattern' : 'refillsCards.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
 };
 
 (:~
