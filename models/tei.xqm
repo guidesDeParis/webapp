@@ -215,19 +215,20 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
-    'keywords' : getKeywords($corpora, $lang),
+    'keywords' : (: getKeywords($corpora, $lang) :)
+                 ('toto tata titi', 'titi, tata, toto', 'toto, titi, tata'),
     'tei' : $corpora/tei:teiHeader
     }
-  let $content := for $corpus in $corpora/tei:teiCorpus return map {
+  let $content := for $corpus at $count in $corpora/tei:teiCorpus return map {
     'title' : getTitles($corpus, $lang),
     'date' : getEditionDates(getOtherEditions(getRef($corpus))/tei:biblStruct, $dateFormat),
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
-    'editionsQuantity' : fn:count(getOtherEditions(getRef($corpus))/tei:biblStruct),
+    'editionsQuantity' : fn:count(getOtherEditions(getRef($corpus))/tei:biblStruct) || ' éditions',
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte disponible', 'textes disponibles'),
     'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/corpus/', $lang),
     'tei' : $corpus,
-    'editions' : (getOtherEditions(getRef($corpus))/tei:biblStruct)
+    'editions' : (getOtherEditions(getRef($corpus))/*)
     }
   return  map{
     'meta'    : $meta,
