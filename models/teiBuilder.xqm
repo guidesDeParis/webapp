@@ -230,10 +230,8 @@ declare function getOtherEditions($ref as node()? ) as element()* {
  : @return a comma separated list of values
  :)
 declare function getKeywords($content as element()*, $lang as xs:string) {
-  fn:string-join(
     for $terms in fn:distinct-values($content//tei:keywords[fn:starts-with(@xml:lang, $lang)]/tei:term) 
-      return fn:normalize-space($terms), 
-    ', ')
+      return fn:normalize-space($terms)
 };
 
 (:~
