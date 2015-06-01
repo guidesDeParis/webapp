@@ -215,8 +215,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
-    'keywords' : (: getKeywords($corpora, $lang) :)
-                 ('toto tata titi', 'titi, tata, toto', 'toto, titi, tata'),
+    'keywords' : getKeywords($corpora, $lang),
     'tei' : $corpora/tei:teiHeader
     }
   let $content := for $corpus at $count in $corpora/tei:teiCorpus return map {
