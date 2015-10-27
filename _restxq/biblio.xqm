@@ -20,7 +20,7 @@ module namespace gdp.biblio = "gdp.biblio" ;
 import module namespace restxq = 'http://exquery.org/ns/restxq';
 
 import module namespace G = 'synopsx.globals' at '../../../../synopsx/globals.xqm' ;
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
 
@@ -85,7 +85,7 @@ function biblWorks() {
     'model' : 'tei',
     'function' : 'getBibliographicalWorksList'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -114,7 +114,7 @@ function biblWork($workId) {
     'function' : 'getBibliographicalWork',
     'workId' : $workId
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -141,7 +141,7 @@ function biblExpressions() {
     'model' : 'tei',
     'function' : 'getBibliographicalExpressionsList'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -170,7 +170,7 @@ function biblExpression($expressionId) {
     'function' : 'getBibliographicalExpression',
     'expressionId' : $expressionId
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -197,7 +197,7 @@ function biblItems() {
     'model' : 'tei',
     'function' : 'getBibliographicalItemsList'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -226,7 +226,7 @@ function biblItem($itemId) {
     'function' : 'getBibliographicalItem',
     'itemId' : $itemId
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',

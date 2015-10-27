@@ -16,7 +16,7 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
  :
  :)
 
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
@@ -269,7 +269,7 @@ declare function getName($named as element()*, $lang as xs:string) as xs:string 
 declare function getTextBefore($queryParams as map(*), $text as element(), $lang as xs:string) as element()? {
   let $entryId := map:get($queryParams, 'entryId')
   let $sequence := 
-    for $text in synopsx.lib.commons:getDb($queryParams)/tei:TEI
+    for $text in synopsx.models.synopsx:getDb($queryParams)/tei:TEI
     order by $text/tei:teiHeader//tei:publicationStmt/tei:date//@when 
     return $text
   let $position := fn:index-of($sequence, $sequence[//tei:sourceDesc[@xml:id = $entryId]])
@@ -287,7 +287,7 @@ declare function getTextBefore($queryParams as map(*), $text as element(), $lang
 declare function getTextAfter($queryParams as map(*), $text as element(), $lang as xs:string) as element()? {
   let $entryId := map:get($queryParams, 'entryId')
   let $sequence := 
-    for $text in synopsx.lib.commons:getDb($queryParams)/tei:TEI
+    for $text in synopsx.models.synopsx:getDb($queryParams)/tei:TEI
     order by $text/tei:teiHeader//tei:publicationStmt/tei:date//@when 
     return $text
   let $position := fn:index-of($sequence, $sequence[//tei:sourceDesc[@xml:id = $entryId]])

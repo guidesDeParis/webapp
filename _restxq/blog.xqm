@@ -20,7 +20,7 @@ module namespace gdp.blog = 'gdp.blog' ;
 import module namespace restxq = 'http://exquery.org/ns/restxq' ;
 
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
+import module namespace synopsx.models.synopsx= 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
 
@@ -29,7 +29,7 @@ import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWr
 declare default function namespace 'gdp.blog' ;
 
 declare variable $gdp.blog:project := 'blog';
-declare variable $gdp.blog:dbName := synopsx.lib.commons:getProjectDB($gdp.blog:project);
+declare variable $gdp.blog:dbName := synopsx.models.synopsx:getProjectDB($gdp.blog:project);
 
 (:~
  : resource function for the blog's root
@@ -64,7 +64,7 @@ function blogHome() {
     'sorting' : 'date',
     'order' : 'descending'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -93,7 +93,7 @@ function blogPosts() {
     'sorting' : 'date',
     'order' : 'descending'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -122,7 +122,7 @@ function blogItem($entryId as xs:string) {
     'function' : 'getBlogItem',
     'entryId' : $entryId
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',

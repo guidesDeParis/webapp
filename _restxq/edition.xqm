@@ -20,7 +20,7 @@ module namespace gdp.edition = 'gdp.edition' ;
 import module namespace restxq = 'http://exquery.org/ns/restxq';
 
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
 
@@ -58,7 +58,7 @@ function editionHome() {
     'model' : 'tei', 
     'function' : 'getHome'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHomeHtml5.xhtml',
@@ -85,7 +85,7 @@ function corpus() {
     'model' : 'tei',
     'function' : 'getCorpusList'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -114,7 +114,7 @@ function corpusItem($corpusId as xs:string) {
     'model' : 'tei',
     'function' : 'getCorpusById'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -143,7 +143,7 @@ function textItem($textId as xs:string) {
     'model' : 'tei',
     'function' : 'getTextById'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -173,7 +173,7 @@ function textItem($textId as xs:string, $itemId as xs:string) {
     'model' : 'tei',
     'function' : 'getItemById'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -202,7 +202,7 @@ function biblioListHtml($pattern as xs:string?) {
     'model' : 'tei',
     'function' : 'getRespList'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'inc_blogListSerif.xhtml',
@@ -232,7 +232,7 @@ function texts() {
     'model' : 'tei',
     'function' : 'getTextsList'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'inc_blogListSerif.xhtml',
@@ -261,7 +261,7 @@ function model() {
     'model' : 'tei',
     'function' : 'getModel'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -290,7 +290,7 @@ function about() {
     'function' : 'getAbout',
     'entryId' : 'gdpPresentation2014'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
@@ -319,7 +319,7 @@ function documentation() {
     'model' : 'tei',
     'function' : 'getModel'
     }
-  let $function := synopsx.lib.commons:getModelFunction($queryParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',

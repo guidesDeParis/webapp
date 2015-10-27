@@ -16,7 +16,7 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
  :
  :)
 
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 import module namespace synopsx.models.tei = 'synopsx.models.tei' at '../../../models/tei.xqm' ;
 
 import module 'gdp.models.tei' at 'teiBuilder.xqm' ;

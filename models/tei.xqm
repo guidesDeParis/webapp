@@ -16,7 +16,7 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
  :
  :)
 
-import module namespace synopsx.lib.commons = 'synopsx.lib.commons' at '../../../lib/commons.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
 import module 'gdp.models.tei' at 'teiContent.xqm' , 'teiBuilder.xqm' ;
 
@@ -37,7 +37,7 @@ declare default function namespace 'gdp.models.tei' ;
  : @return a map with meta and content
  :)
 declare function getBlogHome($queryParams as map(*)) as map(*) {
-  let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
+  let $posts := synopsx.models.synopsx:getDb($queryParams)//tei:TEI
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $meta := map{
@@ -71,7 +71,7 @@ declare function getBlogHome($queryParams as map(*)) as map(*) {
 declare function getBlogPosts($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $posts := synopsx.lib.commons:getDb($queryParams)//tei:TEI
+  let $posts := synopsx.models.synopsx:getDb($queryParams)//tei:TEI
   let $meta := map{
     'title' : 'Liste des articles de blog', 
     'quantity' : getQuantity($posts, 'article de blog', 'articles de blogs'),
@@ -107,7 +107,7 @@ declare function getBlogItem($queryParams as map(*)) {
   let $entryId := map:get($queryParams, 'entryId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $article := synopsx.lib.commons:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
+  let $article := synopsx.models.synopsx:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $meta := map{
     'title' : getTitles($article, $lang),
     'author' : getAuthors($article, $lang),
@@ -150,7 +150,7 @@ declare function getAbout($queryParams as map(*)) as map(*) {
   let $entryId := map:get($queryParams, 'entryId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $article := synopsx.lib.commons:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
+  let $article := synopsx.models.synopsx:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $meta := map{
     'title' : getTitle($article, $lang), 
     'subtitle' : getSubtitle($article, $lang), 
@@ -182,7 +182,7 @@ declare function getAbout($queryParams as map(*)) as map(*) {
 declare function getHome($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $corpora := synopsx.lib.commons:getDb($queryParams)//tei:teiCorpus
+  let $corpora := synopsx.models.synopsx:getDb($queryParams)//tei:teiCorpus
   let $meta := map{
     'title' : 'Accueil', 
     'quantity' : getQuantity($corpora, 'article', 'articles'), (: @todo internationalize :)
@@ -208,7 +208,7 @@ declare function getHome($queryParams as map(*)) as map(*) {
 declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $corpora := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus
+  let $corpora := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus
   let $meta := map{
     'title' : 'Liste des corpus', 
     'quantity' : getQuantity($corpora/tei:teiCorpus, 'corpus disponible', 'corpora disponibles'), (: @todo internationalize :)
@@ -246,7 +246,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $corpusId := map:get($queryParams, 'corpusId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $corpus := synopsx.lib.commons:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader//tei:sourceDesc[@xml:id = $corpusId]]
+  let $corpus := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader//tei:sourceDesc[@xml:id = $corpusId]]
   let $meta := map{
     'title' : 'Liste des textes disponibles', 
     'quantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
@@ -281,7 +281,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
 declare function getTextsList($queryParams) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $texts := synopsx.lib.commons:getDb($queryParams)//tei:TEI/tei:teiHeader
+  let $texts := synopsx.models.synopsx:getDb($queryParams)//tei:TEI/tei:teiHeader
   let $meta := map{
     'title' : 'Liste des textes', 
     'author' : getAuthors($texts, $lang),
@@ -314,7 +314,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $text := synopsx.lib.commons:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
     'title' : 'Liste des items disponibles', 
     'quantity' : getQuantity($text, 'manifestation disponibles', 'manifestations disponibles'), (: @todo internationalize :)
@@ -348,7 +348,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $itemId := map:get($queryParams, 'itemId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $text := (synopsx.lib.commons:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]])[1]
+  let $text := (synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]])[1]
   let $item := $text//tei:div[@xml:id = $itemId]
   let $meta := map{
     'title' : 'Item', 
@@ -386,7 +386,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
 declare function getModel($queryParams) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $model := synopsx.lib.commons:getDb($queryParams)//tei:TEI
+  let $model := synopsx.models.synopsx:getDb($queryParams)//tei:TEI
   let $meta := map{
     'title' : 'Schéma ODD', 
     'author' : getAuthors($model, $lang),
@@ -422,7 +422,7 @@ declare function getModel($queryParams) {
 declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalWorks := synopsx.lib.commons:getDb($queryParams)//tei:bibl[@type='work']
+  let $bibliographicalWorks := synopsx.models.synopsx:getDb($queryParams)//tei:bibl[@type='work']
   let $meta := map{
     'title' : 'Liste des œuvres', 
     'quantity' : getQuantity($bibliographicalWorks, 'œuvre', 'œuvres'),
@@ -454,7 +454,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
   let $workId := map:get($queryParams, 'workId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalWork := (synopsx.lib.commons:getDb($queryParams)//tei:bibl[fn:string(@xml:id) = $workId ])[1]
+  let $bibliographicalWork := (synopsx.models.synopsx:getDb($queryParams)//tei:bibl[fn:string(@xml:id) = $workId ])[1]
   let $meta := map{
     'title' : 'Œuvre', 
     'author' : getAuthors($bibliographicalWork, $lang),
@@ -486,7 +486,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
 declare function getBibliographicalExpressionsList($queryParams) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalExpressions := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@type='expression']
+  let $bibliographicalExpressions := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@type='expression']
   let $meta := map{
     'title' : 'Liste des expressions'
     }
@@ -514,7 +514,7 @@ declare function getBibliographicalExpression($queryParams) {
   let $bibliographicalExpressionId := map:get($queryParams, 'expressionId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalExpression := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalExpressionId]
+  let $bibliographicalExpression := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalExpressionId]
   let $meta := map{
     'title' : 'Expression'
     }
@@ -541,7 +541,7 @@ declare function getBibliographicalExpression($queryParams) {
 declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalItems := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct
+  let $bibliographicalItems := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct
   let $meta := map{
     'title' : 'Liste des items bibliographiques', 
     'quantity' : getQuantity($bibliographicalItems, 'item', 'items'),
@@ -574,7 +574,7 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
   let $bibliographicalItemId := map:get($queryParams, 'itemId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalItem := synopsx.lib.commons:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalItemId]
+  let $bibliographicalItem := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalItemId]
   let $meta := map{
     'title' : 'Item bibliographique',
     'author' : getAuthors($bibliographicalItem, $lang),
