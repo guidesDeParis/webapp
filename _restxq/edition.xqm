@@ -205,8 +205,8 @@ function biblioListHtml($pattern as xs:string?) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'inc_blogListSerif.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml',
+    'layout' : 'blogListSerif.xhtml',
+    'pattern' : 'blogArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
@@ -235,8 +235,8 @@ function texts() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'inc_blogListSerif.xhtml',
-    'pattern' : 'inc_blogArticleSerif.xhtml',
+    'layout' : 'blogListSerif.xhtml',
+    'pattern' : 'blogArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
@@ -332,11 +332,11 @@ function documentation() {
 declare 
   %restxq:path("/gdp/html/header")
 function getHtmlHeader() {
-  fn:doc($G:WORKSPACE||'gdp/templates/inc_header.xhtml')
+  fn:doc($G:WORKSPACE||'gdp/templates/header.xhtml')
 };
 
 declare 
   %restxq:path("/gdp/html/footer")
 function getHtmlFooter() {
-  fn:doc($G:WORKSPACE||'gdp/templates/inc_footer.xhtml')
+  fn:doc($G:WORKSPACE||'gdp/templates/footer.xhtml')
 };
