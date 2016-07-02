@@ -32,15 +32,7 @@ declare
 function file($file as xs:string) as item()+ {
   let $path := $G:WORKSPACE || 'gdp/static/' ||  $file
   return (
-    <rest:response>
-      <http:response>
-        <http:header name='Cache-Control' value='max-age=3600,public'/>
-      </http:response>
-      <output:serialization-parameters>
-      <output:media-type value='{ mime-type($path) }'/>
-      <output:method value='raw'/>
-      </output:serialization-parameters>
-    </rest:response>,
+    web:response-header(map {'media-type' : web:content-type($path) }),
     file:read-binary($path))
 };
 
