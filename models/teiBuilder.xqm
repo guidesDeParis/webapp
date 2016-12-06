@@ -412,6 +412,10 @@ declare function getXmlTeiById($queryParams){
  : @return a string of comma separated titles
  : @todo print the real uri
  :)
-declare function getUrl($content as item(), $path as xs:string, $lang as xs:string){
+declare function getUrl($content, $path as xs:string, $lang as xs:string){
   'http://localhost:8984' || $path || $content
 };
+
+
+
+
