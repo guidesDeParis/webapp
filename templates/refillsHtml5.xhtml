@@ -108,17 +108,17 @@
   </script>
   <script type="text/javascript">
   <![CDATA[
-  
+
 
   jQuery(function() {
-    $(".expander-content").hide(); 
+    $(".expander-content").hide();
     $(".expander-hidden").click(function() {
         // on recupere le lien dans le DOM
         var $link = $(this);
-        
+
         // on recupere la balise hide suivant le lien dans le DOM
         var $hide = $link.next('.expander-content');
-        
+
         // on remonte toutes les balises expander-hidden
         $('.expander-content').slideUp('quick');
         // on stoppe l'animation (slideUp de la ligne precedente)

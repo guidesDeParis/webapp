@@ -130,6 +130,34 @@ function corpusItem($corpusId as xs:string) {
  : @param $corpusId the corpus ID
  : @return an html representation of the corpus resource
  :)
+(: declare 
+  %restxq:path('/gdp/texts')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function texts($corpusId as xs:string) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getTextsList'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsCards.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+}; :)
+
+(:~
+ : resource function for a corpus ID
+ :
+ : @param $corpusId the corpus ID
+ : @return an html representation of the corpus resource
+ :)
 declare 
   %restxq:path('/gdp/texts/{$textId}')
   %rest:produces('text/html')
@@ -201,36 +229,6 @@ function biblioListHtml($pattern as xs:string?) {
     'dbName' : 'gdp',
     'model' : 'tei',
     'function' : 'getRespList'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'blogListSerif.xhtml',
-    'pattern' : 'blogArticleSerif.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
-};
-
-(:~
- : this resource function is a corpus list for testing
- :
- : @return an html representation of the corpus list
- : @param $pattern a GET param giving the name of the calling HTML tag
- : @todo use this tag !
- :)
-declare 
-  %restxq:path("/gdp/texts")
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-  (: %restxq:query-param("pattern", "{$pattern}") :)
-function texts() {
-  let $queryParams := map {
-    'project' :'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei',
-    'function' : 'getTextsList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
@@ -339,4 +337,37 @@ declare
   %restxq:path("/gdp/html/footer")
 function getHtmlFooter() {
   fn:doc($G:WORKSPACE||'gdp/templates/footer.xhtml')
+};
+
+(:~
+ : sommaire d‘un texte
+ :)
+
+(:~
+ : index topo
+ :)
+ 
+(:~
+ : index prosopo
+ :)
+ 
+(:~
+ : index œuvres
+ :)
+ 
+(:~
+ : entrées d’index d’un texte ???
+ :)
+ 
+(:~
+ : cartes et accès complexes 
+ :)
+ 
+
+declare %restxq:path("gdp/test/{$param}")
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function test($param){
+  <h1>My first page {$param} !</h1>
 };

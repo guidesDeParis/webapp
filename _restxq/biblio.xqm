@@ -5,13 +5,13 @@ module namespace gdp.biblio = "gdp.biblio" ;
  : This module is a RESTXQ for Paris' guidebooks bibliography
  :
  : @author emchateau (Cluster Pasts in the Present)
- : @since 2015-02-22 
+ : @since 2015-02-22
  : @version 0.3
  : @see http://guidesdeparis.net
  :
- : This module uses SynopsX publication framework 
- : see <https://github.com/ahn-ens-lyon/synopsx> 
- : It is distributed under the GNU General Public Licence, 
+ : This module uses SynopsX publication framework
+ : see <https://github.com/ahn-ens-lyon/synopsx>
+ : It is distributed under the GNU General Public Licence,
  : see <http://www.gnu.org/licenses/>
  :
  : @qst give webpath by dates and pages ?
@@ -55,7 +55,7 @@ function bibliography(){
  :
  : @return a collection of available bibliographical resources
  :)
-declare 
+declare
   %restxq:path("/gdp/bibliography/home")
   %rest:produces('text/html')
   %output:method("html")
@@ -73,13 +73,13 @@ function biblHome() {
  :
  : @return a collection of works
  :)
-declare 
+declare
   %restxq:path("/gdp/bibliography/works")
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
 function biblWorks() {
-  let $queryParams := map { 
+  let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
@@ -97,11 +97,11 @@ function biblWorks() {
 
 (:~
  : ressource function for a bibliographical work item
- : 
+ :
  : @param $workId the bibliographical work item ID
  : @return a bibliographical work by ID
  :)
-declare 
+declare
   %restxq:path('/gdp/bibliography/works/{$workId}')
   %rest:produces('text/html')
   %output:method("html")
@@ -126,10 +126,10 @@ function biblWork($workId) {
 
 (:~
  : ressource function for a bibliographical expressions list
- : 
+ :
  : @return a collection of bibliographical expressions
  :)
-declare 
+declare
   %restxq:path('/gdp/bibliography/expressions')
   %rest:produces('text/html')
   %output:method("html")
@@ -153,11 +153,11 @@ function biblExpressions() {
 
 (:~
  : ressource function for a bibliographical expression item
- : 
+ :
  : @param $expressionId the bibliographical work expression ID
  : @return a bibliographical expression by ID
  :)
-declare 
+declare
   %restxq:path('/gdp/bibliography/expressions/{$expressionId}')
   %rest:produces('text/html')
   %output:method("html")
@@ -182,10 +182,10 @@ function biblExpression($expressionId) {
 
 (:~
  : ressource function for a bibliographical item list
- : 
+ :
  : @return a collection of bibliographical items
  :)
-declare 
+declare
   %restxq:path('/gdp/bibliography/items')
   %rest:produces('text/html')
   %output:method("html")
@@ -209,11 +209,11 @@ function biblItems() {
 
 (:~
  : ressource function for a bibliographical item
- : 
+ :
  : @param $itemId the bibliographical item ID
  : @return a bibliographical item by ID
  :)
-declare 
+declare
   %restxq:path('/gdp/bibliography/items/{$itemId}')
   %rest:produces('text/html')
   %output:method("html")
