@@ -417,5 +417,16 @@ declare function getUrl($content, $path as xs:string, $lang as xs:string){
 };
 
 
-
+(:~
+ : this function get string length
+ :
+ : @param $content texts to process
+ : @return string length
+ :)
+declare function getStringLength($content as element()*){
+  fn:sum(
+    for $text in $content//tei:body
+    return fn:string-length($text)
+  )
+};
 
