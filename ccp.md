@@ -1,18 +1,71 @@
+---
+since: 2017-06-23
+log: 2017-06-30 travail sur les index et la bibliographie
+log: 2017-06-26 discussion avec Josselin
+log: 2017-06-23 développements
+log: 2017-05-26 développements
+log: 2017-05-19 travail sur la description de l’application
+log: 2017-05-12 structuration du cahier des charges
+
+---
+
+
+
 # Cahier des Clauses Particulières
 
 Le Cahier des clauses particulières (CCP) est un document qui regroupe les clauses administratives et techniques spécifiques à un marché.
 
-## Log
+# 1. Présentation générale du problème
 
-\- 2017-06-26 discussion avec Josselin
+## 1.1 Projet
+### 1.1.1 Finalités
+### 1.1.2 Espérance de retour sur investissement
 
-\- 2017-06-23 développements
+## 1.2 Contexte
+### 1.2.1 Situation du projet par rapport aux autres projets de l’entreprise
+### 1.2.2 Études déjà effectuées
+### 1.2.3 Études menées sur des sujets voisins
+### 1.2.4 Suites prévues
+### 1.2.5 Nature des prestations demandées
+### 1.2.6 Parties concernées par le déroulement du projet et ses résultats (demandeurs, utilisateurs)
+### 1.2.7 Caractère confidentiel s’il y a lieu
 
-\- 2017-05-26 développements
+## 1.3 Énoncé du besoin (finalités du produit pour le futur utilisateur tel que prévu par le demandeur)
 
-\- 2017-05-19 travail sur la description de l’application
+## 1.4 Environnement du produit recherché
+### 1.4.1 Listes exhaustives des éléments (personnes, équipements, matières…) et contraintes (environnement)
+### 1.4.2 Caractéristiques pour chaque élément de l’environnement
 
-\- 2017-05-12 structuration du cahier des charges
+# 2. Expression fonctionnelle du besoin
+
+## 2.1 Fonctions de service et de contrainte
+### 2.1.1 Fonctions de service principales (qui sont la raison d’être du produit)
+### 2.1.2 Fonctions de service complémentaires (qui améliorent, facilitent ou complètent le service rendu)
+### 2.1.3 Contraintes (limitations à la liberté du concepteur-réalisateur)
+
+## 2.2 Critères d’appréciation (en soulignant ceux qui sont déterminants pour l’évaluation des réponses)
+
+## 2.3 Niveaux des critères d’appréciation et ce qui les caractérise
+### 2.3.1 Niveaux dont l’obtention est imposée
+### 2.3.2 Niveaux souhaités mais révisables
+
+# 3. Cadre de réponse
+
+## 3.1 Pour chaque fonction
+### 3.1.1 Solution proposée
+### 3.1.2 Niveau atteint pour chaque critère d’appréciation de cette fonction et modalités de contrôle
+### 3.1.3 Part du prix attribué à chaque fonction
+
+## 3.2 Pour l’ensemble du produit
+### 3.2.1 Prix de la réalisation de la version de base
+### 3.2.2 Options et variantes proposées non retenues au cahier des charges
+### 3.2.3 Mesures prises pour respecter les contraintes et leurs conséquences économiques
+### 3.2.4 Outils d’installation, de maintenance … à prévoir
+### 3.2.5 Décomposition en modules, sous-ensembles
+### 3.2.6 Prévisions de fiabilité
+### 3.2.7 Perspectives d’évolution technologique
+
+
 
 ### Navigation
 
@@ -28,9 +81,9 @@ La navigation est la plus simple possible, elle met à la fois l’accent sur le
 
 ### Consultation du corpus
 
-L’interface du site des Guides de Paris est destiné à donner à lire les textes mais aussi à offrir des accès synoptique au corpus. Il est possible de consulter directement une édition particulière sans devoir passer par la recherche. Depuis, une édition donnée, on peut également facilement accéder aux autres éditions ainsi qu’au contenus en rapport dans les autres corpus.
+L’interface du site des Guides de Paris est destinée à donner à lire les textes mais aussi à proposer des accès synoptiques sur le corpus. Il est possible de consulter directement une édition particulière sans devoir passer par la recherche. Depuis, une édition donnée, on peut également aisément accéder aux autres éditions ainsi qu’au contenus en rapport dans les autres corpus.
 
-L’interface de consultation, sobre et distinguée, met l’accent sur la lisibilité et le confort de lecture du texte. À cette fin, un soin particulier est accordé au traitement typographique qui doit offrir une belle régularité. Plusieurs rendus typographiques sont à prévoir pour distinguer les différents niveaux de notes, les contenus clivables et diverses interactions sur le texte.
+L’interface de consultation, sobre et distinguée, met l’accent sur la lisibilité et le confort de lecture du texte. À cette fin, un soin particulier est accordé au traitement typographique qui doit offrir une belle régularité. Plusieurs rendus typographiques sont à prévoir pour distinguer les différents niveaux de notes, les contenus clivables et diverses interactions sur le texte.c
 
 Une liste de corpus donne en premier lieu accès à la consultation des Guides. Celle-ci donne accès aux corpus d’auteurs et aux éditions en particulier. Cette interface permet aussi de définir le périmètre d’une recherche simple ou avancée par l’intermédiaire de filtres sur le corpus.
 
@@ -103,9 +156,72 @@ Envisager les navigations vers les présentations synthétiques.
 
 Plusieurs index offrent des modalités d’accès transversales au corpus.
 
-#### **Index topographique**
+Toutes les pages d’index et de références présentent des filtres qui permettent de restreindre dynamiquement la liste des résultats.
 
-L’index topographique présente une vedette et une notice détaillée qui comporte des informations d’autorité et.
+Pour les index topographiques, patronymiques et les listes d’œuvres une option permet de visualiser les entrées absentes dans la sélection filtrée. 
+
+Filtres biblio
+
+- auteur 
+- date d’édition 
+- formats 
+- exemplaires numérisés
+- rechercher parmi ces résultats (la recherche simple) 
+
+Filtres topographiques
+
+- quartier 
+- paroisse (Alpage ?)
+- type de lieu
+
+Filtres œuvres
+
+- auteur
+- date
+- catégorie (monuments funéraires, fresques, tableau de chevalet, sculpture)
+- matériaux ?
+- sujets ?
+
+#### Base bibliographique
+
+Outre le corpus édité, une bibliographie générale des Guides de Paris a été réalisée dans le cadre du projet. Cette base de données permet de restituer les textes édités dans leur contexte éditorial et de mettre en lumière des phénomènes de concurrence éditoriale.
+
+La page présente une liste de références bibliographiques classées par œuvre avec le détail des manifestations, des expressions.
+
+Les références présentées dans un format bibliographique peuvent être déployées pour accéder à des informations détaillées sur les dimensions et les exemplaires identifiés dans les collections publiques. Les exemplaires numérisés accessibles en ligne doivent pouvoir être facilement identifiables.
+
+Les textes édités dans le cadre du projet sont facilement repérables par l’utilisateur qui peut y accéder directement depuis cette liste.
+
+Un lien donne accès à la notice de référence de chaque entité qui présente toutes ces informations de manière structurée.
+
+La page comporte également une présentation chronologique interactive des entités bibliographiques. L’utilisateur peut sélectionner une place chronologique ce qui met à jour dynamiquement la liste de résultats.
+
+Un champ de recherche simple permet également de filtrer dynamiquement la liste des références et de mettre à jour la chronologie.
+
+Les références bibliographiques sont exposées pour l’importation automatique dans un logiciel de références bibliographiques. 
+
+Pour la commodité des utilisateurs, les références bibliographiques sont présentées dans différents formats de citation : Bibtex, RIS, ...
+
+Présenter dans la fiche détaillée des liens vers les fichiers dans les formats du web sémantique (bibframe ?, schema ?) et afficher ces données à la demande.
+
+- [http://bibframe.org](http://bibframe.org/)
+- [http://schema.org/Book](http://schema.org/Book)
+- [http://www.sparontologies.net](http://www.sparontologies.net/) (FRBR et Cidoc-CRM)
+
+#### Index topographique
+
+L’index topographique présente une vedette et une notice détaillée qui comporte des informations d’autorité et des renseignements historiques.
+
+- Vedette normalisée
+- Formes attestées du nom typées par date
+- Désignation
+- Type de lieu (paroisse, quartier, monument, place, rue, pont, quai, pays, ville, région, etc.)
+- Relations géographiques typées par date (appartenance, notices en rapport...) 
+- Informations de géolocalisation
+
+Des informations chronologiques précisent chaque champs. 
+
+@todo voir quelle utilisation possible des données Alpage 
 
 #### Index patronymique
 
@@ -121,6 +237,18 @@ L’index patronymique
 
 #### Index des œuvres
 
+- Vedette normalisée
+- formes attestées du nom
+- localisation
+- dates
+- auteur
+- commanditaire
+- localisation dans des collections publiques
+
+Comment récupérer les désignations du nom de lieu et éviter la répétition de la saisie
+
+Comment gérer les informations concernant les localisation actuelles ? en travaillant sur l’automatisation le plus possible mais en laissant subsidiairement la possibilité de renseigner manuellement ces informations.
+
 ### Visualisations et traitements automatisés
 
 L’application de consultation propose des interfaces de consultation basées sur un traitement automatisé du texte.
@@ -128,7 +256,7 @@ L’application de consultation propose des interfaces de consultation basées s
 - collation des lieux variants
 - contextes lexicaux ?
 - visualisation cartographiques
-- visualisations statistiques (à déterminer)
+- visualisations statistiques (à déterminer, tenir compte du ratio)
 
 Ces visualisations sont importantes car elles sont destinée à fournir à l’utilisateur une vue synthétique sur le corpus. Il s’agit ici de faire exister le corpus en tant que corpus.
 
