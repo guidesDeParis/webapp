@@ -36,3 +36,5 @@ fetch('http://localhost:8984/gdp/bibliography/items/sauval1724', {
 function showMore(){
   
 }
+
+
