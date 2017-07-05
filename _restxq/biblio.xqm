@@ -218,13 +218,13 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function manifestation($expressionId) {
+function manifestation($manifestationId) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
     'function' : 'getBibliographicalManifestation',
-    'expressionId' : $expressionId
+    'expressionId' : $manifestationId
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)

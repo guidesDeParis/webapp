@@ -423,7 +423,8 @@ declare function getModel($queryParams) {
 declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalWorks := synopsx.models.synopsx:getDb($queryParams)//tei:bibl[@type='work']
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[//tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliographicalWorks := $bibliography//tei:bibl[@type='work']
   let $meta := map{
     'title' : 'Liste des œuvres', 
     'quantity' : getQuantity($bibliographicalWorks, 'œuvre', 'œuvres'),
@@ -455,7 +456,8 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
   let $workId := map:get($queryParams, 'workId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalWork := (synopsx.models.synopsx:getDb($queryParams)//tei:bibl[fn:string(@xml:id) = $workId ])[1]
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[//tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliographicalWork := ($bibliography//tei:bibl[fn:string(@xml:id) = $workId ])[1]
   let $meta := map{
     'title' : 'Œuvre', 
     'author' : getAuthors($bibliographicalWork, $lang),
@@ -489,7 +491,11 @@ declare function getBibliographicalExpressionsList($queryParams) {
   let $dateFormat := 'jjmmaaa'
   let $bibliographicalExpressions := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@type='expression']
   let $meta := map{
-    'title' : 'Liste des expressions'
+    'title' : 'Liste des expressions',
+    'author' : getAuthors($bibliographicalExpressions, $lang),
+    'copyright' : getCopyright($bibliographicalExpressions, $lang),
+    'description' : getDescription($bibliographicalExpressions, $lang),
+    'keywords' : getKeywords($bibliographicalExpressions, $lang)
     }
   let $content := for $bibliographicalExpression in $bibliographicalExpressions return map {
     'title' : getTitles($bibliographicalExpression, $lang),
@@ -517,7 +523,12 @@ declare function getBibliographicalExpression($queryParams) {
   let $dateFormat := 'jjmmaaa'
   let $bibliographicalExpression := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalExpressionId]
   let $meta := map{
-    'title' : 'Expression'
+    'title' : 'Expression',
+    'author' : getAuthors($bibliographicalExpression, $lang),
+    'copyright' : getCopyright($bibliographicalExpression, $lang),
+    'description' : getDescription($bibliographicalExpression, $lang),
+    'keywords' : getKeywords($bibliographicalExpression, $lang),
+    'url' : getUrl($bibliographicalExpression/@xml:id, '/gdp/bibliography/expressions/', $lang) 
     }
   let $content := map {
     'title' : getTitles($bibliographicalExpression, $lang),
@@ -526,6 +537,70 @@ declare function getBibliographicalExpression($queryParams) {
     'abstract' : getAbstract($bibliographicalExpression, $lang),
     'tei' : $bibliographicalExpression,
     'url' : getUrl($bibliographicalExpression/@xml:id, '/gdp/bibliography/expressions/', $lang)
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the bibliographical manifestation list
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getBibliographicalManifestationsList($queryParams) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $bibliographicalManifestations := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@type='manifestation']
+  let $meta := map{
+    'title' : 'Liste des manifestations',
+    'author' : getAuthors($bibliographicalManifestations, $lang),
+    'copyright' : getCopyright($bibliographicalManifestations, $lang),
+    'description' : getDescription($bibliographicalManifestations, $lang),
+    'keywords' : getKeywords($bibliographicalManifestations, $lang)
+    }
+  let $content := for $bibliographicalManifestation in $bibliographicalManifestations return map {
+    'title' : getTitles($bibliographicalManifestation, $lang),
+    'date' : getDate($bibliographicalManifestation, $dateFormat),
+    'author' : getAuthors($bibliographicalManifestation, $lang),
+    'abstract' : getAbstract($bibliographicalManifestation, $lang),
+    'tei' : $bibliographicalManifestation,
+    'url' : getUrl($bibliographicalManifestation/@xml:id, '/gdp/bibliography/manifestations/', $lang)
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the bibliographical manifestation by ID
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getBibliographicalManifestation($queryParams) {
+  let $bibliographicalManifestationId := map:get($queryParams, 'manifestationId')
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $bibliographicalManifestation := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalManifestationId]
+  let $meta := map{
+    'title' : 'Expression',
+    'author' : getAuthors($bibliographicalManifestation, $lang),
+    'copyright' : getCopyright($bibliographicalManifestation, $lang),
+    'description' : getDescription($bibliographicalManifestation, $lang),
+    'keywords' : getKeywords($bibliographicalManifestation, $lang),
+    'url' : getUrl($bibliographicalManifestation/@xml:id, '/gdp/bibliography/manifestations/', $lang)
+    }
+  let $content := map {
+    'title' : getTitles($bibliographicalManifestation, $lang),
+    'date' : getDate($bibliographicalManifestation, $dateFormat),
+    'author' : getAuthors($bibliographicalManifestation, $lang),
+    'abstract' : getAbstract($bibliographicalManifestation, $lang),
+    'tei' : $bibliographicalManifestation,
+    'url' : getUrl($bibliographicalManifestation/@xml:id, '/gdp/bibliography/manifestations/', $lang)
     }
   return  map{
     'meta'    : $meta,
