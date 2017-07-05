@@ -18,6 +18,8 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
 
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
+import module namespace gdp.globals = 'gdp.globals' at '../globals.xqm' ;
+
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
@@ -180,18 +182,6 @@ declare function getBiblTitle($content as element()*, $lang as xs:string){
     ', ')
 };
 
-(:
- : this function get corpus url
- :
- : @param $content texts to process
- : @param $lang iso langcode starts
- : @return a string of comma separated titles
- : @todo print the real uri
- :)
-declare function getCorpusUrl($content as element()*, $lang as xs:string){
-  'corpus/' || $content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
-};
-
 (:~
  : this function get description
  :
@@ -318,18 +308,6 @@ declare function getSubtitle($content as element()*, $lang as xs:string){
   $content//tei:titleStmt//tei:title[@type = 'sub']
 };
 
-(:
- : this function get text url
- :
- : @param $content texts to process
- : @param $lang iso langcode starts
- : @return a string of comma separated titles
- : @todo print the real uri
- :)
-declare function getTextUrl($content as element()*, $lang as xs:string){
-  '/gdp/texts/' || $content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
-};
-
 (:~
  : this function get titles
  :
@@ -413,7 +391,7 @@ declare function getXmlTeiById($queryParams){
  : @todo print the real uri
  :)
 declare function getUrl($content, $path as xs:string, $lang as xs:string){
-  'http://localhost:8984' || $path || $content
+  $gdp.globals:root || $path || $content
 };
 
 
