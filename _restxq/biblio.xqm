@@ -78,7 +78,7 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblWorks() {
+function works() {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
@@ -106,7 +106,7 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblWork($workId) {
+function work($workId) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
@@ -134,7 +134,7 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblExpressions() {
+function expressions() {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
@@ -162,12 +162,68 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblExpression($expressionId) {
+function expression($expressionId) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
     'function' : 'getBibliographicalExpression',
+    'expressionId' : $expressionId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsBiblioSerif.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+};
+
+(:~
+ : ressource function for a bibliographical manifestations list
+ :
+ : @return a collection of bibliographical manifestations
+ :)
+declare
+  %restxq:path('/gdp/bibliography/manifestations')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function manifestations() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalManifestationsList'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsBiblioSerif.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+};
+
+(:~
+ : ressource function for a bibliographical manifestation item
+ :
+ : @param $manifestationId the bibliographical work expression ID
+ : @return a bibliographical expression by ID
+ :)
+declare
+  %restxq:path('/gdp/bibliography/manifestations/{$manifestationId}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function manifestation($expressionId) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalManifestation',
     'expressionId' : $expressionId
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
@@ -190,7 +246,7 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblItems() {
+function items() {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
@@ -218,7 +274,7 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function biblItem($itemId) {
+function gdp.biblio:item($itemId) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
