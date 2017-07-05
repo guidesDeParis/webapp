@@ -63,7 +63,7 @@ declare
 function biblHome() {
   <rest:response>
     <http:response status="303" message="See Other">
-      <http:header name="location" value="/gdp/bibliography/works"/>
+      <http:header name="location" value="/gdp/bibliography/expressions"/>
     </http:response>
   </rest:response>
 };
@@ -89,7 +89,7 @@ function works() {
   let $data := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsBiblioSerif.xhtml',
+    'pattern' : 'refillsBiblioWorksSerif.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)

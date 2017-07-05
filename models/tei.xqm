@@ -451,6 +451,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map
+ : @todo clean the meta
  :)
 declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
   let $workId := map:get($queryParams, 'workId')
@@ -467,12 +468,9 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
     'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang) 
     }
   let $content := map {
-    'title' : 'Œuvre',
+    'header' : 'Œuvre',
     'tei' : $bibliographicalWork,
-    'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang),
-    'expressions' : getBiblExpressions($bibliographicalWork, $lang),
-    'expressionsUrl' : getBiblExpressions($bibliographicalWork, $lang),
-    'manifestations' : getBiblManifestations($bibliographicalWork, $lang)
+    'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -485,6 +483,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map
+ : @todo check why double title elements
  :)
 declare function getBibliographicalExpressionsList($queryParams) {
   let $lang := 'fr'
@@ -498,9 +497,10 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'keywords' : getKeywords($bibliographicalExpressions, $lang)
     }
   let $content := for $bibliographicalExpression in $bibliographicalExpressions return map {
-    'title' : getTitles($bibliographicalExpression, $lang),
-    'date' : getDate($bibliographicalExpression, $dateFormat),
-    'author' : getAuthors($bibliographicalExpression, $lang),
+    'header' : 'Expression',
+    'date' : getBiblDates($bibliographicalExpression, $dateFormat),
+    'author' : getBiblAuthors($bibliographicalExpression, $lang),
+    'title' : getBiblTitles($bibliographicalExpression, $lang),
     'abstract' : getAbstract($bibliographicalExpression, $lang),
     'tei' : $bibliographicalExpression,
     'url' : getUrl($bibliographicalExpression/@xml:id, '/gdp/bibliography/expressions/', $lang)
