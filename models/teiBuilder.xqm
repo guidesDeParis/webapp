@@ -101,10 +101,15 @@ declare function getEditionDates($content as element()*, $dateFormat as xs:strin
  :
  : @param $content texts to process
  : @param $lang iso langcode starts
- : @return a string of comma separated titles
+ : @return a string of names separated by &
  :)
-declare function getBiblAuthors($content as element()*, $lang as xs:string) as element()* {
-  $content//tei:title[@level='m']
+declare function getBiblAuthors($content as element()*, $lang as xs:string) as xs:string {
+  fn:string-join(
+    for $author in $content//tei:author
+    return fn:string-join(
+      for $namePart in $author/tei:persName/tei:* 
+      return $namePart, ' '), ' &amp; '
+    )
 };
 
 (:~

@@ -488,7 +488,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
 declare function getBibliographicalExpressionsList($queryParams) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalExpressions := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@type='expression']
+  let $bibliographicalExpressions := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@type='expression'][1]
   let $meta := map{
     'title' : 'Liste des expressions',
     'author' : getAuthors($bibliographicalExpressions, $lang),
