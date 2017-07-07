@@ -25,6 +25,7 @@ import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '..
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../../synopsx/mappings/htmlWrapping.xqm' ;
+import module namespace synopsx.mappings.jsoner = 'synopsx.mappings.jsoner' at '../../../../synopsx/mappings/jsoner.xqm' ;
 
 declare default function namespace 'gdp.biblio';
 
@@ -224,7 +225,7 @@ function manifestation($manifestationId) {
     'dbName' : 'gdp',
     'model' : 'tei',
     'function' : 'getBibliographicalManifestation',
-    'expressionId' : $manifestationId
+    'manifestationId' : $manifestationId
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $data := fn:function-lookup($function, 1)($queryParams)
@@ -234,6 +235,35 @@ function manifestation($manifestationId) {
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+};
+
+(:~
+ : ressource function for a bibliographical manifestation item
+ :
+ : @param $manifestationId the bibliographical work expression ID
+ : @return a bibliographical expression by ID
+ :)
+declare
+  %restxq:path('/gdp/bibliography/manifestations/{$manifestationId}/json')
+  %output:method("json")
+  %output:json("format=jsonml")
+function manifestationJson($manifestationId) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalManifestation',
+    'manifestationId' : $manifestationId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'refillsHtml5.xhtml',
+    'pattern' : 'refillsBiblioSerif.xhtml',
+    'xquery' : 'tei2json'
+    }
+  return 
+    synopsx.mappings.jsoner:jsoner($queryParams, $data, $outputParams)
 };
 
 (:~
