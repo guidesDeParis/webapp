@@ -58,9 +58,6 @@ function bibliography(){
  :)
 declare
   %restxq:path("/gdp/bibliography/home")
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
 function biblHome() {
   <rest:response>
     <http:response status="303" message="See Other">
@@ -76,7 +73,6 @@ function biblHome() {
  :)
 declare
   %restxq:path("/gdp/bibliography/works")
-  %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
 function works() {
@@ -87,14 +83,15 @@ function works() {
     'function' : 'getBibliographicalWorksList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsBiblioWorksSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
+
 
 (:~
  : ressource function for a bibliographical work item
@@ -116,14 +113,15 @@ function work($workId) {
     'workId' : $workId
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
+
 
 (:~
  : ressource function for a bibliographical expressions list
@@ -143,13 +141,13 @@ function expressions() {
     'function' : 'getBibliographicalExpressionsList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -172,13 +170,39 @@ function expression($expressionId) {
     'expressionId' : $expressionId
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
+(:~
+ : ressource function for a bibliographical expression item
+ :
+ : @param $expressionId the bibliographical work expression ID
+ : @return a bibliographical expression by ID
+ :)
+declare
+  %restxq:path('/gdp/bibliography/expressions/{$expressionId=.*\.json}')
+  %rest:produces('application/json')
+function expressionJson($expressionId) {
+  let $expressionId := fn:substring-before($expressionId, '.json')
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalExpression',
+    'expressionId' : $expressionId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2json'
+    }
+  return synopsx.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -199,13 +223,13 @@ function manifestations() {
     'function' : 'getBibliographicalManifestationsList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -215,7 +239,7 @@ function manifestations() {
  : @return a bibliographical expression by ID
  :)
 declare
-  %restxq:path('/gdp/bibliography/manifestations/{$manifestationId}')
+  %restxq:path('/gdp/bibliography/manifestations/{$manifestationId=[^.]+$}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -228,26 +252,26 @@ function manifestation($manifestationId) {
     'manifestationId' : $manifestationId
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
  : ressource function for a bibliographical manifestation item
  :
  : @param $manifestationId the bibliographical work expression ID
- : @return a bibliographical expression by ID
+ : @return a bibliographical expression by ID in JSON
  :)
 declare
-  %restxq:path('/gdp/bibliography/manifestations/{$manifestationId}/json')
-  %output:method("json")
-  %output:json("format=jsonml")
+  %restxq:path('/gdp/bibliography/manifestations/{$manifestationId=.+\.json}')
+  %restxq:produces('application/json')
 function manifestationJson($manifestationId) {
+  let $manifestationId := fn:substring-before($manifestationId, '.json')
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
@@ -256,14 +280,14 @@ function manifestationJson($manifestationId) {
     'manifestationId' : $manifestationId
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2json'
     }
   return 
-    synopsx.mappings.jsoner:jsoner($queryParams, $data, $outputParams)
+    synopsx.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -284,13 +308,13 @@ function items() {
     'function' : 'getBibliographicalItemsList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -313,11 +337,11 @@ function gdp.biblio:item($itemId) {
     'itemId' : $itemId
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };

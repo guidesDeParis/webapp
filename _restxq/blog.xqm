@@ -65,13 +65,13 @@ function blogHome() {
     'order' : 'descending'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsListSerif.xhtml',
     'xquery' : 'tei2html'
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
   }; 
  
 (:~
@@ -94,13 +94,13 @@ function blogPosts() {
     'order' : 'descending'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsListSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
   };
  
 (:~
@@ -123,13 +123,13 @@ function blogItem($entryId as xs:string) {
     'entryId' : $entryId
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
   };
 
 (:~

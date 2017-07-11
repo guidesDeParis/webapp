@@ -59,13 +59,13 @@ function editionHome() {
     'function' : 'getHome'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHomeHtml5.xhtml',
     'pattern' : 'refillsBullet.xhtml',
     'xquery' : 'tei2html'
     }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 }; 
 
 (:~
@@ -86,13 +86,13 @@ function corpus() {
     'function' : 'getCorpusList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'corpusList.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -115,13 +115,13 @@ function corpusItem($corpusId as xs:string) {
     'function' : 'getCorpusById'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsCards.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -143,13 +143,13 @@ function texts($corpusId as xs:string) {
     'function' : 'getTextsList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsCards.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
 }; :)
 
 (:~
@@ -172,13 +172,13 @@ function textItem($textId as xs:string) {
     'function' : 'getTextById'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsCards.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -202,13 +202,13 @@ function textItem($textId as xs:string, $itemId as xs:string) {
     'function' : 'getItemById'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsItemSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -231,13 +231,13 @@ function biblioListHtml($pattern as xs:string?) {
     'function' : 'getRespList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'blogListSerif.xhtml',
     'pattern' : 'blogArticleSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -260,13 +260,13 @@ function model() {
     'function' : 'getModel'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsPageSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -289,13 +289,13 @@ function about() {
     'entryId' : 'gdpPresentation2014'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsPageSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -318,13 +318,13 @@ function documentation() {
     'function' : 'getModel'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $data := fn:function-lookup($function, 1)($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'refillsHtml5.xhtml',
     'pattern' : 'refillsPageSerif.xhtml',
     'xquery' : 'tei2html'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $data, $outputParams)
+  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 declare 
