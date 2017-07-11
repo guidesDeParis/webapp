@@ -13,7 +13,7 @@ log: 2017-05-12 structuration du cahier des charges
 
 # Cahier des Clauses Particulières
 
-Le Cahier des clauses particulières (CCP) est un document qui regroupe les clauses administratives et techniques spécifiques à un marché.
+[Le Cahier des clauses particulières (CCP) est un document qui regroupe les clauses administratives et techniques spécifiques à un marché. La rédaction de ce document utilise le format ISO]
 
 # 1. Présentation générale du problème
 
