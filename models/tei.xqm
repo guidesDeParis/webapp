@@ -423,18 +423,19 @@ declare function getModel($queryParams) {
 declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[//tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
   let $bibliographicalWorks := $bibliography//tei:bibl[@type='work']
   let $meta := map{
     'title' : 'Liste des œuvres', 
     'quantity' : getQuantity($bibliographicalWorks, 'œuvre', 'œuvres'),
-    'author' : getAuthors($bibliographicalWorks, $lang),
-    'copyright' : getCopyright($bibliographicalWorks, $lang),
-    'description' : getDescription($bibliographicalWorks, $lang),
-    'keywords' : getKeywords($bibliographicalWorks, $lang) 
+    'copyright' : getCopyright($bibliography, $lang),
+    'description' : getDescription($bibliography, $lang),
+    'keywords' : getKeywords($bibliography, $lang) 
     }
   let $content := for $bibliographicalWork in $bibliographicalWorks return map {
-    'title' : 'Œuvre',
+    'header' : 'Œuvre',
+    'authors' : getBiblAuthors($bibliographicalWork, $lang),
+    'title' : $bibliographicalWork//tei:title,
     'tei' : $bibliographicalWork,
     'expressions' : getBiblExpressions($bibliographicalWork, $lang),
     'manifestations' : getBiblManifestations($bibliographicalWork, $lang),
@@ -463,7 +464,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
     'title' : 'Œuvre', 
     'author' : getAuthors($bibliographicalWork, $lang),
     'copyright' : getCopyright($bibliographicalWork, $lang),
-    'description' : getDescription($bibliographicalWork, $lang),
+    'description' : 'Liste des œuvres, au sens des FRBR, du corpus des Guides de Paris',
     'keywords' : getKeywords($bibliographicalWork, $lang),
     'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang) 
     }

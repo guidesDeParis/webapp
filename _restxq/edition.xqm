@@ -88,7 +88,7 @@ function corpus() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'corpusList.xhtml',
     'xquery' : 'tei2html'
     }
@@ -117,7 +117,7 @@ function corpusItem($corpusId as xs:string) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsCards.xhtml',
     'xquery' : 'tei2html'
     }
@@ -145,7 +145,7 @@ function texts($corpusId as xs:string) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsCards.xhtml',
     'xquery' : 'tei2html'
     }
@@ -174,7 +174,7 @@ function textItem($textId as xs:string) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsCards.xhtml',
     'xquery' : 'tei2html'
     }
@@ -204,7 +204,7 @@ function textItem($textId as xs:string, $itemId as xs:string) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsItemSerif.xhtml',
     'xquery' : 'tei2html'
     }
@@ -262,7 +262,7 @@ function model() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsPageSerif.xhtml',
     'xquery' : 'tei2html'
     }
@@ -291,7 +291,7 @@ function about() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsPageSerif.xhtml',
     'xquery' : 'tei2html'
     }
@@ -320,7 +320,7 @@ function documentation() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsPageSerif.xhtml',
     'xquery' : 'tei2html'
     }

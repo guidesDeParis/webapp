@@ -85,8 +85,8 @@ function works() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsBiblioWorksSerif.xhtml',
+    'layout' : 'page.xhtml',
+    'pattern' : 'biblioWorks.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -115,7 +115,7 @@ function work($workId) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
@@ -143,8 +143,8 @@ function expressions() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsBiblioSerif.xhtml',
+    'layout' : 'page.xhtml',
+    'pattern' : 'biblioExpressions.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -172,8 +172,8 @@ function expression($expressionId) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsBiblioSerif.xhtml',
+    'layout' : 'page.xhtml',
+    'pattern' : 'biblioExpressions.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -225,8 +225,8 @@ function manifestations() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsBiblioSerif.xhtml',
+    'layout' : 'page.xhtml',
+    'pattern' : 'biblioManifestations.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -254,8 +254,8 @@ function manifestation($manifestationId) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsBiblioSerif.xhtml',
+    'layout' : 'page.xhtml',
+    'pattern' : 'biblioManifestations.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -282,7 +282,7 @@ function manifestationJson($manifestationId) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2json'
     }
@@ -310,7 +310,7 @@ function items() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }
@@ -339,7 +339,7 @@ function gdp.biblio:item($itemId) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
+    'layout' : 'page.xhtml',
     'pattern' : 'refillsBiblioSerif.xhtml',
     'xquery' : 'tei2html'
     }

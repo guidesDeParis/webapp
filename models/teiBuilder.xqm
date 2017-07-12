@@ -210,15 +210,15 @@ declare function getOtherEditions($ref as node()? ) as element()* {
 };
 
 (:~
- : this function get keywords
+ : this function get keywords from textClass
  :
  : @param $content texts to process
  : @param $lang iso langcode starts
- : @return a comma separated list of values
+ : @return a sequence of keywords
  :)
 declare function getKeywords($content as element()*, $lang as xs:string) {
     for $terms in fn:distinct-values($content//tei:keywords[fn:starts-with(@xml:lang, $lang)]/tei:term) 
-      return fn:normalize-space($terms)
+    return fn:normalize-space($terms)
 };
 
 (:~

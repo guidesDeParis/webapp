@@ -67,8 +67,8 @@ function blogHome() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsListSerif.xhtml',
+    'layout' : 'page.xhtml',
+    'pattern' : 'list.xhtml',
     'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -96,8 +96,8 @@ function blogPosts() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsListSerif.xhtml',
+    'layout' : 'page.xhtml',
+    'pattern' : 'list.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -125,8 +125,8 @@ function blogItem($entryId as xs:string) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHtml5.xhtml',
-    'pattern' : 'refillsArticleSerif.xhtml',
+    'layout' : 'page.xhtml',
+    'pattern' : 'article.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
