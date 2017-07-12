@@ -1,5 +1,6 @@
 ---
 since: 2017-06-23
+log: 2017-07-12
 log: 2017-06-30 travail sur les index et la bibliographie
 log: 2017-06-26 discussion avec Josselin
 log: 2017-06-23 développements
@@ -19,22 +20,57 @@ log: 2017-05-12 structuration du cahier des charges
 
 ## 1.1 Projet
 ### 1.1.1 Finalités
+
+- disposer d’une interface publique qui facilite le travail scientifique sur les guides
+  - confort de lecture et de travail (ergonomie)
+  - mise en œuvre d’interrogations pertinentes dans corpus (recherches, visualisation)
+  - fonctionnalités d’indexation collaborative (collaboratif)
+
 ### 1.1.2 Espérance de retour sur investissement
 
 ## 1.2 Contexte
 ### 1.2.1 Situation du projet par rapport aux autres projets de l’entreprise
+
+Contexte du Labex
+
+
+
 ### 1.2.2 Études déjà effectuées
+
+Structuration des données
+
+Mise en œuvre d’une application de distribution des textes
+
 ### 1.2.3 Études menées sur des sujets voisins
 ### 1.2.4 Suites prévues
 ### 1.2.5 Nature des prestations demandées
+
+- Design d’interface
+- Intégration web (CSS, JavaScript)
+- Implémentation avec BaseX (si on joint le lot)
+
 ### 1.2.6 Parties concernées par le déroulement du projet et ses résultats (demandeurs, utilisateurs)
+
+Contexte du projet (Labex, université)
+
+Responsable et interlocuteurs
+
+Évaluations
+
 ### 1.2.7 Caractère confidentiel s’il y a lieu
 
 ## 1.3 Énoncé du besoin (finalités du produit pour le futur utilisateur tel que prévu par le demandeur)
 
 ## 1.4 Environnement du produit recherché
 ### 1.4.1 Listes exhaustives des éléments (personnes, équipements, matières…) et contraintes (environnement)
+
+- BaseX + SynopsX
+- Navigateurs cibles
+- Accessibilité (conformité ARIA, choix de police, raccourcis clavier, etc.)
+
 ### 1.4.2 Caractéristiques pour chaque élément de l’environnement
+
+
 
 # 2. Expression fonctionnelle du besoin
 
@@ -69,19 +105,27 @@ log: 2017-05-12 structuration du cahier des charges
 
 ### Navigation
 
-La navigation est la plus simple possible, elle met à la fois l’accent sur les contenus relatifs au projet et la consultation du corpus.
+La navigation du site privilégie la simplicité, elle met en avant la consultation du corpus et comporte des liens vers la présentation générale du projet.
 
-- à propos
+- Consulter
+
+- Index(s)
+
+- Accès cartographique
+
+- Bibliographie
+
 - blog du projet
-- Les guides de Paris
-  - Consulter
-  - Index
-  - Accès cartographique
-  - Bibliographie
+
+  ​
+
+- à propos (pied de page ?)
+
+- CGU, etc.
 
 ### Consultation du corpus
 
-L’interface du site des Guides de Paris est destinée à donner à lire les textes mais aussi à proposer des accès synoptiques sur le corpus. Il est possible de consulter directement une édition particulière sans devoir passer par la recherche. Depuis, une édition donnée, on peut également aisément accéder aux autres éditions ainsi qu’au contenus en rapport dans les autres corpus.
+Le corpus des Guides de Paris se compose de plusieurs corpus d’auteurs qui comportent chacun plusieurs éditions. L’interface du site des Guides de Paris est destinée à donner à lire les textes mais aussi à proposer des accès synoptiques sur le corpus. Il est possible de consulter directement une édition particulière sans devoir passer par la recherche. Depuis, une édition donnée, on peut également aisément accéder aux autres éditions ainsi qu’au contenus en rapport dans les autres corpus.
 
 L’interface de consultation, sobre et distinguée, met l’accent sur la lisibilité et le confort de lecture du texte. À cette fin, un soin particulier est accordé au traitement typographique qui doit offrir une belle régularité. Plusieurs rendus typographiques sont à prévoir pour distinguer les différents niveaux de notes, les contenus clivables et diverses interactions sur le texte.c
 
@@ -124,33 +168,51 @@ Propose-t-on des facettes dans la présentation des corpus
 
 #### Consultation linéaire du texte
 
-- Page de titre
-- Le texte est présenté de manière linéaire en utilisant un scroll infini.
-- Chargement automatique des textes suivants vers la fin du chapitre.
+Chacun des textes est consultable en lecture linéaire, du début à la fin de l’ouvrage. Cette lecture linéaire comporte les éléments suivants :
 
-Plusieurs éléments sont diponibles
+- une page de titre de l’édition critique
+- une page de titre de l’édition originale
+- une présentation linéaire qui utilise un défilement infini.
+- lors de l’affichage du texte depuis une liste de résultat proposer les résultats suivants et précédents mais aussi la suite du texte proprement dit ou le passage précédent
+- @quest que faire de l’affichage des volumes et chapitres
+- @quest naviguer parmi les illustrations d’un texte (distinguer plans de quartiers, représentation d’édifices, détails, et rendre compte de leur localisation)
 
-- Sommaire
-- Titre et références,
-- À tous les moments proposer le passage à la section suivante.
-- pagination
-- citation du passage
+Plusieurs éléments sont facilement accessibles dans la page sans pour autant surcharger l’interface
+
+- une page de titre de l’édition critique
+- une référence pour la citation (distincte ou non)
+- un sommaire
+- un accès facilité aux sections suivantes/précédentes ou aux résultats suivants et précédents
+- la pagination originale du volume
+- l’activation de la collation des lieux variants
+- la possibilité de citer un passage du texte (cf. ci-dessous)
+- localisation géographique rapide de l’entité décrite
+- localisation physique du passage dans le volume (visualisation tomaison, dimension du passage, taille relative, autres occurrences dans le texte) @quest faut-il donner une indication sur le type de section, sachant que normalement cette indication est déjà rendue typographiquement ?
+- liste des entités mentionnées et illustrations
 
 #### Consultation d’une liste de résultats
 
-Liste de résultats
+Une recherche dans le corpus affiche une liste de résultats. Cette liste de résultat présente un certain nombre de filtres afin de restreindre le nombre de résultats ou affiner la recherche, elle est également triable selon plusieurs critères.
 
-@quest comment passe de la liste de résultats au texte
+@todo préciser les filtres : corpus d’auteur, texte, intervalle chronologique, entrées d’index de lieux, entrées d’index d’œuvres, entrées d’index de personne
 
-Consultation des résultats
+@todo déterminer les tris : date, corpus, éditions, taille du passage
 
-La consultation des résultats reprend la présentation linéaire du texte. à la fin du passage, on charge le passage suivant pour restituer une lecture linéaire et les contextes de lecture. Prévoir une bifurcation pour une lecture transversale dans le corpus. Résultat précédent, Résultat suivant.
+La consultation des résultats se fait dans le module de consultation linéaire des textes en proposant la possibilité de consulter les résultats suivants et précédents tout en permettant la lecture continue du texte. Il y a donc deux modes de lecture : une lecture linéaire qui restitue le contexte des passages et une lecture transversale en fonction des listes de résultats.
 
-Quels sont les modalités d’accès aux autres éléments du corpus qui évoquent le même sujet que celui consulté ?
+Depuis le module de lecture, il est possible de consulter l’ensemble de la liste de résultats pour la parcourir rapidement. Il est également possible de revenir à la liste de résultats proprement dit pour utiliser des filtres, affiner sa recherche, etc.
 
-Prévoir la possibilité de consulter les autres passages traitant de la même occurence dans les autres éditions ou dans l’ensemble du corpus.
+@quest depuis la liste de résultats comment rendre compte des autres mentions dans le corpus ? (visualisation en grisée avec sélecteur, etc.) Prévoir la possibilité de consulter les autres passages traitant de la même occurence dans les autres éditions ou dans l’ensemble du corpus.
 
-Envisager les navigations vers les présentations synthétiques.
+@todo Envisager les navigations vers les présentations synthétiques (index pondérés, cartes géoréférencées)
+
+La liste de résultats peut être affichée de différente manière
+
+- liste
+- tableau ?
+- visualisation géographique
+- visualisation des entités
+- ...
 
 ### Index
 
@@ -181,6 +243,30 @@ Filtres œuvres
 - catégorie (monuments funéraires, fresques, tableau de chevalet, sculpture)
 - matériaux ?
 - sujets ?
+
+#### Liens et renvois
+
+Plusieurs mécanismes de liens et renvois sont prévus au sein de l’application afin de pouvoir naviguer au sein d’un texte donné, au sein d’un corpus d’auteur, et au sein du corpus en général.
+
+Plusieurs types de liens sont à traiter distinctement
+
+- liens internes présents dans l’édition originale
+- liens internes générés grâces aux index (dans l’édition, parmi les autres éditions du corpus d’auteur)
+- liens externes établis graces aux index (dans l’ensemble du corpus des Guides de Paris)
+
+Dans l’idéal, lors de la consultation du texte, le lecteur peut suivre un lien présent dans l’édition originale, visualiser une liste de passages qui mentionnent le même édifice dans le texte ou les autres éditions générée à partir de l’index, et les autres mentions dans l’ensemble du corpus.
+
+L’historique du navigateur doit permettre de revenir aux contenus précédemment consultées facilement, si possible en conservant la position dans la page.
+
+#### Citabilité
+
+Afin de faciliter la citabilité des ressources publiées chacune d’entre elle est assortie d’une URI pérenne facilement accessible sur la page.
+
+Les portions de texte d’une édition peuvent être facilement référencées au moyen d’un pointeur par l’intermédiaire d’un bouton accessible lors de la sélection d’une portion de texte.
+
+Le copier-coller sur une sélection de texte, copie dans le presse-papier le texte, suivi d’une référence bibliographique mise en forme et d’un pointeur.
+
+La génération des pointeurs utilise ici le même mécanisme que celui utilisé pour la gestion des annotations. Le bouton pour copier l’URI doit être coordonné avec les interactions pour l’annotation du corpus et l’indexation.
 
 #### Base bibliographique
 
@@ -254,21 +340,25 @@ Comment gérer les informations concernant les localisation actuelles ? en trava
 L’application de consultation propose des interfaces de consultation basées sur un traitement automatisé du texte.
 
 - collation des lieux variants
-- contextes lexicaux ?
+- contextes lexicaux (listes d’occurrences et de co-occurrences) ?
 - visualisation cartographiques
 - visualisations statistiques (à déterminer, tenir compte du ratio)
 
-Ces visualisations sont importantes car elles sont destinée à fournir à l’utilisateur une vue synthétique sur le corpus. Il s’agit ici de faire exister le corpus en tant que corpus.
+Ces visualisations sont importantes car elles sont destinées à fournir à l’utilisateur des vues synthétiques sur le corpus. Il s’agit ici de faire exister le corpus en tant que corpus.
 
-#### **Comparaison des lieux variants**
+#### Comparaison des lieux variants
 
-Pour la collation des lieux variants, il s’agit d’offrir au lecteur la possibilité de visualiser dans l’interface les variantes entre les différentes éditions d’un même texte. La localisation des lieux variants est réalisée à l’aide de l’algorithme XXX dont la sortie présente au format JSON une liste de positions et les chaînes de caractères concernées...
+La collation des lieux variants permet de visualiser dans l’interface les différences d’un même passage parmi plusieurs éditions. Cette collation est réalisée au moyen de l’algorithme [CollateX](https://collatex.net) qui présente une liste de positions et des chaînes de caractères concernées au format JSON. Les lieux variants sont affichés sous la forme d’une carte de points chauds (heat map) en surlignage transparent du texte. Des filtres de sélection permettent le choix des éditions et il est possible de lire les variantes au survol.
 
-#### **Accès lexicaux**
+@todo vérifier l’algorithme, cibler les visualisations http://www.juxtasoftware.org/about/
 
-L‘application présente plusieurs accès lexicaux basés sur l’exploitation du traitement automatique de la langue.
+#### Accès lexicaux
 
-Les **contextes lexicaux** permettent de naviguer parmi des listes d’occurences...
+L’application présente plusieurs accès lexicaux basés sur l’exploitation du traitement automatique de la langue. Ces accès présentent des listes d’occurrences et de co-occurences qui restituent leurs contextes lexicaux.
+
+@todo préciser le traitement, demande-t-on seulement au webdesigner de concevoir un affichage de listes d’occurrences et de contextes que l’on pourra implémenter par la suite
+
+http://voyant-tools.org
 
 #### Accès cartographiques
 
