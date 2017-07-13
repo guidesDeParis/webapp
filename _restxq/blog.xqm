@@ -68,7 +68,7 @@ function blogHome() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'list.xhtml',
+    'pattern' : 'incBlogItem.xhtml',
     'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -97,7 +97,7 @@ function blogPosts() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'list.xhtml',
+    'pattern' : 'incBlogItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -126,7 +126,7 @@ function blogItem($entryId as xs:string) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'article.xhtml',
+    'pattern' : 'incBlogArticle.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)

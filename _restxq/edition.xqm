@@ -61,8 +61,8 @@ function editionHome() {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'refillsHomeHtml5.xhtml',
-    'pattern' : 'refillsBullet.xhtml',
+    'layout' : 'home.xhtml',
+    'pattern' : 'incBullet.xhtml',
     'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -89,7 +89,7 @@ function corpus() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'corpusList.xhtml',
+    'pattern' : 'incCorpusItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
@@ -118,7 +118,7 @@ function corpusItem($corpusId as xs:string) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'refillsCards.xhtml',
+    'pattern' : 'incCorpusCard.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
@@ -146,7 +146,7 @@ function texts($corpusId as xs:string) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'refillsCards.xhtml',
+    'pattern' : 'incCorpusCard.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
@@ -175,7 +175,7 @@ function textItem($textId as xs:string) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'refillsCards.xhtml',
+    'pattern' : 'incCorpusCard.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -205,7 +205,7 @@ function textItem($textId as xs:string, $itemId as xs:string) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'refillsItemSerif.xhtml',
+    'pattern' : 'incItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -233,8 +233,8 @@ function biblioListHtml($pattern as xs:string?) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'blogListSerif.xhtml',
-    'pattern' : 'blogArticleSerif.xhtml',
+    'layout' : 'incBlogList.xhtml',
+    'pattern' : 'incBlogArticle.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -263,7 +263,7 @@ function model() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'refillsPageSerif.xhtml',
+    'pattern' : 'about.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -292,7 +292,7 @@ function about() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'refillsPageSerif.xhtml',
+    'pattern' : 'about.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
@@ -321,7 +321,7 @@ function documentation() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'refillsPageSerif.xhtml',
+    'pattern' : 'about.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
