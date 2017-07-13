@@ -20,6 +20,8 @@ import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '..
 
 import module 'gdp.models.tei' at 'teiContent.xqm' , 'teiBuilder.xqm' ;
 
+import module namespace gdp.globals = 'gdp.globals' at '../globals.xqm' ;
+
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 declare default function namespace 'gdp.models.tei' ;
@@ -223,7 +225,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'date' : getEditionDates(getOtherEditions(getRef($corpus))/tei:biblStruct, $dateFormat),
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
-    'editionsQuantity' : fn:count(getOtherEditions(getRef($corpus))/tei:biblStruct) || ' éditions',
+    'editionsQuantity' : getQuantity(getOtherEditions(getRef($corpus))/tei:biblStruct, 'édition', ' éditions'),
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte disponible', 'textes disponibles'),
     'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/corpus/', $lang),
     'tei' : $corpus,
@@ -429,13 +431,14 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     'title' : 'Liste des œuvres', 
     'quantity' : getQuantity($bibliographicalWorks, 'œuvre', 'œuvres'),
     'copyright' : getCopyright($bibliography, $lang),
-    'description' : getDescription($bibliography, $lang),
-    'keywords' : getKeywords($bibliography, $lang) 
+    'description' : 'Liste des œuvres de la bibliographie des Guides de Paris, au sens des FRBR',
+    'keywords' : getKeywords($bibliography, $lang),
+    'url' : $gdp.globals:root || '/gdp/bibliography/works'
     }
   let $content := for $bibliographicalWork in $bibliographicalWorks return map {
     'header' : 'Œuvre',
     'authors' : getBiblAuthors($bibliographicalWork, $lang),
-    'title' : $bibliographicalWork//tei:title,
+    'titles' : getBiblTitles($bibliographicalWork, $lang),
     'tei' : $bibliographicalWork,
     'expressions' : getBiblExpressions($bibliographicalWork, $lang),
     'manifestations' : getBiblManifestations($bibliographicalWork, $lang),
@@ -458,18 +461,22 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
   let $workId := map:get($queryParams, 'workId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[//tei:sourceDesc[@xml:id='gdpBibliography']]
-  let $bibliographicalWork := ($bibliography//tei:bibl[fn:string(@xml:id) = $workId ])[1]
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliographicalWork := $bibliography//tei:bibl[@xml:id = $workId ]
   let $meta := map{
     'title' : 'Œuvre', 
-    'author' : getAuthors($bibliographicalWork, $lang),
-    'copyright' : getCopyright($bibliographicalWork, $lang),
-    'description' : 'Liste des œuvres, au sens des FRBR, du corpus des Guides de Paris',
-    'keywords' : getKeywords($bibliographicalWork, $lang),
+    'author' : getAuthors($bibliography, $lang),
+    'copyright' : getCopyright($bibliography, $lang),
+    'description' : $bibliographicalWork,
+    'keywords' : getKeywords($bibliography, $lang),
     'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang) 
     }
   let $content := map {
     'header' : 'Œuvre',
+    'authors' : getBiblAuthors($bibliographicalWork, $lang),
+    'titles' : getBiblTitles($bibliographicalWork, $lang),
+    'expressions' : getBiblExpressions($bibliographicalWork, $lang),
+    'manifestations' : getBiblManifestations($bibliographicalWork, $lang),
     'tei' : $bibliographicalWork,
     'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang)
     }
@@ -489,20 +496,23 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
 declare function getBibliographicalExpressionsList($queryParams) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalExpressions := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@type='expression'][1]
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliographicalExpressions := $bibliography//tei:biblStruct[@type='expression']
   let $meta := map{
     'title' : 'Liste des expressions',
-    'author' : getAuthors($bibliographicalExpressions, $lang),
-    'copyright' : getCopyright($bibliographicalExpressions, $lang),
-    'description' : getDescription($bibliographicalExpressions, $lang),
-    'keywords' : getKeywords($bibliographicalExpressions, $lang)
+    'quantity' : getQuantity($bibliographicalExpressions, 'expression', 'expressions'),
+    'author' : getAuthors($bibliography, $lang),
+    'copyright' : getCopyright($bibliography, $lang),
+    'description' : 'Liste des expressions de la bibliographie des Guides de Paris, au sens des FRBR',
+    'keywords' : getKeywords($bibliography, $lang),
+    'url' : $gdp.globals:root || '/gdp/bibliography/expressions'
     }
   let $content := for $bibliographicalExpression in $bibliographicalExpressions return map {
     'header' : 'Expression',
-    'date' : getBiblDates($bibliographicalExpression, $dateFormat),
-    'author' : getBiblAuthors($bibliographicalExpression, $lang),
-    'title' : getBiblTitles($bibliographicalExpression, $lang),
-    'abstract' : getAbstract($bibliographicalExpression, $lang),
+    'authors' : getBiblAuthors($bibliographicalExpression, $lang),
+    'titles' : getBiblTitles($bibliographicalExpression, $lang),
+    'dates' : getBiblDates($bibliographicalExpression, $dateFormat),
+    'manifestations' : getBiblManifestations($bibliographicalExpression, $lang),
     'tei' : $bibliographicalExpression,
     'url' : getUrl($bibliographicalExpression/@xml:id, '/gdp/bibliography/expressions/', $lang)
     }
@@ -522,20 +532,21 @@ declare function getBibliographicalExpression($queryParams) {
   let $bibliographicalExpressionId := map:get($queryParams, 'expressionId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalExpression := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalExpressionId]
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliographicalExpression := $bibliography//tei:biblStruct[@xml:id = $bibliographicalExpressionId]
   let $meta := map{
     'title' : 'Expression',
-    'author' : getAuthors($bibliographicalExpression, $lang),
-    'copyright' : getCopyright($bibliographicalExpression, $lang),
-    'description' : getDescription($bibliographicalExpression, $lang),
-    'keywords' : getKeywords($bibliographicalExpression, $lang),
+    'author' : getAuthors($bibliography, $lang),
+    'copyright' : getCopyright($bibliography, $lang),
+    'description' : $bibliographicalExpression,
+    'keywords' : getKeywords($bibliography, $lang),
     'url' : getUrl($bibliographicalExpression/@xml:id, '/gdp/bibliography/expressions/', $lang) 
     }
   let $content := map {
-    'title' : getTitles($bibliographicalExpression, $lang),
-    'date' : getDate($bibliographicalExpression, $dateFormat),
-    'author' : getAuthors($bibliographicalExpression, $lang),
-    'abstract' : getAbstract($bibliographicalExpression, $lang),
+    'header' : 'Expression',
+    'authors' : getBiblAuthors($bibliographicalExpression, $lang),
+    'titles' : getBiblTitles($bibliographicalExpression, $lang),
+    'dates' : getDate($bibliographicalExpression, $dateFormat),
     'tei' : $bibliographicalExpression,
     'url' : getUrl($bibliographicalExpression/@xml:id, '/gdp/bibliography/expressions/', $lang)
     }
@@ -554,19 +565,22 @@ declare function getBibliographicalExpression($queryParams) {
 declare function getBibliographicalManifestationsList($queryParams) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalManifestations := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@type='manifestation']
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliographicalManifestations := $bibliography//tei:biblStruct[@type='manifestation']
   let $meta := map{
     'title' : 'Liste des manifestations',
-    'author' : getAuthors($bibliographicalManifestations, $lang),
-    'copyright' : getCopyright($bibliographicalManifestations, $lang),
-    'description' : getDescription($bibliographicalManifestations, $lang),
-    'keywords' : getKeywords($bibliographicalManifestations, $lang)
+    'quantity' : getQuantity($bibliographicalManifestations, 'manifestation', 'manifestations'),
+    'author' : getAuthors($bibliography, $lang),
+    'copyright' : getCopyright($bibliography, $lang),
+    'description' : 'Liste des manifestations de la bibliographie des Guides de Paris, au sens des FRBR',
+    'keywords' : getKeywords($bibliography, $lang),
+    'url' : $gdp.globals:root || 'gdp/bibliography/manifestations'
     }
   let $content := for $bibliographicalManifestation in $bibliographicalManifestations return map {
-    'title' : getTitles($bibliographicalManifestation, $lang),
-    'date' : getDate($bibliographicalManifestation, $dateFormat),
-    'author' : getAuthors($bibliographicalManifestation, $lang),
-    'abstract' : getAbstract($bibliographicalManifestation, $lang),
+    'header' : 'Manifestation',
+    'authors' : getBiblAuthors($bibliographicalManifestation, $lang),
+    'titles' : getBiblTitles($bibliographicalManifestation, $lang),
+    'dates' : getBiblDates($bibliographicalManifestation, $dateFormat),
     'tei' : $bibliographicalManifestation,
     'url' : getUrl($bibliographicalManifestation/@xml:id, '/gdp/bibliography/manifestations/', $lang)
     }
@@ -586,20 +600,20 @@ declare function getBibliographicalManifestation($queryParams) {
   let $bibliographicalManifestationId := map:get($queryParams, 'manifestationId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalManifestation := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalManifestationId]
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliographicalManifestation := $bibliography//tei:biblStruct[@xml:id = $bibliographicalManifestationId]
   let $meta := map{
-    'title' : 'Expression',
-    'author' : getAuthors($bibliographicalManifestation, $lang),
-    'copyright' : getCopyright($bibliographicalManifestation, $lang),
-    'description' : getDescription($bibliographicalManifestation, $lang),
-    'keywords' : getKeywords($bibliographicalManifestation, $lang),
+    'title' : 'Manifestation',
+    'author' : getAuthors($bibliography, $lang),
+    'copyright' : getCopyright($bibliography, $lang),
+    'description' : $bibliographicalManifestation,
+    'keywords' : getKeywords($bibliography, $lang),
     'url' : getUrl($bibliographicalManifestation/@xml:id, '/gdp/bibliography/manifestations/', $lang)
     }
   let $content := map {
-    'title' : getTitles($bibliographicalManifestation, $lang),
-    'date' : getDate($bibliographicalManifestation, $dateFormat),
-    'author' : getAuthors($bibliographicalManifestation, $lang),
-    'abstract' : getAbstract($bibliographicalManifestation, $lang),
+    'authors' : getBiblAuthors($bibliographicalManifestation, $lang),
+    'titles' : getBiblTitles($bibliographicalManifestation, $lang),
+    'dates' : getBiblDates($bibliographicalManifestation, $dateFormat),
     'tei' : $bibliographicalManifestation,
     'url' : getUrl($bibliographicalManifestation/@xml:id, '/gdp/bibliography/manifestations/', $lang)
     }
@@ -618,22 +632,24 @@ declare function getBibliographicalManifestation($queryParams) {
 declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalItems := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliographicalItems := $bibliography//tei:biblStruct
   let $meta := map{
     'title' : 'Liste des items bibliographiques', 
     'quantity' : getQuantity($bibliographicalItems, 'item', 'items'),
-    'author' : getAuthors($bibliographicalItems, $lang),
-    'copyright' : getCopyright($bibliographicalItems, $lang),
-    'description' : getDescription($bibliographicalItems, $lang),
-    'keywords' : getKeywords($bibliographicalItems, $lang) 
+    'author' : getAuthors($bibliography, $lang),
+    'copyright' : getCopyright($bibliography, $lang),
+    'description' : getDescription($bibliography, $lang),
+    'keywords' : getKeywords($bibliography, $lang),
+    'url' : $gdp.globals:root || 'gdp/bibliography/items'
     }
   let $content := for $bibliographicalItem in $bibliographicalItems return map {
-    'title' : getTitles($bibliographicalItem, $lang),
-    'date' : getDate($bibliographicalItem, $dateFormat),
-    'author' : getAuthors($bibliographicalItem, $lang),
-    'abstract' : getAbstract($bibliographicalItem, $lang),
+    'header' : 'Item bibliographique',
+    'authors' : getBiblAuthors($bibliographicalItem, $lang),
+    'titles' : getBiblTitles($bibliographicalItem, $lang),
+    'dates' : getBiblDates($bibliographicalItem, $dateFormat),
     'tei' : $bibliographicalItem,
-    'url' : getUrl($bibliographicalItem/@xml:id, '/gdp/bibliography/manifestations/', $lang)
+    'url' : getUrl($bibliographicalItem/@xml:id, '/gdp/bibliography/items/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -651,21 +667,22 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
   let $bibliographicalItemId := map:get($queryParams, 'itemId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $bibliographicalItem := synopsx.models.synopsx:getDb($queryParams)//tei:biblStruct[@xml:id=$bibliographicalItemId]
+  let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
+  let $bibliographicalItem := $bibliography//tei:biblStruct[@xml:id=$bibliographicalItemId]
   let $meta := map{
     'title' : 'Item bibliographique',
     'author' : getAuthors($bibliographicalItem, $lang),
     'copyright' : getCopyright($bibliographicalItem, $lang),
     'description' : getDescription($bibliographicalItem, $lang),
-    'keywords' : getKeywords($bibliographicalItem, $lang) 
+    'keywords' : getKeywords($bibliographicalItem, $lang), 
+    'url' : getUrl($bibliographicalItem/@xml:id, '/gdp/bibliography/items/', $lang)
     }
   let $content := map {
-    'title' : getTitles($bibliographicalItem, $lang),
-    'date' : getDate($bibliographicalItem, $dateFormat),
-    'author' : getAuthors($bibliographicalItem, $lang),
-    'abstract' : getAbstract($bibliographicalItem, $lang),
+    'authors' : getBiblAuthors($bibliographicalItem, $lang),
+    'titles' : getBiblTitles($bibliographicalItem, $lang),
+    'dates' : getDate($bibliographicalItem, $dateFormat),   
     'tei' : $bibliographicalItem,
-    'url' : getUrl($bibliographicalItem/@xml:id, '/gdp/bibliography/manifestations/', $lang)
+    'url' : getUrl($bibliographicalItem/@xml:id, '/gdp/bibliography/items/', $lang)
     }
   return  map{
     'meta'    : $meta,

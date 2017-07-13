@@ -121,8 +121,8 @@ declare function getBiblAuthors($content as element()*, $lang as xs:string) as x
  : @todo formats
  :)
 declare function getBiblDates($content as element()*, $dateFormat as xs:string) {
-  fn:normalize-space(
-    $content//tei:imprint/tei:date
+  fn:string-join(
+    $content//tei:imprint/tei:date, ', '
   )
 };
 
@@ -161,7 +161,7 @@ declare function getBiblManifestations($content as element(), $dateFormat as xs:
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
  :)
-declare function getBiblTitles($content as element()*, $lang as xs:string) as element()* {
+declare function getBiblTitle($content as element()*, $lang as xs:string) as element()* {
   $content//tei:title[@level='m']
 };
 
@@ -172,7 +172,7 @@ declare function getBiblTitles($content as element()*, $lang as xs:string) as el
  : @param $lang iso langcode starts
  : @return a string
  :)
-declare function getBiblTitle($content as element()*, $lang as xs:string){
+declare function getBiblTitles($content as element()*, $lang as xs:string){
   fn:string-join(
     for $title in $content//tei:title
       return fn:normalize-space($title),
