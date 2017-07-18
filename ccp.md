@@ -127,7 +127,7 @@ La navigation du site privilégie la simplicité, elle met en avant la consultat
 
 Le corpus des Guides de Paris se compose de plusieurs corpus d’auteurs qui comportent chacun plusieurs éditions. L’interface du site des Guides de Paris est destinée à donner à lire les textes mais aussi à proposer des accès synoptiques sur le corpus. Il est possible de consulter directement une édition particulière sans devoir passer par la recherche. Depuis, une édition donnée, on peut également aisément accéder aux autres éditions ainsi qu’au contenus en rapport dans les autres corpus.
 
-L’interface de consultation, sobre et distinguée, met l’accent sur la lisibilité et le confort de lecture du texte. À cette fin, un soin particulier est accordé au traitement typographique qui doit offrir une belle régularité. Plusieurs rendus typographiques sont à prévoir pour distinguer les différents niveaux de notes, les contenus clivables et diverses interactions sur le texte.c
+L’interface de consultation, sobre et distinguée, met l’accent sur la lisibilité et le confort de lecture du texte. À cette fin, un soin particulier est accordé au traitement typographique qui doit offrir une belle régularité. Plusieurs rendus typographiques sont à prévoir pour distinguer les différents niveaux de notes, les contenus cliquables et diverses interactions sur le texte.
 
 Une liste de corpus donne en premier lieu accès à la consultation des Guides. Celle-ci donne accès aux corpus d’auteurs et aux éditions en particulier. Cette interface permet aussi de définir le périmètre d’une recherche simple ou avancée par l’intermédiaire de filtres sur le corpus.
 
@@ -145,6 +145,10 @@ Le corpus fait l’objet de plusieurs présentations alternatives. On peut  :
 
 Il pourrait être intéressant de pouvoir utiliser la même présentation pour les listes de résultats @quest
 
+@quest mettre en avant la recherche par objets, ne pas exclure que des personnes moins habituées puissent faire directement des recherche sur des objets. Voire dans quelle mesure il n’est pas possible de rendre dès la première page les deux types d’usage. Croiser un usage savant centré sur les textes, et un usage pour les curieux.
+
+@quest désigner autrement les index, penser au public étudiant qui cherche des informations sur un édifice. Sébastien Bontemps, indexation d’un ensemble topographique Marot, Pérelle, Silvestre. Juliette Jestaz lui a également écrit, elle est très intéressée par le projet pour la BHVP.
+
 ##### Liste des corpus par auteurs
 
 Les corpus sont listés par auteurs avec une indication du nombre de textes disponibles pour chaque auteur. Pour chaque corpus d’auteur, un menu accordéon permet de visualiser la liste des textes.
@@ -157,14 +161,22 @@ La liste des textes peut être affichée par date d’édition afin de visualise
 
 Propose-t-on des facettes dans la présentation des corpus
 
-- éditeurs
+- auteur
+
+- nombre d’édition
+
+  ​
+
+
 - dates d’édition
+- éditeurs
 - lieu d’édition
 - pagination / étendue ?? 
-- par occurences
-- par nombre d’éditions
+- par occurrences
 
 @quest La présentation de la bibliographie doit-elle être séparée ou bien utilise-t-elle la même interface ?
+
+@todo proposer le tri par occurrences dans la liste des résultats
 
 #### Consultation linéaire du texte
 
@@ -190,11 +202,35 @@ Plusieurs éléments sont facilement accessibles dans la page sans pour autant s
 - localisation physique du passage dans le volume (visualisation tomaison, dimension du passage, taille relative, autres occurrences dans le texte) @quest faut-il donner une indication sur le type de section, sachant que normalement cette indication est déjà rendue typographiquement ?
 - liste des entités mentionnées et illustrations
 
+#### Liens et renvois
+
+Plusieurs mécanismes de liens et renvois sont prévus au sein de l’application afin de pouvoir naviguer au sein d’un texte donné, au sein d’un corpus d’auteur, et au sein du corpus en général.
+
+Plusieurs types de liens sont à traiter distinctement
+
+- liens internes présents dans l’édition originale
+- liens internes générés grâces aux index (dans l’édition, parmi les autres éditions du corpus d’auteur)
+- liens externes établis graces aux index (dans l’ensemble du corpus des Guides de Paris)
+
+Dans l’idéal, lors de la consultation du texte, le lecteur peut suivre un lien présent dans l’édition originale, visualiser une liste de passages qui mentionnent le même édifice dans le texte ou les autres éditions générée à partir de l’index, et les autres mentions dans l’ensemble du corpus.
+
+L’historique du navigateur doit permettre de revenir aux contenus précédemment consultées facilement, si possible en conservant la position dans la page.
+
+#### Citabilité
+
+Afin de faciliter la citabilité des ressources publiées chacune d’entre elle est assortie d’une URI pérenne facilement accessible sur la page.
+
+Les portions de texte d’une édition peuvent être facilement référencées au moyen d’un pointeur par l’intermédiaire d’un bouton accessible lors de la sélection d’une portion de texte.
+
+Le copier-coller sur une sélection de texte, copie dans le presse-papier le texte, suivi d’une référence bibliographique mise en forme et d’un pointeur.
+
+La génération des pointeurs utilise ici le même mécanisme que celui utilisé pour la gestion des annotations. Le bouton pour copier l’URI doit être coordonné avec les interactions pour l’annotation du corpus et l’indexation.
+
 #### Consultation d’une liste de résultats
 
 Une recherche dans le corpus affiche une liste de résultats. Cette liste de résultat présente un certain nombre de filtres afin de restreindre le nombre de résultats ou affiner la recherche, elle est également triable selon plusieurs critères.
 
-@todo préciser les filtres : corpus d’auteur, texte, intervalle chronologique, entrées d’index de lieux, entrées d’index d’œuvres, entrées d’index de personne
+@todo préciser les filtres : corpus d’auteur, éditions, intervalle chronologique, entrées d’index de lieux, entrées d’index d’œuvres, entrées d’index de personne
 
 @todo déterminer les tris : date, corpus, éditions, taille du passage
 
@@ -209,7 +245,6 @@ Depuis le module de lecture, il est possible de consulter l’ensemble de la lis
 La liste de résultats peut être affichée de différente manière
 
 - liste
-- tableau ?
 - visualisation géographique
 - visualisation des entités
 - ...
@@ -236,37 +271,16 @@ Filtres topographiques
 - paroisse (Alpage ?)
 - type de lieu
 
+@quest une des critiques d’Alpage défaut de traitement des paroisses
+
 Filtres œuvres
 
-- auteur
-- date
-- catégorie (monuments funéraires, fresques, tableau de chevalet, sculpture)
+- auteur d’œuvre
+- date de création
+- catégorie (peinture de chevalet, sculpture, monuments funéraires, fresques)
 - matériaux ?
 - sujets ?
-
-#### Liens et renvois
-
-Plusieurs mécanismes de liens et renvois sont prévus au sein de l’application afin de pouvoir naviguer au sein d’un texte donné, au sein d’un corpus d’auteur, et au sein du corpus en général.
-
-Plusieurs types de liens sont à traiter distinctement
-
-- liens internes présents dans l’édition originale
-- liens internes générés grâces aux index (dans l’édition, parmi les autres éditions du corpus d’auteur)
-- liens externes établis graces aux index (dans l’ensemble du corpus des Guides de Paris)
-
-Dans l’idéal, lors de la consultation du texte, le lecteur peut suivre un lien présent dans l’édition originale, visualiser une liste de passages qui mentionnent le même édifice dans le texte ou les autres éditions générée à partir de l’index, et les autres mentions dans l’ensemble du corpus.
-
-L’historique du navigateur doit permettre de revenir aux contenus précédemment consultées facilement, si possible en conservant la position dans la page.
-
-#### Citabilité
-
-Afin de faciliter la citabilité des ressources publiées chacune d’entre elle est assortie d’une URI pérenne facilement accessible sur la page.
-
-Les portions de texte d’une édition peuvent être facilement référencées au moyen d’un pointeur par l’intermédiaire d’un bouton accessible lors de la sélection d’une portion de texte.
-
-Le copier-coller sur une sélection de texte, copie dans le presse-papier le texte, suivi d’une référence bibliographique mise en forme et d’un pointeur.
-
-La génération des pointeurs utilise ici le même mécanisme que celui utilisé pour la gestion des annotations. Le bouton pour copier l’URI doit être coordonné avec les interactions pour l’annotation du corpus et l’indexation.
+- commanditaire ?
 
 #### Base bibliographique
 
@@ -316,20 +330,22 @@ L’index patronymique
 - Vedette normalisée
 - Formes attestées du nom
 - Nom, prénoms, particule, composantes du nom, etc.
-- Titres
-- Dates d’existence et lieux de naissance et de décès
-- Occupations
-- Relations
+- Titres ?
+- Occupations ?
+- Dates d’existence
+- Lieux de naissance et de décès ??
+- Relations ??
 
 #### Index des œuvres
 
 - Vedette normalisée
 - formes attestées du nom
+- créateur de l’œuvre
 - localisation
+- commanditaires
+- catégorie de l’œuvre (peinture de chevalet, décors peints et sculptés, sculpture et monument, édifices architecturaux (ponts, hôtels, édifices religieux) )
 - dates
-- auteur
-- commanditaire
-- localisation dans des collections publiques
+- lieu de conservation
 
 Comment récupérer les désignations du nom de lieu et éviter la répétition de la saisie
 
@@ -451,7 +467,71 @@ dates des édifices/œuvres traités
 
 ### Implémentation du module d’annotation et d’indexation
 
-L’application des Guides de Paris offre plusieurs modalités d’annotation pour outiller la lecture des textes et leur indexation. Les différents passages des textes peuvent faire l’objet d’annotation au format OpenAnnotation privées ou partageables. Ces annotation peuvent être catégorisées de manière à faciliter le travail d’édition des textes et notamment recueillir le signalement d’erreurs éventuelles dans la transcription. Les annotations catégorisées de la sorte sont automatiquement rendues publiques.
+L’application des Guides de Paris offre plusieurs modalités d’annotation pour outiller la lecture des textes et leur indexation. 
+
+#### Gestion des utilisateurs
+
+The Guides de Paris web application requires a customized users facility which doesn’t relay on the default BaseX users module. 
+
+This feature uses the delegated authentication providers protocol OpenAuth 2.0.
+
+[https://oauth.net](https://oauth.net/)
+
+[http://openid.net/specs/openid-authentication-2_0.html](http://openid.net/specs/openid-authentication-2_0.html)
+
+It should
+
+- allow identification from the following delegated authentification providers : Google, Dropbox, Yahoo, Twitter, Facebook, LinkedIn
+- creation and editing profile in the application
+- fine admin rights controls (see below)
+- public profiles with a list of contributions
+
+#### Voting process and review states
+
+Each Registered user submission is subjected to a reviewing using a voting process. These submissions could be "Under review", "Accepted", "Reverted" or marked as "Vandalism".
+
+1. An item *Under review* shall be accepted to become the available version if it receives a minimum number of favorable votes. It would be reverted with a minimum number of unfavorable votes.
+2. When an item is *Accepted* it will not change no matter how many favorable votes it receives. If it receives a minimum number of un-favorable votes, it will become *Reverted* and the previous *Accepted* revision will become the latest version.
+3. If an item is *Reverted*, it could be accepted again and become the latest version if it receives the minimum number of faborable votes and there are no later Accepted of Under review edits for the item. Nothing changes if it receives an un-favorable vote. 
+4. An item in any state, can be marked as "Vandalism". It requires a Platform editor to mark the purported Vandalism as not vandalism. In this case, the revision is marked as reverted and can be moved to Accepted if the conditions in item 3 above are met.
+
+#### Roles and nomination
+
+Users can have one of the following roles : *Super Admin*, *Admin*, *Editor*, *Registered user*
+
+*Super admin* have all the rights.
+
+*Admins* can directly accept, revert or mark as vandalism an item under review. Admins can promote a Registered user to Editor. The Admin contributions are directly Accepted without going thought the normal reviewing process. But they still can be subjected to the voting process and the other review states.
+
+*Editors* are registered user who can votes and review the contributions of all the users.
+
+A *Registred user* can be promoted to Editor through a nomination process. With 5 contributions marked as accepted, a Registred is automatically proposed in the nomination process to become an editor.
+
+### Dashboard and admin pages
+
+Each users can access to a dashboard page with various content against its rights.
+
+This dashboard presents
+
+- a list of Under review contributions (editors)
+- recent editings (admins)
+- recent editings in the following items (editors)
+- my contributions (automatically marked as followed) (editors + admins + Registered users)
+- my followed items (editors + admins + Registered users) with status information on the contributions
+
+### Annotation
+
+Les différents passages des textes peuvent faire l’objet d’annotation au format OpenAnnotation, ces annotations sont soient privées soit publiques. Elles peuvent être catégorisées de manière à faciliter le travail d’édition des textes et notamment recueillir le signalement d’erreurs éventuelles dans la transcription. Les annotations catégorisées de la sorte sont automatiquement rendues publiques.
+
+Type d’annotation
+
+- mot-clef personnalisé
+
+
+- signalement d’une erreur
+
+
+- statut de l’annotation (privé/public)
 
 Plusieurs modalités d’annotation sont prévues pour l’annotation du corpus.
 
@@ -461,7 +541,83 @@ Partage de passages pertinents (et citation canonique)
 
 Utiliser l’annotation pour le signalement des erreurs, et l’indexation.
 
-Indexation et recommandation  
+### Indexation et recommandation
+
+Each named entity that have been marked up in the corpus can be indexed in the public interface. There are three kind of entities : Persons or Corporate bodies, Places, Works of arts. Each entity is described in a standalone file conforming to the *Names, dates, people and places* module of the TEI. (see[www.tei-c.org/release/doc/tei-p5-doc/en/html/ND.html)](http://www.tei-c.org/release/doc/tei-p5-doc/en/html/ND.html))
+
+\- Distinguish the indexed entities from the non-indexed in the interface
+
+\- UX interaction to index one entity
+
+\- XQuery Update of the authority file
+
+\- resolve the entity with an index entries (certainty ?)
+
+\- fill or edit a standardized form based on the entity type (ask reviewing)
+
+\- report missing type
+
+Entity resolution
+
+Assist the user suggesting a list of index entries based on the context and the syntax of the entity.
+
+Use Linked Data to enhance the indexing process proposing existing entities and auto-fill the form.
+
+\- ISNI + DataBnf
+
+\- Onoma
+
+\- Mérimée
+
+\- Wikipédia + Wikidata (résumés)
+
+[https://www.inha.fr/fr/agenda/parcourir-par-annee/en-2017/juin-2017/onoma-un-referentiel-d-acteurs-du-ministere-de-la-culture-ancre-dans-le-web-semantique.html](https://www.inha.fr/fr/agenda/parcourir-par-annee/en-2017/juin-2017/onoma-un-referentiel-d-acteurs-du-ministere-de-la-culture-ancre-dans-le-web-semantique.html)
+
+Travailler sur la journalisation des fichiers d’autorité et le statut.
+
+Prévoir export documents valides dans GitHub. (priority low)
+
+Toutes les entités marquées dans le corpus (personnes, œuvres, lieux) peuvent être indexées de manière collaborative.
+
+Création d’un compte utilisateur et gestion de droits
+
+Statut de l’indexation
+
+Flux
+
+Prévoir des possibilités d’indexation de corpus. Gestion du flux éditorial et des révisions.
+
+### Implémentation du module d’annotation et d’indexation
+
+L’application des Guides de Paris offre plusieurs modalités d’annotation pour outiller la lecture des textes et leur indexation. 
+
+#### Annotation
+
+Les différents passages des textes peuvent faire l’objet d’annotation au format OpenAnnotation, ces annotations sont soient privées soit publiques. Elles peuvent être catégorisées de manière à faciliter le travail d’édition des textes et notamment recueillir le signalement d’erreurs éventuelles dans la transcription. Les annotations catégorisées de la sorte sont automatiquement rendues publiques.
+
+Type d’annotation
+
+- mot-clef personnalisé
+- signalement d’une erreur
+- statut de l’annotation (privé/public)
+
+Plusieurs modalités d’annotation sont prévues pour l’annotation du corpus.
+
+Enregistrement de passages intéressants pour soi-même.
+
+Partage de passages pertinents (et citation canonique)
+
+Utiliser l’annotation pour le signalement des erreurs, et l’indexation.
+
+#### Indexation et recommandation  
+
+Toutes les entités marquées dans le corpus (personnes, œuvres, lieux) peuvent être indexées de manière collaborative.
+
+Création d’un compte utilisateur et gestion de droits
+
+Statut de l’indexation
+
+Flux
 
 Prévoir des possibilités d’indexation de corpus. Gestion du flux éditorial et des révisions. 
 
