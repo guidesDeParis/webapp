@@ -10,6 +10,17 @@
       <li>{dates}</li>
       <li><a href="{url}">{url}</a></li>
     </ul>
+    <ul>
+      <li id="result"></li>
+    </ul>
+    <script><![CDATA[fetch('/gdp/bibliography/manifestations/sauval1724.json')  
+  .then(function(response) {
+    return console.log(response.json())
+  }).then(function(data) {
+  console.log(data);
+}).catch(function() {
+  console.log("Booo");
+});]]></script>
     <hr/>
   </section>
 </article>

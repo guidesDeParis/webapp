@@ -605,7 +605,7 @@ declare function getBibliographicalManifestation($queryParams) {
   let $meta := map{
     'title' : 'Manifestation',
     'author' : getAuthors($bibliography, $lang),
-    'copyright' : getCopyright($bibliography, $lang),
+    (: 'copyright' : getCopyright($bibliography, $lang), :)
     'description' : $bibliographicalManifestation,
     'keywords' : getKeywords($bibliography, $lang),
     'url' : getUrl($bibliographicalManifestation/@xml:id, '/gdp/bibliography/manifestations/', $lang)
