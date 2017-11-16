@@ -560,11 +560,11 @@ dates des édifices/œuvres traités
 
 L’application des Guides de Paris offre plusieurs modalités d’annotation pour outiller la lecture des textes et leur indexation. 
 
-#### F1 Gestion des utilisateurs
+#### F1 Gestion des utilisateurs (high priority)
 
 The Guides de Paris web application requires a customized users facility which doesn’t relay on the default BaseX users module. 
 
-This feature uses the delegated authentication providers protocol OpenAuth 2.0.
+abThis feature uses the delegated authentication providers protocol OpenAuth 2.0.
 
 [https://oauth.net](https://oauth.net/)
 
@@ -577,7 +577,7 @@ It should
 - fine admin rights controls (see below)
 - public profiles with a list of contributions
 
-#### F2 Voting process and review states
+#### F2 Voting process and review states (medium priority)
 
 Each Registered user submission is subjected to a reviewing using a voting process. These submissions could be "Under review", "Accepted", "Reverted" or marked as "Vandalism".
 
@@ -586,7 +586,7 @@ Each Registered user submission is subjected to a reviewing using a voting proce
 3. If an item is *Reverted*, it could be accepted again and become the latest version if it receives the minimum number of faborable votes and there are no later Accepted of Under review edits for the item. Nothing changes if it receives an un-favorable vote. 
 4. An item in any state, can be marked as "Vandalism". It requires a Platform editor to mark the purported Vandalism as not vandalism. In this case, the revision is marked as reverted and can be moved to Accepted if the conditions in item 3 above are met.
 
-#### F3 Roles and nomination
+#### F3 Roles and nomination (medium priority)
 
 Users can have one of the following roles : *Super Admin*, *Admin*, *Editor*, *Registered user*
 
@@ -598,7 +598,7 @@ Users can have one of the following roles : *Super Admin*, *Admin*, *Editor*, *R
 
 A *Registred user* can be promoted to Editor through a nomination process. With 5 contributions marked as accepted, a Registred is automatically proposed in the nomination process to become an editor.
 
-#### F4 Dashboard and admin pages
+#### F4 Dashboard and admin pages (medium priority)
 
 Each users can access to a dashboard page with various content against its rights.
 
@@ -610,61 +610,51 @@ This dashboard presents
 - my contributions (automatically marked as followed) (editors + admins + Registered users)
 - my followed items (editors + admins + Registered users) with status information on the contributions
 
-### G Annotation
+### G Annotation (high priority)
 
 Les différents passages des textes peuvent faire l’objet d’annotation au format OpenAnnotation, ces annotations sont soient privées soit publiques. Elles peuvent être catégorisées de manière à faciliter le travail d’édition des textes et notamment recueillir le signalement d’erreurs éventuelles dans la transcription. Les annotations catégorisées de la sorte sont automatiquement rendues publiques.
 
 Type d’annotation
 
-- mot-clef personnalisé
+- mot-clef personnalisé (priorité moyenne)
 
 
-- signalement d’une erreur
+- signalement d’une erreur (priorité haute)
 
 
-- statut de l’annotation (privé/public)
+- statut de l’annotation privé/public (priorité haute)
 
 Plusieurs modalités d’annotation sont prévues pour l’annotation du corpus.
 
-Enregistrement de passages intéressants pour soi-même.
+- Enregistrement de passages intéressants pour soi-même (priorité haute)
+- Partage de passages pertinents et citation canonique (priorité moyenne)
+- Utiliser l’annotation pour le signalement des erreurs, et l’indexation (priorité moyenne)
 
-Partage de passages pertinents (et citation canonique)
-
-Utiliser l’annotation pour le signalement des erreurs, et l’indexation.
-
-### H Indexation et recommandation
+### H Supervised indexing (high priority)
 
 Each named entity that have been marked up in the corpus can be indexed in the public interface. There are three kind of entities : Persons or Corporate bodies, Places, Works of arts. Each entity is described in a standalone file conforming to the *Names, dates, people and places* module of the TEI. (see[www.tei-c.org/release/doc/tei-p5-doc/en/html/ND.html)](http://www.tei-c.org/release/doc/tei-p5-doc/en/html/ND.html))
 
-\- Distinguish the indexed entities from the non-indexed in the interface
+Process (high priority)
 
-\- UX interaction to index one entity
+- Distinguish the indexed entities from the non-indexed in the interface
+- UX interaction to index one entity
+- XQuery Update of the authority file
+- resolve the entity with an index entries (certainty ?)
+- fill or edit a standardized form based on the entity type (ask reviewing)
+- report missing type
 
-\- XQuery Update of the authority file
+Entity resolution (medium priority)
 
-\- resolve the entity with an index entries (certainty ?)
-
-\- fill or edit a standardized form based on the entity type (ask reviewing)
-
-\- report missing type
-
-Entity resolution
-
-Assist the user suggesting a list of index entries based on the context and the syntax of the entity.
-
-Use Linked Data to enhance the indexing process proposing existing entities and auto-fill the form.
-
-\- ISNI + DataBnf
-
-\- Onoma
-
-\- Mérimée
-
-\- Wikipédia + Wikidata (résumés)
+- Assist the user suggesting a list of index entries based on the context and the syntax of the entity.
+- Use Linked Data to enhance the indexing process proposing existing entities and auto-fill the form.
+  - ISNI + DataBnf
+  - Onoma
+  - Mérimée
+  - Wikipedia + Wikidata (to present a quick presentation of the entity)
 
 [https://www.inha.fr/fr/agenda/parcourir-par-annee/en-2017/juin-2017/onoma-un-referentiel-d-acteurs-du-ministere-de-la-culture-ancre-dans-le-web-semantique.html](https://www.inha.fr/fr/agenda/parcourir-par-annee/en-2017/juin-2017/onoma-un-referentiel-d-acteurs-du-ministere-de-la-culture-ancre-dans-le-web-semantique.html)
 
-Travailler sur la journalisation des fichiers d’autorité et le statut.
+Travailler sur la journalisation des fichiers d’autorité et le statut. (priorité haute)
 
 Prévoir export documents valides dans GitHub. (priority low)
 
@@ -678,73 +668,41 @@ Flux
 
 Prévoir des possibilités d’indexation de corpus. Gestion du flux éditorial et des révisions.
 
-### Implémentation du module d’annotation et d’indexation
-
-L’application des Guides de Paris offre plusieurs modalités d’annotation pour outiller la lecture des textes et leur indexation. 
-
-#### Annotation
-
-Les différents passages des textes peuvent faire l’objet d’annotation au format OpenAnnotation, ces annotations sont soient privées soit publiques. Elles peuvent être catégorisées de manière à faciliter le travail d’édition des textes et notamment recueillir le signalement d’erreurs éventuelles dans la transcription. Les annotations catégorisées de la sorte sont automatiquement rendues publiques.
-
-Type d’annotation
-
-- mot-clef personnalisé
-- signalement d’une erreur
-- statut de l’annotation (privé/public)
-
-Plusieurs modalités d’annotation sont prévues pour l’annotation du corpus.
-
-Enregistrement de passages intéressants pour soi-même.
-
-Partage de passages pertinents (et citation canonique)
-
-Utiliser l’annotation pour le signalement des erreurs, et l’indexation.
-
-#### Indexation et recommandation
-
-Toutes les entités marquées dans le corpus (personnes, œuvres, lieux) peuvent être indexées de manière collaborative.
-
-Création d’un compte utilisateur et gestion de droits
-
-Statut de l’indexation
-
-Flux
-
-Prévoir des possibilités d’indexation de corpus. Gestion du flux éditorial et des révisions. 
-
-### Développements informatiques qui peuvent nécessiter une prestation distincte
-
-#### Moteur de recherche lexical
+#### I Lexical search engine (high priority)
 
 L’ensemble des contenus textuels du site sont susceptibles d’être interrogés en plein texte par l’intermédiaire d’un moteur de recherche lexical. Les sources étant en XML et l’application étant publiée avec BaseX, le moteur de recherche est construit avec XQuery Full-text et BaseX afin de réduire la complexité de l’application.
 
 Plusieurs filtres lexicaux doivent être mis en place afin de faciliter la recherche de résultats
 
-\- utilisation d’une liste de mots vides
-
-\- utilisation d’un lemmatiseur (si possible adapté aux textes du 17e)
-
-#### Gestion des comptes utilisateurs
-
-Module d’annotation et d’indexation
-
-Dépendance avec Hypothesis
+- utilisation d’une liste de mots vides
+- utilisation d’un lemmatiseur (si possible adapté aux textes du 17e)
+- bruit/précision
 
 ### 2.1.2 Fonctions de service complémentaires (qui améliorent, facilitent ou complètent le service rendu)
 
 ### 2.1.3 Contraintes (limitations à la liberté du concepteur-réalisateur)
 
-- Respects des standards (HTML5, ECMA Script ?)
-- Navigateurs cibles
+- Respects des standards du web (HTML5, ECMA Script ?)
+- Navigateurs cibles (le support d’Internet Explorer n’est pas requis)
 
 Accessibilité
 
-- Accessibilité (conformité ARIA, choix de police, raccourcis clavier, etc.)
+- Accessibilité
 - Référentiel d’accessibilité du gouvernement
 
 Développements sous licence libre
 
 ## 2.2 Critères d’appréciation (en soulignant ceux qui sont déterminants pour l’évaluation des réponses)
+
+- compréhension du cadre de l’appel d’offre
+- références dans le domaine de la lecture numérique
+- accessibilité et respects des standards
+
+Lot développement
+
+- compréhension du cadre de l’appel d’offre
+- expériences avec XQuery et les bases de données XML natives
+- respects des standards
 
 ## 2.3 Niveaux des critères d’appréciation et ce qui les caractérise
 
@@ -753,6 +711,8 @@ Développements sous licence libre
 
 
 ### 2.3.2 Niveaux souhaités mais révisables
+
+Les points marqués 
 
 # 3. Cadre de réponse
 
