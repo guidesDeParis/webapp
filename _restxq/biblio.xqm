@@ -281,12 +281,9 @@ function manifestationJson($manifestationId) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'bibliographicalItem.xhtml',
     'xquery' : 'tei2json'
     }
-  return 
-    synopsx.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+  return synopsx.mappings.jsoner:jsoner($queryParams, $result, $outputParams)  
 };
 
 (:~
