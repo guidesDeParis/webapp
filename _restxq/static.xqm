@@ -2,7 +2,7 @@ xquery version '3.0' ;
 module namespace gdp.static = 'gdp.static' ;
 
 (:~
- : This module is a RESTXQ for Paris' guidebooks blog
+ : This module is a rest for Paris' guidebooks blog
  :
  : @author emchateau (Cluster Pasts in the Present)
  : @since 2015-03-02 
@@ -16,7 +16,7 @@ module namespace gdp.static = 'gdp.static' ;
  :
  :)
 
-import module namespace restxq = 'http://exquery.org/ns/restxq';
+import module namespace rest = 'http://exquery.org/ns/restxq';
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 
 declare default function namespace 'gdp.static' ;

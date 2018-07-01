@@ -2,7 +2,7 @@ xquery version "3.0" ;
 module namespace gdp.blog = 'gdp.blog' ;
 
 (:~
- : This module is a RESTXQ for Paris' guidebooks blog
+ : This module is a rest for Paris' guidebooks blog
  :
  : @author emchateau (Cluster Pasts in the Present)
  : @since 2015-02-05 
@@ -17,7 +17,7 @@ module namespace gdp.blog = 'gdp.blog' ;
  : @qst give webpath by dates and pages ?
  :)
 
-import module namespace restxq = 'http://exquery.org/ns/restxq' ;
+import module namespace rest = 'http://exquery.org/ns/restxq' ;
 
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.models.synopsx= 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
@@ -36,7 +36,7 @@ declare variable $gdp.blog:dbName := synopsx.models.synopsx:getProjectDB($gdp.bl
  :
  :)
 declare 
-  %restxq:path('/blog')
+  %rest:path('/blog')
 function index() {
   <rest:response>
     <http:response status="303" message="See Other">
@@ -51,7 +51,7 @@ function index() {
  : @return an html representation of blog's home
  :)
 declare 
-  %restxq:path('/blog/home')
+  %rest:path('/blog/home')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -68,7 +68,7 @@ function blogHome() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'list.xhtml',
+    'pattern' : 'incBlogItem.xhtml',
     'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -80,7 +80,7 @@ function blogHome() {
  : @return a collection of blog's posts
  :)
 declare 
-  %restxq:path('/blog/posts')
+  %rest:path('/blog/posts')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -97,7 +97,7 @@ function blogPosts() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'list.xhtml',
+    'pattern' : 'incBlogItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -110,7 +110,7 @@ function blogPosts() {
  : @return a blog item
  :)
 declare 
-  %restxq:path('/blog/posts/{$entryId}')
+  %rest:path('/blog/posts/{$entryId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
@@ -126,7 +126,7 @@ function blogItem($entryId as xs:string) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'article.xhtml',
+    'pattern' : 'incBlogArticle.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -148,7 +148,7 @@ function blogItem($entryId as xs:string) {
  : ?? `added_after`, `blog`, `blog_tag`, `pmid`, `tag`, `term`
  :)
 declare 
-  %restxq:path('/blog/search')
+  %rest:path('/blog/search')
 function search() {
  'todo'
   };
@@ -158,7 +158,7 @@ function search() {
  : 
  :)
 declare
-  %restxq:path('/blog/tags/{$tagId}')
+  %rest:path('/blog/tags/{$tagId}')
 function entriesByTagId($tagId as xs:string) {
   'todo'
   };
@@ -169,7 +169,7 @@ function entriesByTagId($tagId as xs:string) {
  : @return a collection of categories
  :)
 declare
-  %restxq:path('/blog/categories')
+  %rest:path('/blog/categories')
 function categories() {
   'todo'
   };
@@ -181,7 +181,7 @@ function categories() {
  : @return a collection of blogs entries by category's ID
  :)
 declare
-  %restxq:path('/blog/categories/{$categoryId}')
+  %rest:path('/blog/categories/{$categoryId}')
 function entriesByCategoryId($categoryId as xs:string) {
   'todo'
   };
@@ -192,7 +192,7 @@ function entriesByCategoryId($categoryId as xs:string) {
  : @return a collection of blogs posts authors
  :)
 declare
-  %restxq:path('/blog/authors')
+  %rest:path('/blog/authors')
 function entriesByCategoryId() {
   'todo'
   };
@@ -203,7 +203,7 @@ function entriesByCategoryId() {
  : @return a collection of blogs posts by author
  :)
 declare
-  %restxq:path('/blog/authors/{$authorId}')
+  %rest:path('/blog/authors/{$authorId}')
 function categories($authorId as xs:string) {
   'todo'
   };

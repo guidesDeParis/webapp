@@ -3,6 +3,9 @@
  * @return an asynchrous request with Promise
  * @rmq [Fetch API polyfill](https://github.com/github/fetch) for IE
  * @see https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+ * @rmq to find all the headers fetch('http://example.com').then(function(response) {
+for(let header of response.headers) { console.log(header); }
+})﻿
  */
 
 function status(response) {  
@@ -21,7 +24,7 @@ fetch('http://localhost:8984/gdp/bibliography/items/sauval1724', {
   method: 'get',
   redirect: 'follow',
   headers: new Headers({
-    'Content-Type': 'text/html'
+    'Content-Type': 'application/json'
   })
 })
   .then(status)
@@ -32,9 +35,5 @@ fetch('http://localhost:8984/gdp/bibliography/items/sauval1724', {
   .catch(function(error) {
   console.log('Request failed', error);
 });
-
-function showMore(){
-  
-}
 
 

@@ -1,56 +1,59 @@
+---
+since: 2017-06-23
+log: 2017-07-12
+log: 2017-06-30 travail sur les index et la bibliographie
+log: 2017-06-26 discussion avec Josselin
+log: 2017-06-23 développements
+log: 2017-05-26 développements
+log: 2017-05-19 travail sur la description de l’application
+log: 2017-05-12 structuration du cahier des charges
+
+---
+
 
 
 # Cahier des Clauses Particulières
 
-[Le Cahier des clauses particulières (CCP) est un document qui regroupe les clauses administratives et techniques spécifiques à un marché. La rédaction de ce document utilise le plan-type de la norme AFNOR NF X50-151. Cette norme a depuis été remplacée par la norme NF EN 16271 du 16 février 2013.
-
-- cf. https://fr.wikipedia.org/wiki/Cahier_des_charges_fonctionnel
-- http://scav-csva.org/fps.php?lang=fr]
+[Le Cahier des clauses particulières (CCP) est un document qui regroupe les clauses administratives et techniques spécifiques à un marché. La rédaction de ce document utilise le format ISO]
 
 # 1. Présentation générale du problème
 
 ## 1.1 Projet
 
-Le projet des « Guides de Paris (les historiens des arts et les corpus numériques) » consiste à produire une édition critique électronique d’un corpus de guides de Paris du XVIIe et XVIIIe siècle. La publication s’appuie sur un encodage des textes en XML-TEI et une indexation qui utilise les standards du web sémantique d’après les principes du linked open data.
+Le projet des « Guides de Paris (les historiens des arts et les corpus numériques) » consiste à produire une édition critique électronique d’un corpus de guides de Paris du XVIIe et XVIIIe siècle. La publication s’appuie sur un encodage des textes en XML-TEI et une indexation qui utilise les standards du web sémantique d’après les principes du linked open data.
 
-Au-delà de l’apport du projet à la connaissance de l’émergence d’une conscience patrimoniale et à une réflexion sur les apports de l’édition numérique à l’histoire de l’art, il s’agit d’offrir aux chercheurs des points d’accès multipliés qui facilitent le maniement de ces sources incontournables pour l’histoire de l’art moderne en France (accès chronologiques, topographiques, toponymiques, patronymiques, etc.).
+Au-delà de l’apport du projet à la connaissance de l’émergence d’une conscience patrimoniale et à une réflexion sur les apports de l’édition numérique à l’histoire de l’art, il s’agit d’offrir aux chercheurs des points d’accès multipliés qui facilitent le maniement de ces sources incontournables pour l’histoire de l’art moderne en France (accès chronologiques, topographiques, toponymiques, patronymiques, etc.).
 
-Les sources du projet font l’objet d’une édition structurée et sont publiées sur le web par l’intermédiaire d’une application REST qui utilise une base de données XML native. L’objet de cet appel d’offre concerne la réalisation d’une interface de consultation de ces sources historiques à destination des chercheurs et d’un public d’amateur à l’exclusion des développements XML. 
+http://www.passes-present.eu/fr/node/363
 
-@todo changer la phrase ci-dessus pour l’appel d’offre sur les notes, etc.
-
-http://www.passes-present.eu/fr/node/363 @todo
+Les sources du projet font l’objet d’une édition structurée et sont publiées par l’intermédiaire d’une application REST qui utilise une base de données XML native. L’objet de cet appel d’offre concerne la réalisation d’une interface de consultation de ces sources historiques à destination des chercheurs et d’un public d’amateur.
 
 ### 1.1.1 Finalités
 
-Au terme du contrat, il s’agira de disposer d’une interface publique enrichie qui facilite le travail scientifique sur le corpus des Guides de Paris et la lecture par le grand public. 
-
-Plusieurs priorités ont été identifiées pour la réalisation du projet :
+Au terme du contrat, il s’agira de disposer d’une interface publique enrichie qui facilite le travail scientifique sur le corpus des Guides de Paris. Plusieurs priorités ont été identifiées pour la réalisation du projet :
 
 - le confort de lecture et de travail (ergonomie)
-- la richesse des interactions et la mise en rapport des contenus tirés de la base données (croisement des contenus)
-- la mise en œuvre d’interrogations et de visualisations pertinentes dans corpus (recherches, rebonds, visualisations diverses)
-- les fonctionnalités d’annotation et d’indexation collaborative (collaboratif)
+- la mise en œuvre d’interrogations pertinentes dans corpus (recherches, rebonds, visualisations diverses)
+- les fonctionnalités d’indexation collaborative (collaboratif)
 
 ### 1.1.2 Espérance de retour sur investissement
 
-La réalisation de l’interface de consultation est destinée à faciliter le travail des chercheurs sur le corpus et à intéresser un public d’amateur. Celle-ci est destinée à valoriser l’important effort de structuration des sources déjà effectué. Une première publication des sources a été réalisée en interne afin de concentrer les moyens sur la production d’une interface de consultation innovante aux riches fonctionnalités. L’application constituera la principale concrétisation publique du projet, son design d’interface et les interactions graphiques doivent être particulièrement soignées. Celle-ci doit également être à la fois pérenne et accessible afin de permettre l’accueil du travail des chercheurs de manière durable dans les meilleures conditions.
+La réalisation de l’interface de consultation est destinée à faciliter le travail des chercheurs sur le corpus et à intéresser un public d’amateur. Celle-ci est destinée à valoriser l’important effort de structuration des sources déjà effectué et dont la publication a été réalisée en interne afin de dégager un budget confortable pour la production d’une interface de consultation innovante aux riches fonctionnalités. L’application web constituant la principale concrétisation publique du projet, le design de l’interface et des interactions graphiques doivent être particulièrement soignées. Celle-ci doit également être pérenne et accessible afin de permettre l’accueil du travail des chercheurs dans les meilleures conditions.
 
 ## 1.2 Contexte
-
 ### 1.2.1 Situation du projet par rapport aux autres projets du Labex
 
 Le projet des Guides de Paris est conduit dans le cadre du labex Les passés dans le présent sous la direction de Marianne Cojannot-Le Blanc au sein de l’équipe d’accueil HAR en collaboration avec le laboratoire Modyco, la Bibliothèque nationale de France.
 
-#### Le Labex les Passés dans le présent : histoire, patrimoine, mémoire
+#### Le Labex les Passés dans le présent : histoire, patrimoine, mémoire
 
-Le laboratoire d’excellence (labex) Les passés dans le présent : histoire, patrimoine, mémoire (http://www.passes-present.eu/) porte sur la présence du passé dans la société contemporaine. Il s’attache plus spécifiquement à comprendre les médiations de l’histoire à l’ère du numérique, les politiques de la mémoire, les appropriations sociales du passé en amont et en aval des politiques patrimoniales. La réflexion commune et interdisciplinaire est organisée en deux thèmes interdépendants.
+Le laboratoire d’excellence (labex) Les passés dans le présent : histoire, patrimoine, mémoire (http://www.passes-present.eu/) porte sur la présence du passé dans la société contemporaine. Il s’attache plus spécifiquement à comprendre les médiations de l’histoire à l’ère du numérique, les politiques de la mémoire, les appropriations sociales du passé en amont et en aval des politiques patrimoniales. La réflexion commune et interdisciplinaire est organisée en deux thèmes interdépendants.
 
-Le premier, « Relations au passé : représentations et évaluations », se propose de conduire une analyse globale des représentations du passé à toutes les époques. Le second, « Connaissance active du passé : pratiques et outils de transmission », vise à mettre à disposition de plusieurs catégories de publics de nouveaux corpus numériques, qui portent sur des pans d’histoire antique, médiévale, de la période classique, du début du XXe siècle ou du temps présent.
+Le premier, « Relations au passé : représentations et évaluations », se propose de conduire une analyse globale des représentations du passé à toutes les époques. Le second, « Connaissance active du passé : pratiques et outils de transmission », vise à mettre à disposition de plusieurs catégories de publics de nouveaux corpus numériques, qui portent sur des pans d’histoire antique, médiévale, de la période classique, du début du XXe siècle ou du temps présent.
 
-Inscrit dans une réflexion sur les humanités numériques, le labex Les passés dans le présent entend travailler sur l’interopérabilité des ces corpus entre partenaires mais aussi avec d’autres bases de données, afin de mieux les inscrire dans l’écosystème du Web de données (données liées). Cela implique un travail de modélisation des catalogues et inventaires, s’appuyant sur les standards internationaux de représentation des données et d’enrichissement des métadonnées d’indexation.
+Inscrit dans une réflexion sur les humanités numériques, le labex Les passés dans le présent entend travailler sur l’interopérabilité des ces corpus entre partenaires mais aussi avec d’autres bases de données, afin de mieux les inscrire dans l’écosystème du Web de données (données liées). Cela implique un travail de modélisation des catalogues et inventaires, s’appuyant sur les standards internationaux de représentation des données et d’enrichissement des métadonnées d’indexation.
 
-Enfin, le labex Les passés dans le présent développe un réseau dynamique de formations, ordonnées autour des métiers du patrimoine, de la culture et du texte, de l’histoire et de la sociologie de la mémoire, de l’histoire de l’art.
+Enfin, le labex Les passés dans le présent développe un réseau dynamique de formations, ordonnées autour des métiers du patrimoine, de la culture et du texte, de l’histoire et de la sociologie de la mémoire, de l’histoire de l’art.
 
 Depuis un peu plus de quatre ans, le programme scientifique du labex mobilise la richesse et la pluralité des sciences humaines et sociales autour de ces questions de recherches qui font l’objet d’études au long cours, d’enquêtes d’ampleur, de croisements inédits entre disciplines, et d’investigations d’un nouveau genre à l’ère du numérique. Celles-ci conduisent à de nouvelles méthodes et de nouveaux dispositifs de recherche.
 
@@ -58,7 +61,7 @@ Depuis un peu plus de quatre ans, le programme scientifique du labex mobilise la
 
 ##### L’équipe d’accueil HAR Histoire des arts et des représentations (EA4414)
 
-Le projet des *Guides de Paris* est porté par l’[équipe d’accueil HAR, Histoire des arts et des représentations (EA 4414)](https://har.u-paris10.fr), un laboratoire de recherche interdisciplinaire qui opère sur l’ensemble de l’histoire de l’art et de l’histoire des figurations, performances et représentations du XVe siècle à nos jours, et sur l’étude et l’emploi de l’image filmique dans la perspective de l’histoire et des sciences humaines. HAR est une unité qui rassemble, au sein de l’Université Paris Nanterre, quarante enseignants chercheurs titulaires et plus de deux cent doctorants. Plusieurs projets de recherche collaboratifs sont portés au sein de l’Équipe d’accueil en partenariat avec le [labex Les passés dans le présent](http://passes-present.eu) et le [labex Arts-H2H](http://www.labex-arts-h2h.fr). Notamment, un [projet sur les registres de la Comédie française](http://cfregisters.org/fr/) conduit en collaboration avec le MIT, ainsi qu’un projet intitulé [Images dialectiques, musées imaginaires, musées virtuels](http://passes-present.eu/fr/node/4415).
+Ce projet est porté par l’[équipe d’accueil HAR, Histoire des arts et des représentations (EA 4414)](https://har.u-paris10.fr), un laboratoire de recherche interdisciplinaire qui opère sur l’ensemble de l’histoire de l’art et de l’histoire des figurations, performances et représentations du XVe siècle à nos jours, et sur l’étude et l’emploi de l’image filmique dans la perspective de l’histoire et des sciences humaines. HAR est une unité qui rassemble, au sein de l’Université Paris Nanterre, 40 enseignants chercheurs titulaires et plus de 200 doctorants. Plusieurs projets de recherche collaboratifs sont portés au sein de l’Équipe d’accueil en partenariat avec le [labex Les passés dans le présent](http://passes-present.eu) et le [labex Arts-H2H](http://www.labex-arts-h2h.fr). Notamment, un [projet sur les registres de la Comédie française](http://cfregisters.org/fr/) conduit en collaboration avec le MIT, ainsi qu’un projet intitulé [Images dialectiques, musées imaginaires, musées virtuels](http://passes-present.eu/fr/node/4415).
 
 ##### Le laboratoire MoDyCo Modèles, Dynamiques, Corpus (UMR 7114)
 
@@ -66,36 +69,36 @@ L’[Unité mixte de recherche MoDyCo, Modèles, Dynamiques, Corpus (UMR 7114)](
 
 ##### La Bibliothèque nationale de France (BnF)
 
-Le projet des Guides de Paris est conduit en partenariat avec la section d’histoire du département département Philosophie, histoire, sciences de l’homme de la [Bibliothèque nationale de France (Bnf)](http://www.bnf.fr) qui met en particulier à disposition la numérisation des ouvrages imprimés à partir de ses riches collections.
+Le projet est conduit en partenariat avec la section d’histoire du département département Philosophie, histoire, sciences de l’homme de la [Bibliothèque nationale de France (Bnf)](http://www.bnf.fr) qui met en particulier à disposition la numérisation des ouvrages imprimés à partir de ses riches collections.
 
 ### 1.2.2 Études déjà effectuées
 
 #### Structuration des données
 
-La structuration des données du projet a déjà fait l’objet d’une modélisation en XML-TEI et d’une publication sur le web. La [Text Encoding Initiative (TEI)](http://www.tei-c.org/) offre un cadre de travail pour l’édition structurée de textes littéraires ou historiques. Tout à la fois modèle conceptuel, infrastructure technique, et communauté, la TEI s’est largement imposée, au niveau international, comme standard de fait pour la production d’éditions critiques numériques.
+La structuration des données du projet a déjà fait l’objet d’une modélisation en XML-TEI. La [Text Encoding Initiative (TEI)](http://www.tei-c.org/) offre un cadre de travail pour l’édition structurée de textes littéraires ou historiques. Tout à la fois modèle conceptuel, infrastructure technique, et communauté, la TEI s’est largement imposée, au niveau international, comme standard de fait pour la production d’éditions critiques numériques.
 
 Dans le cadre de l’édition des Guides de Paris, les sources ont fait l’objet d’une modélisation et d’une documentation exprimée au moyen du langage ODD qui permet de déclarer de manière formelle son utilisation de la TEI. Plusieurs fichiers sont dérivés de ce modèle tels que des schémas RelaxNG pour la production des fichiers TEI et une documentation au format HTML ou pdf.
 
-Ce modèle peut être consulté à l’adresse http://guidesdeparis.net/documentation @todo
+Ce modèle peut être consulté à l’adresse http://guidesdeparis.net/documentation
 
 #### Modèle sémantique du Labex
 
 Le labex Les passés dans le présent a mis sur pied un groupe de travail sur la modélisation et les référentiels destiné à travailler sur la définition d’un modèle de données commun à l’échelle du labex en vue du partage et de l’exposition des données produites à l’échelle du labex à travers un SPARQL end point. Une preuve de concept a été mise en œuvre dans le cadre de la rétro conversion de grands jeux de données. Le modèle de données repose pour l’essentiel sur une utilisation de l’ontologie de l’Organisation internationale des musée, CIDOC-CRM.
 
-- Tchienehom Pascaline, « ModRef Project: from Creation to Exploitation of CIDOC-CRM Triplestores», *The Fifth International Conference on Building and Exploring Web Based Environments (WEB 2017)*,  Barcelona, Spain 2017. http://inforsid.fr/actes/2017/INFORSID_2017_paper_33.pdf
-- Tchienehom Pascaline, « Humanités Numériques et Web Sémantique : du langage naturel à une représentation computationnelle structurée et sémantique des données », *Digital Humanities - Alliance of Digital Humanities Organizations (ADHO)*, 2017, Montréal, Canada. https://dh2017.adho.org/abstracts/187/187.pdf
+Tchienehom Pascaline, « ModRef Project: from Creation to Exploitation of CIDOC-CRM Triplestores», *The Fifth International Conference on Building and Exploring Web Based Environments (WEB 2017)*,  Barcelona, Spain 2017. http://inforsid.fr/actes/2017/INFORSID_2017_paper_33.pdf
+
+Tchienehom Pascaline, « Humanités Numériques et Web Sémantique : du langage naturel à une représentation computationnelle structurée et sémantique des données », *Digital Humanities - Alliance of Digital Humanities Organizations (ADHO)*, 2017, Montréal, Canada. https://dh2017.adho.org/abstracts/187/187.pdf
 
 #### Mise en œuvre d’une application de publication des sources
 
-Les premiers textes édités en utilisant la modélisation ci-dessus en XML-TEI ont fait l’objet d’une première publication à travers une application web conçue avec la base de données XML native [BaseX](http://basex.org) et du cadre léger de publication de corpus XML [SynopsX](http://synopsx.github.io). Il s’agit d’une application REST conforme aux standards du web sémantique qui définit un schème d’URI pour les différentes ressources du projet qui disposent toutes d’une représentation  HTML. Cette application est entièrement personnalisable par nos soins pour les besoins du projet selon des modalités à convenir avec le prestataire. 
-
-**C’est à partir de cette première publication que doit être conçue l’interface de publication finale qui fait l’objet du présent appel d’offre. Il n’est pas attendu de compétence particulière du prestataire dans le domaine des technologies XML.**
+Les premiers textes édités en XML-TEI en utilisant la modélisation ci-dessus ont fait l’objet d’une première publication à travers une application web conçue avec la base de données XML native [BaseX](http://basex.org) et du cadre léger de publication de corpus XML [SynopsX](http://synopsx.github.io). Il s’agit d’une application REST conforme aux standards du web sémantique qui définit un scheme d’URI pour les différentes ressources du projet qui disposent toutes d’une représentation  HTML. Cette application est entièrement personnalisable par nos soins pour les besoins du projet selon des modalités à convenir avec le prestataire. **C’est à partir de cette première publication que doit être conçue l’interface de publication finale qui fait l’objet du présent appel d’offre. Il n’est pas attendu de compétence particulière du prestataire dans le domaine des technologies XML.**
 
 #### Mémoire de fin d’étude sur l’annotation collaborative du corpus
 
 Dans le cadre d’un stage sur le projet en 2014, Johanna Daniel a publié un mémoire de fin d’étude du Master de l’École nationale des chartes « Technologies numériques appliquées à l’histoire » concernant l’évaluation de plusieurs solutions logicielles pour l’annotation collaborative du corpus.
 
-- Johanna Daniel. *Les outils d’annotation et l’édition scientifique de corpus textuels pour la recherche. L’exemple du projet « Guides de Paris (les historiens des arts et les corpus numériques) »*, Mémoire de stage, M2 professionnalisant « Technologies numériques appliquées à l’Histoire » de l’École des Chartes, septembre 2014. http://johannadaniel.fr/isidoreganesh/memoire/
+Johanna Daniel. *Les outils d’annotation et l’édition scientifique de corpus textuels pour la recherche.*
+*L’exemple du projet « Guides de Paris (les historiens des arts et les corpus numériques) »*, Mémoire de stage, M2 professionnalisant « Technologies numériques appliquées à l’Histoire » de l’École des Chartes, septembre 2014. http://johannadaniel.fr/isidoreganesh/memoire/
 
 ### 1.2.3 Études menées sur des sujets voisins
 
@@ -109,27 +112,19 @@ Aucune phase ultérieure est actuellement prévue pour le projet.
 
 - Design d’interface
 - Intégration web (CSS, JavaScript)
-- Implémentation avec BaseX (si on joint le lot) @todo
+- Implémentation avec BaseX (si on joint le lot)
 
 ### 1.2.6 Parties concernées par le déroulement du projet et ses résultats (demandeurs, utilisateurs)
 
-#### Utilisateurs cibles
-
-Les utilisateurs cibles de l’application qui fait l’objet de l’appel d’offre se composent de chercheurs spécialisés en histoire de l’art et en histoire et d’un public plus large d’amateurs.
-
-L’application web est principalement destinée à la consultation du corpus des Guides de Paris en ligne. Elle constitue un cadre de travail sur les sources qui doit accueillir le mieux possible toutes les opérations de lecture et d’étude des textes. Ainsi, ses fonctionnalités doivent apporter une plus-value réelle par rapport au travail sur papier afin de motiver les utilisateurs à travailler en ligne. Cet aspect est d’autant plus déterminant pour le succès du projet que ceux-ci sont appelés à contribuer à l’enrichissement du corpus en ligne.
-
-Notons que les littératies numériques des chercheurs en histoire ou histoire de l’art peuvent être très variables selon les individus. En outre, comme l’application s’adresse également à un grand public averti, sans rien céder à la simplicité, l’interface doit au maximum privilégier la compréhension la plus intuitive possible et une prise en main rapide. Pour les utilisateurs intensifs, des solutions ergonomiques telles que des raccourcis clavier doivent aussi être proposées. Des utilisateurs tests peuvent au besoin être mobilisés au sein de l’équipe pour les besoins de la réalisation du produit ou organiser des évaluations ergonomiques.
-
 #### Direction scientifique du projet : Marianne Cojannot-Le Blanc,
 
-Marianne Cojannot-Le Blanc est professeure d’histoire de l’art à l’Université Paris X-Nanterre et directrice de l’UFR Sciences sociales, elle est spécialiste de la période moderne et plus particulièrement du XVIIe siècle. Le projet des *Guides de Paris*, les historiens de l’art et les corpus numérique découle directement de sa fréquentation des sources et de ses propres questions de recherche.
+Marianne Cojannot-Le Blanc est professeure d’histoire de l’art à l’Université Paris X-Nanterre et directrice de l’UFR Sciences sociales, elle est spécialiste de la période moderne et plus particulièrement du XVIIe siècle. Le projet des Guides de Paris, les historiens de l’art et les corpus numérique découle directement de sa fréquentation des sources dans le cadre de ses recherches.
 
 mleblanc@u-paris10.fr
 
 #### Conception numérique : Emmanuel Château-Dutier
 
-Emmanuel Château-Dutier est professeur adjoint en muséologie numérique à l’Université de Montréal. Historien de l’architecture et digital humanist, ses recherches portent sur l’administration de l’architecture publique en France au XIXe siècle. Ses travaux concernent par ailleurs la muséologie et l’histoire de l’art numérique. Il a notamment assuré la direction numérique de l’édition critique des Cours d’Antoine Desgodets (ANR Desgodets) puis a occupé les fonctions d’ingénieur d’étude pour le projet des *Guides de Paris* dans sa phase initiale.
+Emmanuel Château-Dutier est professeur adjoint en muséologie numérique à l’Université de Montréal. Historien de l’architecture et digital humanist, ses recherches portent sur l’administration de l’architecture publique en France au XIXe siècle. Ses travaux concernent par ailleurs la muséologie et l’histoire de l’art numérique. Il a notamment assuré la direction numérique de l’édition critique des Cours d’Antoine Desgodets (ANR Desgodets) puis a occupé les fonctions d’ingénieur d’étude pour le projet des Guides de Paris dans sa phase initiale.
 
 emmanuel.chateau.dutier@umontreal.ca
 
@@ -137,25 +132,29 @@ skype: emchateau
 
 #### Suivi de réalisation : Josselin Morvan
 
-Josselin Morvan est ingénieur d’étude au Labex les passés dans le présent pour le projet des *Guides de Paris*. Formé aux technologies numériques appliquées à l’histoire à l’École nationale des chartes, il est historien de l’art et spécialiste de la Text Encoding Initiative. Outre l’encodage des sources XML, il a largement participé à la conception technique du projet et la rédaction du cahier des charges. C’est lui qui assure le suivi de réalisation du projet.
+Josselin Morvan est ingénieur d’étude au Labex les passés dans le présent pour le projet des Guides de Paris. Formé aux technologies numériques appliquées à l’histoire à l’École nationale des chartes, il est historien de l’art et spécialiste de la Text Encoding Initiative. Outre l’encodage des sources XML, il a largement participé à la conception technique du projet et la rédaction du cahier des charges. C’est lui qui assurera le suivi de réalisation du projet.
 
 morvan.josselin@gmail.com
+
+#### Utilisateurs
+
+Plusieurs utilisateurs test peuvent être mobilisés au sein de l’équipe de recherche pour les besoins de la réalisation du projet.
 
 #### Administration du labex Les passés dans le présent
 
 ##### Coordination du labex : Ghislaine Glasson Deschaumes
 
-Ghislaine Glasson Deschaumes coordonne le labex Les passés dans le présent en tant que chef de projet du Labex. C’est le Labex qui coordonne l’appel d’offre et la partie administrative et financière du projet.
+Ghislaine Glasson Deschaumes coordonne le labex Les passés dans le présent en tant que chef de projet.
 
 ghislaine.glasson-deschaumes@u-paris10.fr
+
+#####   Chargée de communication : Hélène de Foucaud
+
+hdefouca@u-paris10.fr
 
 ##### Chargé d’appui aux projets scientifiques : Quentin Roblin
 
 quentin.roblin@u-paris10.fr
-
-##### Chargée de communication : Hélène de Foucaud
-
-hdefouca@u-paris10.fr
 
 ##### Coordonnées du Labex
 
@@ -170,49 +169,74 @@ www.passes-present.eu
 
 ### 1.2.7 Caractère confidentiel s’il y a lieu
 
-Même si le projet ne présente pas de caractère de confidentialité particulier, toute communication publique le concernant devra être effectuée en accord avec le client.
+Si le projet ne présente pas de caractère de confidentialité particulier, toute communication publique concernant le projet devra être effectuée en accord avec le client.
 
 ## 1.3 Énoncé du besoin (finalités du produit pour le futur utilisateur tel que prévu par le demandeur)
 
 ## 1.4 Environnement du produit recherché
-
 ### 1.4.1 Listes exhaustives des éléments (personnes, équipements, matières…) et contraintes (environnement)
 
-L’application des Guides de Paris est hébergée par la très grande infrastructure de recherche [Huma-Num](http://www.huma-num.fr) qui met à disposition sa [grille de service](http://www.huma-num.fr/services-et-outils). L’utilisation de ce service suppose l’adoption d’un certain nombre de bonnes pratiques concernant le respects de standards et la publication de métadonnées (mise à disposition d’un entrepôt OAI-PMH, utilisation de standards bien documentés comme Dublin Core, XML-TEI, ou encore l’ontologie CIDOC-CRM, etc.). 
-
-Le projet dispose actuellement, sur un cluster web mutualisé, d’un environnement Linux avec Java 8 pour faire fonctionner une instance de la base de données XML native BaseX qui sert à la publication des sources XML en HTML et fournit le moteur de recherche. Un reverse proxy HTTP avec Apache HTTP, expose cette application sur le web.
+- BaseX + SynopsX
+- Navigateurs cibles
+- Accessibilité (conformité ARIA, choix de police, raccourcis clavier, etc.)
+- Référentiel d’accessibilité
 
 ### 1.4.2 Caractéristiques pour chaque élément de l’environnement
 
-- Apache HTTP
-- Java version > 8
-- BaseX (dernière version)
-- SynopsX (version 1)
+
 
 # 2. Expression fonctionnelle du besoin
 
 ## 2.1 Fonctions de service et de contrainte
-
 ### 2.1.1 Fonctions de service principales (qui sont la raison d’être du produit)
+### 2.1.2 Fonctions de service complémentaires (qui améliorent, facilitent ou complètent le service rendu)
+### 2.1.3 Contraintes (limitations à la liberté du concepteur-réalisateur)
 
-L’application des Guides de Paris est destinée à offrir au chercheur ou à un public d’amateurs, un environnement en ligne pour la lecture et l’étude d’un corpus de guides historiques sur Paris des XVIIe et XVIIIe siècle. Ces corpus d’auteurs qui compterons à terme plus d’une dizaine d’œuvres qui peuvent faire l’objet de plusieurs éditions successives, font l’objet d’éditions structurées avec XML-TEI (le texte en est scientifiquement transcrit et annoté) en vue d’une publication au format HTML.
+## 2.2 Critères d’appréciation (en soulignant ceux qui sont déterminants pour l’évaluation des réponses)
 
-Cet appel d’offre concerne la conception graphique et interactive d’un environnement de lecture et d’étude du texte qui ménage des fonctionnalités enrichies pour tirer le mieux parti possible des textes numérisés et de leur annotation.
+## 2.3 Niveaux des critères d’appréciation et ce qui les caractérise
+### 2.3.1 Niveaux dont l’obtention est imposée
+### 2.3.2 Niveaux souhaités mais révisables
 
-### A Navigation
+# 3. Cadre de réponse
+
+## 3.1 Pour chaque fonction
+### 3.1.1 Solution proposée
+### 3.1.2 Niveau atteint pour chaque critère d’appréciation de cette fonction et modalités de contrôle
+### 3.1.3 Part du prix attribué à chaque fonction
+
+## 3.2 Pour l’ensemble du produit
+### 3.2.1 Prix de la réalisation de la version de base
+### 3.2.2 Options et variantes proposées non retenues au cahier des charges
+### 3.2.3 Mesures prises pour respecter les contraintes et leurs conséquences économiques
+### 3.2.4 Outils d’installation, de maintenance … à prévoir
+### 3.2.5 Décomposition en modules, sous-ensembles
+### 3.2.6 Prévisions de fiabilité
+### 3.2.7 Perspectives d’évolution technologique
+
+
+
+### Navigation
 
 La navigation du site privilégie la simplicité, elle met en avant la consultation du corpus et comporte des liens vers la présentation générale du projet.
 
-Un certain nombre de rubriques ont été identifiées mais qui pourront faire l’objet de proposition afin de mieux mettre en avant les contenus pour le grand public (accès par lieux, par œuvre, etc.).
-
 - Consulter
-- Index(s)
-- Accès cartographique
-- Bibliographie
-- blog du projet
-- Un pied de page qui donne accès à un « à propos » et aux Conditions générales d’utilisation
 
-### B Consultation du corpus
+- Index(s)
+
+- Accès cartographique
+
+- Bibliographie
+
+- blog du projet
+
+  ​
+
+- à propos (pied de page ?)
+
+- CGU, etc.
+
+### Consultation du corpus
 
 Le corpus des Guides de Paris se compose de plusieurs corpus d’auteurs qui comportent chacun plusieurs éditions. L’interface du site des Guides de Paris est destinée à donner à lire les textes mais aussi à proposer des accès synoptiques sur le corpus. Il est possible de consulter directement une édition particulière sans devoir passer par la recherche. Depuis, une édition donnée, on peut également aisément accéder aux autres éditions ainsi qu’au contenus en rapport dans les autres corpus.
 
@@ -225,9 +249,7 @@ Les textes proprement dits peuvent être consultés de diverses manières :
 - ceux-ci peuvent être lus de manière linéaire du début à la fin
 - mais on peut également consulter le corpus de façon transversale, à partir d’une liste de résultats sur un monument, un artiste, etc.
 
-L’application offre plusieurs modalités de consultation du corpus : une présentation générale du corpus, une consultation linéaire des textes, diverses modalités de recherche ou de consultation transversale.
-
-#### B1 Présentation du corpus
+#### Présentation du corpus
 
 Le corpus fait l’objet de plusieurs présentations alternatives. On peut  :
 
@@ -240,13 +262,13 @@ Il pourrait être intéressant de pouvoir utiliser la même présentation pour l
 
 @quest désigner autrement les index, penser au public étudiant qui cherche des informations sur un édifice. Sébastien Bontemps, indexation d’un ensemble topographique Marot, Pérelle, Silvestre. Juliette Jestaz lui a également écrit, elle est très intéressée par le projet pour la BHVP.
 
-##### B1.1 Liste des corpus par auteurs
+##### Liste des corpus par auteurs
 
 Les corpus sont listés par auteurs avec une indication du nombre de textes disponibles pour chaque auteur. Pour chaque corpus d’auteur, un menu accordéon permet de visualiser la liste des textes.
 
 Cette liste de corpus d’auteurs peut être triée par date ou par ordre alphabétique d’auteur.
 
-##### B1.2 Lister les textes par dates d’édition
+##### Lister les textes par dates d’édition
 
 La liste des textes peut être affichée par date d’édition afin de visualiser les phénomènes éditoriaux.
 
@@ -269,7 +291,7 @@ Propose-t-on des facettes dans la présentation des corpus
 
 @todo proposer le tri par occurrences dans la liste des résultats
 
-#### B2 Consultation linéaire du texte
+#### Consultation linéaire du texte
 
 Chacun des textes est consultable en lecture linéaire, du début à la fin de l’ouvrage. Cette lecture linéaire comporte les éléments suivants :
 
@@ -293,7 +315,7 @@ Plusieurs éléments sont facilement accessibles dans la page sans pour autant s
 - localisation physique du passage dans le volume (visualisation tomaison, dimension du passage, taille relative, autres occurrences dans le texte) @quest faut-il donner une indication sur le type de section, sachant que normalement cette indication est déjà rendue typographiquement ?
 - liste des entités mentionnées et illustrations
 
-#### B3 Liens et renvois
+#### Liens et renvois
 
 Plusieurs mécanismes de liens et renvois sont prévus au sein de l’application afin de pouvoir naviguer au sein d’un texte donné, au sein d’un corpus d’auteur, et au sein du corpus en général.
 
@@ -307,7 +329,7 @@ Dans l’idéal, lors de la consultation du texte, le lecteur peut suivre un lie
 
 L’historique du navigateur doit permettre de revenir aux contenus précédemment consultées facilement, si possible en conservant la position dans la page.
 
-#### B4 Citabilité
+#### Citabilité
 
 Afin de faciliter la citabilité des ressources publiées chacune d’entre elle est assortie d’une URI pérenne facilement accessible sur la page.
 
@@ -317,7 +339,7 @@ Le copier-coller sur une sélection de texte, copie dans le presse-papier le tex
 
 La génération des pointeurs utilise ici le même mécanisme que celui utilisé pour la gestion des annotations. Le bouton pour copier l’URI doit être coordonné avec les interactions pour l’annotation du corpus et l’indexation.
 
-#### B5 Consultation d’une liste de résultats
+#### Consultation d’une liste de résultats
 
 Une recherche dans le corpus affiche une liste de résultats. Cette liste de résultat présente un certain nombre de filtres afin de restreindre le nombre de résultats ou affiner la recherche, elle est également triable selon plusieurs critères.
 
@@ -340,7 +362,7 @@ La liste de résultats peut être affichée de différente manière
 - visualisation des entités
 - ...
 
-### C Index
+### Index
 
 Plusieurs index offrent des modalités d’accès transversales au corpus.
 
@@ -373,50 +395,7 @@ Filtres œuvres
 - sujets ?
 - commanditaire ?
 
-#### C1 Index topographique
-
-L’index topographique présente une vedette et une notice détaillée qui comporte des informations d’autorité et des renseignements historiques.
-
-- Vedette normalisée
-- Formes attestées du nom typées par date
-- Désignation
-- Type de lieu (paroisse, quartier, monument, place, rue, pont, quai, pays, ville, région, etc.)
-- Relations géographiques typées par date (appartenance, notices en rapport...) 
-- Informations de géolocalisation
-
-Des informations chronologiques précisent chaque champs. 
-
-@todo voir quelle utilisation possible des données Alpage 
-
-#### C2 Index patronymique
-
-L’index patronymique
-
-- Vedette normalisée
-- Formes attestées du nom
-- Nom, prénoms, particule, composantes du nom, etc.
-- Titres ?
-- Occupations ?
-- Dates d’existence
-- Lieux de naissance et de décès ??
-- Relations ??
-
-#### C3 Index des œuvres
-
-- Vedette normalisée
-- formes attestées du nom
-- créateur de l’œuvre
-- localisation
-- commanditaires
-- catégorie de l’œuvre (peinture de chevalet, décors peints et sculptés, sculpture et monument, édifices architecturaux (ponts, hôtels, édifices religieux) )
-- dates
-- lieu de conservation
-
-Comment récupérer les désignations du nom de lieu et éviter la répétition de la saisie
-
-Comment gérer les informations concernant les localisation actuelles ? en travaillant sur l’automatisation le plus possible mais en laissant subsidiairement la possibilité de renseigner manuellement ces informations.
-
-### D Base bibliographique
+#### Base bibliographique
 
 Outre le corpus édité, une bibliographie générale des Guides de Paris a été réalisée dans le cadre du projet. Cette base de données permet de restituer les textes édités dans leur contexte éditorial et de mettre en lumière des phénomènes de concurrence éditoriale.
 
@@ -442,7 +421,50 @@ Présenter dans la fiche détaillée des liens vers les fichiers dans les format
 - [http://schema.org/Book](http://schema.org/Book)
 - [http://www.sparontologies.net](http://www.sparontologies.net/) (FRBR et Cidoc-CRM)
 
-### E Visualisations et traitements automatisés
+#### Index topographique
+
+L’index topographique présente une vedette et une notice détaillée qui comporte des informations d’autorité et des renseignements historiques.
+
+- Vedette normalisée
+- Formes attestées du nom typées par date
+- Désignation
+- Type de lieu (paroisse, quartier, monument, place, rue, pont, quai, pays, ville, région, etc.)
+- Relations géographiques typées par date (appartenance, notices en rapport...) 
+- Informations de géolocalisation
+
+Des informations chronologiques précisent chaque champs. 
+
+@todo voir quelle utilisation possible des données Alpage 
+
+#### Index patronymique
+
+L’index patronymique
+
+- Vedette normalisée
+- Formes attestées du nom
+- Nom, prénoms, particule, composantes du nom, etc.
+- Titres ?
+- Occupations ?
+- Dates d’existence
+- Lieux de naissance et de décès ??
+- Relations ??
+
+#### Index des œuvres
+
+- Vedette normalisée
+- formes attestées du nom
+- créateur de l’œuvre
+- localisation
+- commanditaires
+- catégorie de l’œuvre (peinture de chevalet, décors peints et sculptés, sculpture et monument, édifices architecturaux (ponts, hôtels, édifices religieux) )
+- dates
+- lieu de conservation
+
+Comment récupérer les désignations du nom de lieu et éviter la répétition de la saisie
+
+Comment gérer les informations concernant les localisation actuelles ? en travaillant sur l’automatisation le plus possible mais en laissant subsidiairement la possibilité de renseigner manuellement ces informations.
+
+### Visualisations et traitements automatisés
 
 L’application de consultation propose des interfaces de consultation basées sur un traitement automatisé du texte.
 
@@ -453,13 +475,13 @@ L’application de consultation propose des interfaces de consultation basées s
 
 Ces visualisations sont importantes car elles sont destinées à fournir à l’utilisateur des vues synthétiques sur le corpus. Il s’agit ici de faire exister le corpus en tant que corpus.
 
-#### E1 Comparaison des lieux variants
+#### Comparaison des lieux variants
 
 La collation des lieux variants permet de visualiser dans l’interface les différences d’un même passage parmi plusieurs éditions. Cette collation est réalisée au moyen de l’algorithme [CollateX](https://collatex.net) qui présente une liste de positions et des chaînes de caractères concernées au format JSON. Les lieux variants sont affichés sous la forme d’une carte de points chauds (heat map) en surlignage transparent du texte. Des filtres de sélection permettent le choix des éditions et il est possible de lire les variantes au survol.
 
 @todo vérifier l’algorithme, cibler les visualisations http://www.juxtasoftware.org/about/
 
-#### E2 Accès lexicaux
+#### Accès lexicaux
 
 L’application présente plusieurs accès lexicaux basés sur l’exploitation du traitement automatique de la langue. Ces accès présentent des listes d’occurrences et de co-occurences qui restituent leurs contextes lexicaux.
 
@@ -467,7 +489,7 @@ L’application présente plusieurs accès lexicaux basés sur l’exploitation 
 
 http://voyant-tools.org
 
-#### E3 Accès cartographiques
+#### Accès cartographiques
 
 L’**accès cartographique** repose sur une géolocalisation des entrées d’index des œuvres. La localisation des parcelles repose sur les entrées documentées par le projet Alpage. Compte tenu de la nature des ouvrages publiés, l’accès topographique est une dimension importante de la consultation des guides. Un des enjeux de la visualisation est de parvenir à faire apparaître les présences et les absences à travers le corpus. L‘interface doit permettre la sélection des textes et des éditions afin de déterminer les points de visualisation.
 
@@ -540,7 +562,7 @@ exemples de référence :
 - [http://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&version=1.2&query=%28gallica%20all%20%22Piganiol%22%29&suggest=0](http://gallica.bnf.fr/services/engine/search/sru?operation=searchRetrieve&version=1.2&query=%28gallica%20all%20%22Piganiol%22%29&suggest=0)
 - [http://mapoflondon.uvic.ca](http://mapoflondon.uvic.ca/)
 
-#### E4 Visualisations statistiques
+#### Visualisations statistiques
 
 (à déterminer)
 
@@ -556,15 +578,15 @@ dates des édifices/œuvres traités
 
 @todo y réfléchir
 
-### F Implémentation du module d’annotation et d’indexation
+### Implémentation du module d’annotation et d’indexation
 
 L’application des Guides de Paris offre plusieurs modalités d’annotation pour outiller la lecture des textes et leur indexation. 
 
-#### F1 Gestion des utilisateurs (high priority)
+#### Gestion des utilisateurs
 
 The Guides de Paris web application requires a customized users facility which doesn’t relay on the default BaseX users module. 
 
-abThis feature uses the delegated authentication providers protocol OpenAuth 2.0.
+This feature uses the delegated authentication providers protocol OpenAuth 2.0.
 
 [https://oauth.net](https://oauth.net/)
 
@@ -577,7 +599,7 @@ It should
 - fine admin rights controls (see below)
 - public profiles with a list of contributions
 
-#### F2 Voting process and review states (medium priority)
+#### Voting process and review states
 
 Each Registered user submission is subjected to a reviewing using a voting process. These submissions could be "Under review", "Accepted", "Reverted" or marked as "Vandalism".
 
@@ -586,7 +608,7 @@ Each Registered user submission is subjected to a reviewing using a voting proce
 3. If an item is *Reverted*, it could be accepted again and become the latest version if it receives the minimum number of faborable votes and there are no later Accepted of Under review edits for the item. Nothing changes if it receives an un-favorable vote. 
 4. An item in any state, can be marked as "Vandalism". It requires a Platform editor to mark the purported Vandalism as not vandalism. In this case, the revision is marked as reverted and can be moved to Accepted if the conditions in item 3 above are met.
 
-#### F3 Roles and nomination (medium priority)
+#### Roles and nomination
 
 Users can have one of the following roles : *Super Admin*, *Admin*, *Editor*, *Registered user*
 
@@ -598,7 +620,7 @@ Users can have one of the following roles : *Super Admin*, *Admin*, *Editor*, *R
 
 A *Registred user* can be promoted to Editor through a nomination process. With 5 contributions marked as accepted, a Registred is automatically proposed in the nomination process to become an editor.
 
-#### F4 Dashboard and admin pages (medium priority)
+### Dashboard and admin pages
 
 Each users can access to a dashboard page with various content against its rights.
 
@@ -610,51 +632,61 @@ This dashboard presents
 - my contributions (automatically marked as followed) (editors + admins + Registered users)
 - my followed items (editors + admins + Registered users) with status information on the contributions
 
-### G Annotation (high priority)
+### Annotation
 
 Les différents passages des textes peuvent faire l’objet d’annotation au format OpenAnnotation, ces annotations sont soient privées soit publiques. Elles peuvent être catégorisées de manière à faciliter le travail d’édition des textes et notamment recueillir le signalement d’erreurs éventuelles dans la transcription. Les annotations catégorisées de la sorte sont automatiquement rendues publiques.
 
 Type d’annotation
 
-- mot-clef personnalisé (priorité moyenne)
+- mot-clef personnalisé
 
 
-- signalement d’une erreur (priorité haute)
+- signalement d’une erreur
 
 
-- statut de l’annotation privé/public (priorité haute)
+- statut de l’annotation (privé/public)
 
 Plusieurs modalités d’annotation sont prévues pour l’annotation du corpus.
 
-- Enregistrement de passages intéressants pour soi-même (priorité haute)
-- Partage de passages pertinents et citation canonique (priorité moyenne)
-- Utiliser l’annotation pour le signalement des erreurs, et l’indexation (priorité moyenne)
+Enregistrement de passages intéressants pour soi-même.
 
-### H Supervised indexing (high priority)
+Partage de passages pertinents (et citation canonique)
+
+Utiliser l’annotation pour le signalement des erreurs, et l’indexation.
+
+### Indexation et recommandation
 
 Each named entity that have been marked up in the corpus can be indexed in the public interface. There are three kind of entities : Persons or Corporate bodies, Places, Works of arts. Each entity is described in a standalone file conforming to the *Names, dates, people and places* module of the TEI. (see[www.tei-c.org/release/doc/tei-p5-doc/en/html/ND.html)](http://www.tei-c.org/release/doc/tei-p5-doc/en/html/ND.html))
 
-Process (high priority)
+\- Distinguish the indexed entities from the non-indexed in the interface
 
-- Distinguish the indexed entities from the non-indexed in the interface
-- UX interaction to index one entity
-- XQuery Update of the authority file
-- resolve the entity with an index entries (certainty ?)
-- fill or edit a standardized form based on the entity type (ask reviewing)
-- report missing type
+\- UX interaction to index one entity
 
-Entity resolution (medium priority)
+\- XQuery Update of the authority file
 
-- Assist the user suggesting a list of index entries based on the context and the syntax of the entity.
-- Use Linked Data to enhance the indexing process proposing existing entities and auto-fill the form.
-  - ISNI + DataBnf
-  - Onoma
-  - Mérimée
-  - Wikipedia + Wikidata (to present a quick presentation of the entity)
+\- resolve the entity with an index entries (certainty ?)
+
+\- fill or edit a standardized form based on the entity type (ask reviewing)
+
+\- report missing type
+
+Entity resolution
+
+Assist the user suggesting a list of index entries based on the context and the syntax of the entity.
+
+Use Linked Data to enhance the indexing process proposing existing entities and auto-fill the form.
+
+\- ISNI + DataBnf
+
+\- Onoma
+
+\- Mérimée
+
+\- Wikipédia + Wikidata (résumés)
 
 [https://www.inha.fr/fr/agenda/parcourir-par-annee/en-2017/juin-2017/onoma-un-referentiel-d-acteurs-du-ministere-de-la-culture-ancre-dans-le-web-semantique.html](https://www.inha.fr/fr/agenda/parcourir-par-annee/en-2017/juin-2017/onoma-un-referentiel-d-acteurs-du-ministere-de-la-culture-ancre-dans-le-web-semantique.html)
 
-Travailler sur la journalisation des fichiers d’autorité et le statut. (priorité haute)
+Travailler sur la journalisation des fichiers d’autorité et le statut.
 
 Prévoir export documents valides dans GitHub. (priority low)
 
@@ -668,76 +700,60 @@ Flux
 
 Prévoir des possibilités d’indexation de corpus. Gestion du flux éditorial et des révisions.
 
-#### I Lexical search engine (high priority)
+### Implémentation du module d’annotation et d’indexation
+
+L’application des Guides de Paris offre plusieurs modalités d’annotation pour outiller la lecture des textes et leur indexation. 
+
+#### Annotation
+
+Les différents passages des textes peuvent faire l’objet d’annotation au format OpenAnnotation, ces annotations sont soient privées soit publiques. Elles peuvent être catégorisées de manière à faciliter le travail d’édition des textes et notamment recueillir le signalement d’erreurs éventuelles dans la transcription. Les annotations catégorisées de la sorte sont automatiquement rendues publiques.
+
+Type d’annotation
+
+- mot-clef personnalisé
+- signalement d’une erreur
+- statut de l’annotation (privé/public)
+
+Plusieurs modalités d’annotation sont prévues pour l’annotation du corpus.
+
+Enregistrement de passages intéressants pour soi-même.
+
+Partage de passages pertinents (et citation canonique)
+
+Utiliser l’annotation pour le signalement des erreurs, et l’indexation.
+
+#### Indexation et recommandation  
+
+Toutes les entités marquées dans le corpus (personnes, œuvres, lieux) peuvent être indexées de manière collaborative.
+
+Création d’un compte utilisateur et gestion de droits
+
+Statut de l’indexation
+
+Flux
+
+Prévoir des possibilités d’indexation de corpus. Gestion du flux éditorial et des révisions. 
+
+### Développements informatiques qui peuvent nécessiter une prestation distincte
+
+#### Moteur de recherche lexical
 
 L’ensemble des contenus textuels du site sont susceptibles d’être interrogés en plein texte par l’intermédiaire d’un moteur de recherche lexical. Les sources étant en XML et l’application étant publiée avec BaseX, le moteur de recherche est construit avec XQuery Full-text et BaseX afin de réduire la complexité de l’application.
 
 Plusieurs filtres lexicaux doivent être mis en place afin de faciliter la recherche de résultats
 
-- utilisation d’une liste de mots vides
-- utilisation d’un lemmatiseur (si possible adapté aux textes du 17e)
-- bruit/précision
+\- utilisation d’une liste de mots vides
 
-### 2.1.2 Fonctions de service complémentaires (qui améliorent, facilitent ou complètent le service rendu)
+\- utilisation d’un lemmatiseur (si possible adapté aux textes du 17e)
 
-### 2.1.3 Contraintes (limitations à la liberté du concepteur-réalisateur)
+#### Gestion des comptes utilisateurs
 
-- Respects des standards du web (HTML5, ECMA Script ?)
-- Navigateurs cibles (le support d’Internet Explorer n’est pas requis)
+Module d’annotation et d’indexation
 
-Accessibilité
+Dépendance avec Hypothesis
 
-- Accessibilité
-- Référentiel d’accessibilité du gouvernement
+## Discuter des points d’entrée de l’application et de l’architecture de l’API
 
-Développements sous licence libre
+## Envisager les conséquences sur le traitement des textes
 
-## 2.2 Critères d’appréciation (en soulignant ceux qui sont déterminants pour l’évaluation des réponses)
-
-- compréhension du cadre de l’appel d’offre
-- références dans le domaine de la lecture numérique
-- accessibilité et respects des standards
-
-Lot développement
-
-- compréhension du cadre de l’appel d’offre
-- expériences avec XQuery et les bases de données XML natives
-- respects des standards
-
-## 2.3 Niveaux des critères d’appréciation et ce qui les caractérise
-
-### 2.3.1 Niveaux dont l’obtention est imposée
-
-
-
-### 2.3.2 Niveaux souhaités mais révisables
-
-Les points marqués 
-
-# 3. Cadre de réponse
-
-## 3.1 Pour chaque fonction
-
-### 3.1.1 Solution proposée
-
-### 3.1.2 Niveau atteint pour chaque critère d’appréciation de cette fonction et modalités de contrôle
-
-### 3.1.3 Part du prix attribué à chaque fonction
-
-## 3.2 Pour l’ensemble du produit
-
-### 3.2.1 Prix de la réalisation de la version de base
-
-### 3.2.2 Options et variantes proposées non retenues au cahier des charges
-
-### 3.2.3 Mesures prises pour respecter les contraintes et leurs conséquences économiques
-
-### 3.2.4 Outils d’installation, de maintenance … à prévoir
-
-### 3.2.5 Décomposition en modules, sous-ensembles
-
-### 3.2.6 Prévisions de fiabilité
-
-### 3.2.7 Perspectives d’évolution technologique
-
-
+## Réponse à Anthony Masure et Sophie Fétro

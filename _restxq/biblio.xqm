@@ -17,7 +17,7 @@ module namespace gdp.biblio = "gdp.biblio" ;
  : @qst give webpath by dates and pages ?
  :)
 
-import module namespace restxq = 'http://exquery.org/ns/restxq';
+import module namespace rest = 'http://exquery.org/ns/restxq';
 
 import module namespace G = 'synopsx.globals' at '../../../../synopsx/globals.xqm' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
@@ -42,7 +42,7 @@ declare default function namespace 'gdp.biblio';
  :
  : @return redirect to the works list
  :)
-declare %restxq:path("gdp/bibliography")
+declare %rest:path("gdp/bibliography")
 function bibliography(){
   <rest:response>
     <http:response status="303" message="See Other">
@@ -57,7 +57,7 @@ function bibliography(){
  : @return a collection of available bibliographical resources
  :)
 declare
-  %restxq:path("/gdp/bibliography/home")
+  %rest:path("/gdp/bibliography/home")
 function biblHome() {
   <rest:response>
     <http:response status="303" message="See Other">
@@ -72,7 +72,7 @@ function biblHome() {
  : @return a collection of works
  :)
 declare
-  %restxq:path("/gdp/bibliography/works")
+  %rest:path("/gdp/bibliography/works")
   %output:method("html")
   %output:html-version("5.0")
 function works() {
@@ -86,7 +86,7 @@ function works() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'bibliographicalItem.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -100,7 +100,7 @@ function works() {
  : @return a bibliographical work by ID
  :)
 declare
-  %restxq:path('/gdp/bibliography/works/{$workId}')
+  %rest:path('/gdp/bibliography/works/{$workId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -116,7 +116,7 @@ function work($workId) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'bibliographicalItem.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -128,7 +128,7 @@ function work($workId) {
  : @return a collection of bibliographical expressions
  :)
 declare
-  %restxq:path('/gdp/bibliography/expressions')
+  %rest:path('/gdp/bibliography/expressions')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -143,7 +143,7 @@ function expressions() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'bibliographicalItem.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -156,7 +156,7 @@ function expressions() {
  : @return a bibliographical expression by ID
  :)
 declare
-  %restxq:path('/gdp/bibliography/expressions/{$expressionId}')
+  %rest:path('/gdp/bibliography/expressions/{$expressionId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -172,7 +172,7 @@ function expression($expressionId) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'bibliographicalItem.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -185,7 +185,7 @@ function expression($expressionId) {
  : @return a bibliographical expression by ID
  :)
 declare
-  %restxq:path('/gdp/bibliography/expressions/{$expressionId=.*\.json}')
+  %rest:path('/gdp/bibliography/expressions/{$expressionId=.*\.json}')
   %rest:produces('application/json')
 function expressionJson($expressionId) {
   let $expressionId := fn:substring-before($expressionId, '.json')
@@ -210,7 +210,7 @@ function expressionJson($expressionId) {
  : @return a collection of bibliographical manifestations
  :)
 declare
-  %restxq:path('/gdp/bibliography/manifestations')
+  %rest:path('/gdp/bibliography/manifestations')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -225,7 +225,7 @@ function manifestations() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'bibliographicalItem.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -238,7 +238,7 @@ function manifestations() {
  : @return a bibliographical expression by ID
  :)
 declare
-  %restxq:path('/gdp/bibliography/manifestations/{$manifestationId=[^.]+$}')
+  %rest:path('/gdp/bibliography/manifestations/{$manifestationId=[^.]+$}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -254,7 +254,7 @@ function manifestation($manifestationId) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'bibliographicalItem.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -267,8 +267,8 @@ function manifestation($manifestationId) {
  : @return a bibliographical expression by ID in JSON
  :)
 declare
-  %restxq:path('/gdp/bibliography/manifestations/{$manifestationId=.+\.json}')
-  %restxq:produces('application/json')
+  %rest:path('/gdp/bibliography/manifestations/{$manifestationId=.+\.json}')
+  %rest:produces('application/json')
 function manifestationJson($manifestationId) {
   let $manifestationId := fn:substring-before($manifestationId, '.json')
   let $queryParams := map {
@@ -292,7 +292,7 @@ function manifestationJson($manifestationId) {
  : @return a collection of bibliographical items
  :)
 declare
-  %restxq:path('/gdp/bibliography/items')
+  %rest:path('/gdp/bibliography/items')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -307,7 +307,7 @@ function items() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'bibliographicalItem.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -320,7 +320,7 @@ function items() {
  : @return a bibliographical item by ID
  :)
 declare
-  %restxq:path('/gdp/bibliography/items/{$itemId}')
+  %rest:path('/gdp/bibliography/items/{$itemId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -336,7 +336,7 @@ function gdp.biblio:item($itemId) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'bibliographicalItem.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
