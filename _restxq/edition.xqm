@@ -2,7 +2,7 @@ xquery version "3.0" ;
 module namespace gdp.edition = 'gdp.edition' ;
 
 (:~
- : This module is a RESTXQ for Paris' guidebooks electronic edition
+ : This module is a rest for Paris' guidebooks electronic edition
  :
  : @author emchateau (Cluster Pasts in the Present)
  : @since 2015-02-05 
@@ -17,7 +17,7 @@ module namespace gdp.edition = 'gdp.edition' ;
  : @qst give webpath by dates and pages ?
  :)
 
-import module namespace restxq = 'http://exquery.org/ns/restxq';
+import module namespace rest = 'http://exquery.org/ns/restxq';
 
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
@@ -32,7 +32,7 @@ declare default function namespace 'gdp.edition' ;
  : this resource function redirect to /home
  :)
 declare 
-  %restxq:path('/gdp')
+  %rest:path('/gdp')
 function index() {
   <rest:response>
     <http:response status="303" message="See Other">
@@ -47,7 +47,7 @@ function index() {
  : @return a home page for the edition
  :)
 declare 
-  %restxq:path('/gdp/home')
+  %rest:path('/gdp/home')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -74,7 +74,7 @@ function editionHome() {
  : @return an html representation of the corpus resource
  :)
 declare 
-  %restxq:path('/gdp/corpus')
+  %rest:path('/gdp/corpus')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -102,7 +102,7 @@ function corpus() {
  : @return an html representation of the corpus resource
  :)
 declare 
-  %restxq:path('/gdp/corpus/{$corpusId}')
+  %rest:path('/gdp/corpus/{$corpusId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -131,7 +131,7 @@ function corpusItem($corpusId as xs:string) {
  : @return an html representation of the corpus resource
  :)
 (: declare 
-  %restxq:path('/gdp/texts')
+  %rest:path('/gdp/texts')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -159,7 +159,7 @@ function texts($corpusId as xs:string) {
  : @return an html representation of the corpus resource
  :)
 declare 
-  %restxq:path('/gdp/texts/{$textId}')
+  %rest:path('/gdp/texts/{$textId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -188,7 +188,7 @@ function textItem($textId as xs:string) {
  : @return an html representation of the text item
  :)
 declare 
-  %restxq:path('/gdp/texts/{$textId}/{$itemId}')
+  %rest:path('/gdp/texts/{$textId}/{$itemId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -218,11 +218,11 @@ function textItem($textId as xs:string, $itemId as xs:string) {
  : @todo use this tag !
  :)
 declare 
-  %restxq:path("/gdp/resp/list/html")
+  %rest:path("/gdp/resp/list/html")
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-  %restxq:query-param("pattern", "{$pattern}")
+  %rest:query-param("pattern", "{$pattern}")
 function biblioListHtml($pattern as xs:string?) {
   let $queryParams := map {
     'project' :'gdp',
@@ -247,7 +247,7 @@ function biblioListHtml($pattern as xs:string?) {
  : @todo use this tag !
  :)
 declare 
-  %restxq:path("/gdp/model")
+  %rest:path("/gdp/model")
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -276,7 +276,7 @@ function model() {
  : @todo use this tag !
  :)
 declare 
-  %restxq:path("/about")
+  %rest:path("/about")
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -305,7 +305,7 @@ function about() {
  : @todo use this tag !
  :)
 declare 
-  %restxq:path("/documentation")
+  %rest:path("/documentation")
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -328,13 +328,13 @@ function documentation() {
 };
 
 declare 
-  %restxq:path("/gdp/html/header")
+  %rest:path("/gdp/html/header")
 function getHtmlHeader() {
   fn:doc($G:WORKSPACE||'gdp/templates/header.xhtml')
 };
 
 declare 
-  %restxq:path("/gdp/html/footer")
+  %rest:path("/gdp/html/footer")
 function getHtmlFooter() {
   fn:doc($G:WORKSPACE||'gdp/templates/footer.xhtml')
 };
@@ -364,7 +364,7 @@ function getHtmlFooter() {
  :)
  
 
-declare %restxq:path("gdp/test/{$param}")
+declare %rest:path("gdp/test/{$param}")
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
