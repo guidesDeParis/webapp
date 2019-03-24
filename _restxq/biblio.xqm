@@ -25,7 +25,7 @@ import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '..
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../../synopsx/mappings/htmlWrapping.xqm' ;
-import module namespace synopsx.mappings.jsoner = 'synopsx.mappings.jsoner' at '../../../../synopsx/mappings/jsoner.xqm' ;
+import module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' at '../mappings/jsoner.xqm' ;
 
 declare default function namespace 'gdp.biblio';
 
@@ -158,7 +158,7 @@ function expressions() {
 declare
   %rest:path('/gdp/bibliography/expressions/{$expressionId}')
   %rest:produces('text/html')
-  %output:method("html")
+  %output:method('html')
   %output:html-version("5.0")
 function expression($expressionId) {
   let $queryParams := map {
@@ -201,7 +201,7 @@ function expressionJson($expressionId) {
   let $outputParams := map {
     'xquery' : 'tei2json'
     }
-  return synopsx.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -236,6 +236,7 @@ function manifestations() {
  :
  : @param $manifestationId the bibliographical work expression ID
  : @return a bibliographical expression by ID
+ : @ex http://localhost:8984/gdp/bibliography/manifestations/brice1684bManifestation
  :)
 declare
   %rest:path('/gdp/bibliography/manifestations/{$manifestationId=[^.]+$}')
@@ -283,7 +284,7 @@ function manifestationJson($manifestationId) {
   let $outputParams := map {
     'xquery' : 'tei2json'
     }
-  return synopsx.mappings.jsoner:jsoner($queryParams, $result, $outputParams)  
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)  
 };
 
 (:~
