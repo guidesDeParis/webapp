@@ -342,3 +342,5 @@ function gdp.biblio:item($itemId) {
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
+
+

@@ -363,11 +363,3 @@ function getHtmlFooter() {
  : cartes et accès complexes 
  :)
  
-
-declare %rest:path("gdp/test/{$param}")
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-function test($param){
-  <h1>My first page {$param} !</h1>
-};
