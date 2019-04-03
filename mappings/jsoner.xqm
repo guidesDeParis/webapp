@@ -44,7 +44,7 @@ declare default function namespace 'gdp.mappings.jsoner' ;
  : @todo treat in the same loop @* and text() ?
  @todo add handling of outputParams (for example {class} attribute or call to an xslt)
  :)
-declare function jsoner($queryParams, $data, $outputParams) {
+declare function jsoner($queryParams as map(*), $data as map(*), $outputParams as map(*)) {
   let $contents := map:get($data, 'content')
   let $meta := map:get($data, 'meta')
   return map{
@@ -69,8 +69,7 @@ declare function sequence2ArrayInMap($map as map(*) ) as map(*) {
         map:entry(
           $a ,
           if(fn:count($b) > 1)
-          then let $array := array {}
-            for $item in $b return array:append($array, $item)
+          then array{$b}
           else $b
         )
       }

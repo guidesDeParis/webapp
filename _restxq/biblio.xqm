@@ -187,6 +187,8 @@ function expression($expressionId) {
 declare
   %rest:path('/gdp/bibliography/expressions/{$expressionId=.*\.json}')
   %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
 function expressionJson($expressionId) {
   let $expressionId := fn:substring-before($expressionId, '.json')
   let $queryParams := map {
@@ -270,6 +272,8 @@ function manifestation($manifestationId) {
 declare
   %rest:path('/gdp/bibliography/manifestations/{$manifestationId=.+\.json}')
   %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('xml')
 function manifestationJson($manifestationId) {
   let $manifestationId := fn:substring-before($manifestationId, '.json')
   let $queryParams := map {

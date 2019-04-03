@@ -1,22 +1,16 @@
-<div class="cards">
-  <div class="card">
-    <div class="card-image">
-      <img src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/mountains.png" alt=""/>
-    </div>
-    <div class="card-header">
-      <a href="{url}">{title}</a>
-    </div>
-    <div class="card-copy">
-      <p>{biblio}</p>
-      <p>{otherEditions} éditions</p>
-      <a href="{url}">Consulter ></a>
-    </div>
-    <div class="card-stats">
-      <ul>
-        <li>{itemsNb}<span> Items</span></li>
-        <li>{format}<span> Format</span></li>
-        <li>{923}<span> Mots</span></li>
-      </ul>
-    </div>
-  </div>
-</div>
+<article class="list" xmlns="http://www.w3.org/1999/xhtml">
+  <header>
+    <a href="{url}">
+      <h1>{title}</h1>
+    </a>
+  </header>
+  <section class="abstract">
+    <p>{biblio}</p>
+    <ul>
+      <li><a href="{url}" alt="Consulter">Consulter</a></li>
+      <li>{otherEditions} éditions</li>
+      <li>{itemsNb}<span> Items</span></li>
+      <li>{format}<span> Format</span></li>
+    </ul>
+    </section>
+</article>
