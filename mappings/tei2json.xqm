@@ -5,6 +5,7 @@ module namespace gdp.mappings.tei2json = 'gdp.mappings.tei2json' ;
  : This module is a TEI to JSON function library for SynopsX
  :
  : @version 3.0
+ : @date 2019-05
  : @since 2017-07-07 
  : @author synopsx team
  :

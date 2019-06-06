@@ -4,9 +4,10 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
 (:~
  : This module is a TEI models library for paris' guidebooks edition
  :
- : @author emchateau (Cluster Pasts in the Present)
+ : @version 1.0
+ : @date 2019-05
  : @since 2014-11-10 
- : @version 0.2
+ : @author emchateau (Cluster Pasts in the Present)
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 

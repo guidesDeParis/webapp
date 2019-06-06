@@ -4,9 +4,10 @@ module namespace gdp.static = 'gdp.static' ;
 (:~
  : This module is a rest for Paris' guidebooks blog
  :
- : @author emchateau (Cluster Pasts in the Present)
+ : @version 1.0
+ : @date 2019-05
  : @since 2015-03-02 
- : @version 0.1
+ : @author emchateau (Cluster Pasts in the Present)
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 

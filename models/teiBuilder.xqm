@@ -4,9 +4,10 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
 (:~
  : This module is a TEI models library for paris' guidebooks edition
  :
- : @author emchateau (Cluster Pasts in the Present)
+ : @version 1.0
+ : @date 2019-05
  : @since 2014-11-10 
- : @version 0.2
+ : @author emchateau (Cluster Pasts in the Present)
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 
@@ -66,7 +67,7 @@ declare function getAuthors($content as element()*, $lang as xs:string) {
  : @todo make it better !
  :)
 declare function getCopyright($content as element()*, $lang as xs:string) {
-  ($content//tei:licence/@target)[1]
+  $content//tei:licence[1]/@target
 };
 
 (:~

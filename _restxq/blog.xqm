@@ -4,9 +4,10 @@ module namespace gdp.blog = 'gdp.blog' ;
 (:~
  : This module is a rest for Paris' guidebooks blog
  :
- : @author emchateau (Cluster Pasts in the Present)
+ : @version 1.0
+ : @date 2019-05
  : @since 2015-02-05 
- : @version 0.5
+ : @author emchateau (Cluster Pasts in the Present)
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 
@@ -25,6 +26,7 @@ import module namespace synopsx.models.synopsx= 'synopsx.models.synopsx' at '../
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
+import module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' at '../mappings/jsoner.xqm' ;
 
 declare default function namespace 'gdp.blog' ;
 
@@ -72,12 +74,39 @@ function blogHome() {
     'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
-  }; 
- 
+  };
+
+(:~
+ : resource function for the blog's home
+ :
+ : @return a json representation of blog's home
+ :)
+declare 
+  %rest:path('/blog/home')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function blogHomeJson() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'blog',
+    'model' : 'tei' ,
+    'function' : 'getBlogPosts',
+    'sorting' : 'date',
+    'order' : 'descending'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+    return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+  };
+
 (:~
  : resource function for the blog's posts
  :
- : @return a collection of blog's posts
+ : @return an html collection of blog's posts
  :)
 declare 
   %rest:path('/blog/posts')
@@ -101,6 +130,33 @@ function blogPosts() {
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+  };
+
+(:~
+ : resource function for the blog's posts
+ :
+ : @return a json collection of blog's posts
+ :)
+declare 
+  %rest:path('/blog/posts')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function blogPostsJson() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' :  'blog',
+    'model' : 'tei' ,
+    'function' : 'getBlogPosts',
+    'sorting' : 'date',
+    'order' : 'descending'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
   };
  
 (:~
@@ -130,6 +186,33 @@ function blogItem($entryId as xs:string) {
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+  };
+
+(:~
+ : resource function for a blog item
+ :
+ : @param $itemId an entry ID
+ : @return a blog item
+ :)
+declare 
+  %rest:path('/blog/posts/{$entryId}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function blogItemJson($entryId as xs:string) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'blog',
+    'model' : 'tei',
+    'function' : 'getBlogItem',
+    'entryId' : $entryId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
   };
 
 (:~

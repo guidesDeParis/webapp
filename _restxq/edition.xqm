@@ -4,9 +4,10 @@ module namespace gdp.edition = 'gdp.edition' ;
 (:~
  : This module is a rest for Paris' guidebooks electronic edition
  :
- : @author emchateau (Cluster Pasts in the Present)
+ : @version 1.0
+ : @date 2019-05
  : @since 2015-02-05 
- : @version 0.5
+ : @author emchateau (Cluster Pasts in the Present)
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 
@@ -25,6 +26,7 @@ import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '..
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
+import module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' at '../mappings/jsoner.xqm' ;
 
 declare default function namespace 'gdp.edition' ;
 
@@ -44,7 +46,7 @@ function index() {
 (:~
  : resource function for the home
  :
- : @return a home page for the edition
+ : @return an html home page for the edition
  :)
 declare 
   %rest:path('/gdp/home')
@@ -66,6 +68,31 @@ function editionHome() {
     'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for the home
+ :
+ : @return a json home page for the edition
+ :)
+declare 
+  %rest:path('/gdp/home')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function editionHomeJson() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getHome'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+    return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 }; 
 
 (:~
@@ -93,6 +120,31 @@ function corpus() {
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for corpus list
+ :
+ : @return a json representation of the corpus resource
+ :)
+declare 
+  %rest:path('/gdp/corpus')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function corpusJson() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getCorpusList'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -128,6 +180,33 @@ function corpusItem($corpusId as xs:string) {
  : resource function for a corpus ID
  :
  : @param $corpusId the corpus ID
+ : @return a json representation of the corpus resource
+ :)
+declare 
+  %rest:path('/gdp/corpus/{$corpusId}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function corpusItemJson($corpusId as xs:string) {
+  let $queryParams := map {
+    'corpusId' : $corpusId,
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getCorpusById'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for a corpus ID
+ :
+ : @param $corpusId the corpus ID
  : @return an html representation of the corpus resource
  :)
 (: declare 
@@ -153,10 +232,10 @@ function texts($corpusId as xs:string) {
 }; :)
 
 (:~
- : resource function for a corpus ID
+ : resource function for a text by ID
  :
- : @param $corpusId the corpus ID
- : @return an html representation of the corpus resource
+ : @param $textId the text ID
+ : @return an html representation of the text resource
  :)
 declare 
   %rest:path('/gdp/texts/{$textId}')
@@ -179,6 +258,33 @@ function textItem($textId as xs:string) {
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for a text by ID
+ :
+ : @param $textId the text ID
+ : @return a json representation of the text resource
+ :)
+declare 
+  %rest:path('/gdp/texts/{$textId}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function textItemJson($textId as xs:string) {
+  let $queryParams := map {
+    'textId' : $textId,
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getTextById'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -209,6 +315,34 @@ function textItem($textId as xs:string, $itemId as xs:string) {
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for a text item by ID
+ :
+ : @param $corpusId the text item ID
+ : @return a json representation of the text item
+ :)
+declare 
+  %rest:path('/gdp/texts/{$textId}/{$itemId}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function textItemJson($textId as xs:string, $itemId as xs:string) {
+  let $queryParams := map {
+    'textId' : $textId,
+    'itemId' : $itemId,
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getItemById'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~

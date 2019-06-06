@@ -5,8 +5,9 @@ module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' ;
  : This module is an JSON mapping for templating
  :
  : @version 3.0
+ : @date 2019-05
  : @since 2017-07-07 
- : @author synopsx's team
+ : @author synopsx’s team
  :
  : This file is part of SynopsX.
  : created by AHN team (http://ahn.ens-lyon.fr)
@@ -27,6 +28,7 @@ module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' ;
 
 import module namespace G = "synopsx.globals" at '../../../globals.xqm' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ; 
+import module namespace synopsx.mappings.tei2html = 'synopsx.mappings.tei2html' at '../../../mappings/tei2html.xqm' ; 
 
 import module namespace gdp.mappings.tei2json = 'gdp.mappings.tei2json' at 'tei2json.xqm' ; 
 
@@ -48,9 +50,12 @@ declare function jsoner($queryParams as map(*), $data as map(*), $outputParams a
   let $contents := map:get($data, 'content')
   let $meta := map:get($data, 'meta')
   return map{
-    'meta' : sequence2ArrayInMap($meta),
-    'content' : for $content in $contents 
-      return sequence2ArrayInMap($content)
+    'meta' : sequence2ArrayInMap($queryParams, $meta, $outputParams),
+    'content' : if (fn:count($contents) > 1) then array{ 
+        for $content in $contents 
+        return sequence2ArrayInMap($queryParams, $content, $outputParams) 
+      }
+      else sequence2ArrayInMap($queryParams, $contents, $outputParams)
   } 
 };
 
@@ -61,18 +66,52 @@ declare function jsoner($queryParams as map(*), $data as map(*), $outputParams a
  : @return a map with array instead of sequences
  : @rmq deals only with right keys
  :)
-declare function sequence2ArrayInMap($map as map(*) ) as map(*) {
+declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams) as map(*) {
   map:merge((
     map:for-each(
       $map,
       function($a, $b) {
         map:entry(
           $a ,
-          if(fn:count($b) > 1)
-          then array{$b}
-          else $b
+          if (fn:count($b) > 1)
+          then array{
+            typeswitch($b)
+              case xs:string* return $b
+              default return render($queryParams, $outputParams, $b)
+            }
+          else typeswitch($b)
+              case xs:string* return $b
+              default return render($queryParams, $outputParams, $b)
         )
       }
     )
   )) 
+};
+
+(:~
+ : this function dispatch the rendering based on $outpoutParams
+ :
+ : @param $value the content to render
+ : @param $outputParams the serialization params
+ : @return an html serialization
+ :
+ : @todo check the xslt with an xslt 1.0
+ :)
+declare function render($queryParams as map(*), $outputParams as map(*), $value as item()* ) as item()* {
+  let $xquery := map:get($outputParams, 'xquery')
+  let $xsl :=  map:get($outputParams, 'xsl')
+  let $options := map{
+    'lb' : map:get($outputParams, 'lb')
+    }
+  let $params := map:get($outputParams, 'params')
+  return 
+    if ($xquery) 
+      then synopsx.mappings.tei2html:entry($value, $options)
+    else if ($xsl) 
+      then for $node in $value
+           return 
+               if (fn:empty($params) )
+                 then xslt:transform($node, synopsx.models.synopsx:getXsltPath($queryParams, $xsl))
+                 else xslt:transform($node, synopsx.models.synopsx:getXsltPath($queryParams, $xsl), $params)
+      else $value
 };

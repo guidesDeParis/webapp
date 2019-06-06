@@ -4,9 +4,10 @@ module namespace gdp.nego = "gdp.nego" ;
 (:~
  : This module is a RESTXQ for Paris' guidebooks bibliography
  :
- : @author emchateau (Cluster Pasts in the Present)
+ : @version 1.0
+ : @date 2019-05
  : @since 2015-02-22
- : @version 0.3
+ : @author emchateau (Cluster Pasts in the Present)
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework
@@ -181,4 +182,69 @@ function axios() {
   let $template := $outputParams('pattern')
   let $path := $G:WORKSPACE || map:get($queryParams, 'project') || '/templates/' || $template
   return fn:doc($path)
+};
+
+
+
+declare
+  %rest:path('testnego/{$nego}')
+  %rest:produces('*/*', 'text/html')
+  %output:media-type('text/html')
+  %output:method('html')
+function testnegoHtml($nego) {
+  <html>
+  <body>
+  <h1>Titre</h1></body>
+  </html>
+};
+
+declare
+  %rest:path('testnego/{$param}')
+  %rest:produces('application/xml')
+  %output:media-type('application/xml')
+  %output:method('xml')
+function testnegoXML($param) {
+  <html>
+  <body>
+  <h1>Toto</h1></body>
+  </html>
+};
+
+declare
+  %rest:path('testnego/{$param}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function testnegoJSON($param) {
+  <html>
+  <body>
+  <h1>Toto</h1></body>
+  </html>
+};
+
+
+declare
+  %rest:path('testo/{$param}')
+  %rest:produces('*/*', 'text/html', 'application/xml', 'application/json', 'text/json')
+  %rest:header-param("Accept", "{$accept}")
+function testo($param, $accept) {
+  filter($param, $accept)
+};
+
+declare function filter($param, $accept) {
+ if ('text/html' = $accept)  then (
+   <rest:response>
+    <http:response status="200">
+      <http:header name="Content-Language" value="en"/>
+      <http:header name="Content-Type" value="text/plain; charset=utf-8"/>
+    </http:response>
+   </rest:response>,
+   <html>
+     <body>
+       <h1>{$param}</h1>
+     </body>
+   </html>)
+ else if ('application/xml' = $accept)  then <xml>{$param}</xml>
+ else if ('application/json' = $accept)  then map{'object':'test'}
+else 'oups'
 };

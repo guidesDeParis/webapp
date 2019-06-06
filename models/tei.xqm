@@ -4,9 +4,10 @@ module namespace gdp.models.tei = 'gdp.models.tei' ;
 (:~
  : This module is a TEI models library for paris' guidebooks edition
  :
- : @author emchateau (Cluster Pasts in the Present)
+ : @version 1.0
+ : @date 2019-05
  : @since 2014-11-10 
- : @version 0.2
+ : @author emchateau (Cluster Pasts in the Present)
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework 
@@ -326,8 +327,8 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     'description' : getDescription($text, $lang),
     'keywords' : getKeywords($text, $lang)
     }
-  let $content := for $item in $text//tei:div[@type = 'item' and @xml:id] return map {
-    'title' : $item/tei:head[1],
+  let $content := for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id ) or (@type = 'chapter' and @xml:id )][1] return map {
+    'title' : if ($item/tei:head[1]) then $item/tei:head[1] else $item/tei:p/tei:label[1] ,
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
@@ -595,13 +596,14 @@ declare function getBibliographicalManifestationsList($queryParams) {
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map
+ : @bug doesnt bring authors, url properly
  :)
 declare function getBibliographicalManifestation($queryParams) {
   let $bibliographicalManifestationId := map:get($queryParams, 'manifestationId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
-  let $bibliographicalManifestation := $bibliography//tei:biblStruct[@xml:id = $bibliographicalManifestationId]
+  let $bibliographicalManifestation := $bibliography//tei:biblStruct[@type='manifestation'][@xml:id = $bibliographicalManifestationId]
   let $meta := map{
     'title' : 'Manifestation',
     'author' : getAuthors($bibliography, $lang),
@@ -633,7 +635,7 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
-  let $bibliographicalItems := $bibliography//tei:biblStruct
+  let $bibliographicalItems := $bibliography//tei:biblStruct[@type='item']
   let $meta := map{
     'title' : 'Liste des items bibliographiques', 
     'quantity' : getQuantity($bibliographicalItems, 'item', 'items'),
@@ -668,7 +670,7 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
-  let $bibliographicalItem := $bibliography//tei:biblStruct[@xml:id=$bibliographicalItemId]
+  let $bibliographicalItem := $bibliography//tei:biblStruct[@type='item'][@xml:id=$bibliographicalItemId]
   let $meta := map{
     'title' : 'Item bibliographique',
     'author' : getAuthors($bibliographicalItem, $lang),

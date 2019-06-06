@@ -4,9 +4,10 @@ module namespace gdp.biblio = "gdp.biblio" ;
 (:~
  : This module is a RESTXQ for Paris' guidebooks bibliography
  :
- : @author emchateau (Cluster Pasts in the Present)
+ : @version 1.0
+ : @date 2019-05
  : @since 2015-02-22
- : @version 0.3
+ : @author emchateau (Cluster Pasts in the Present)
  : @see http://guidesdeparis.net
  :
  : This module uses SynopsX publication framework
@@ -31,10 +32,11 @@ declare default function namespace 'gdp.biblio';
 
 (:~
  : Simple description of a bibliographic module in RESTXQ
- : @author Emmanuel Chateau
- : @date 2014-04-05
- : @version 1.0
- : @see https://github.com/publicarchitectura/webappBasex
+ : @author emchateau
+ : @date 2019-04
+ : @since 2014-04-05
+ : @version 2.0
+ : @see https://github.com/publicarchitectura/webapp
 :)
 
 (:~
@@ -54,7 +56,7 @@ function bibliography(){
 (:~
  : resource function the bibliography home
  :
- : @return a collection of available bibliographical resources
+ : @return a collection of available bibliographical expressions
  :)
 declare
   %rest:path("/gdp/bibliography/home")
@@ -69,10 +71,11 @@ function biblHome() {
 (:~
  : resource function for the works
  :
- : @return a collection of works
+ : @return an html collection of works
  :)
 declare
   %rest:path("/gdp/bibliography/works")
+  %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
 function works() {
@@ -92,12 +95,36 @@ function works() {
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
+(:~
+ : resource function for the works
+ :
+ : @return a json html collection of works
+ :)
+declare
+  %rest:path("/gdp/bibliography/works")
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function worksJson() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalWorksList'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
 
 (:~
  : ressource function for a bibliographical work item
  :
  : @param $workId the bibliographical work item ID
- : @return a bibliographical work by ID
+ : @return an html bibliographical work by ID
  :)
 declare
   %rest:path('/gdp/bibliography/works/{$workId}')
@@ -123,9 +150,36 @@ function work($workId) {
 };
 
 (:~
+ : ressource function for a bibliographical work item
+ :
+ : @param $workId the bibliographical work item ID
+ : @return a json bibliographical work by ID
+ :)
+declare
+  %rest:path('/gdp/bibliography/works/{$workId}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function workJson($workId) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalWork',
+    'workId' : $workId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
  : ressource function for a bibliographical expressions list
  :
- : @return a collection of bibliographical expressions
+ : @return an html collection of bibliographical expressions
  :)
 declare
   %rest:path('/gdp/bibliography/expressions')
@@ -150,10 +204,35 @@ function expressions() {
 };
 
 (:~
+ : ressource function for a bibliographical expressions list
+ :
+ : @return an html collection of bibliographical expressions
+ :)
+declare
+  %rest:path('/gdp/bibliography/expressions')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function expressionsJson() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalExpressionsList'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
  : ressource function for a bibliographical expression item
  :
  : @param $expressionId the bibliographical work expression ID
- : @return a bibliographical expression by ID
+ : @return an html bibliographical expression by ID
  :)
 declare
   %rest:path('/gdp/bibliography/expressions/{$expressionId}')
@@ -182,10 +261,10 @@ function expression($expressionId) {
  : ressource function for a bibliographical expression item
  :
  : @param $expressionId the bibliographical work expression ID
- : @return a bibliographical expression by ID
+ : @return a json bibliographical expression by ID
  :)
 declare
-  %rest:path('/gdp/bibliography/expressions/{$expressionId=.*\.json}')
+  %rest:path('/gdp/bibliography/expressions/{$expressionId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -201,7 +280,7 @@ function expressionJson($expressionId) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'xquery' : 'tei2json'
+    'xquery' : 'tei2html'
     }
   return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
@@ -209,7 +288,7 @@ function expressionJson($expressionId) {
 (:~
  : ressource function for a bibliographical manifestations list
  :
- : @return a collection of bibliographical manifestations
+ : @return an html collection of bibliographical manifestations
  :)
 declare
   %rest:path('/gdp/bibliography/manifestations')
@@ -234,15 +313,43 @@ function manifestations() {
 };
 
 (:~
+ : ressource function for a bibliographical manifestations list
+ :
+ : @return a json collection of bibliographical manifestations
+ :)
+declare
+  %rest:path('/gdp/bibliography/manifestations')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function manifestationsJson() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalManifestationsList'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
  : ressource function for a bibliographical manifestation item
  :
  : @param $manifestationId the bibliographical work expression ID
- : @return a bibliographical expression by ID
+ : @return an html bibliographical expression by ID
+ :
  : @ex http://localhost:8984/gdp/bibliography/manifestations/brice1684bManifestation
  :)
 declare
-  %rest:path('/gdp/bibliography/manifestations/{$manifestationId=[^.]+$}')
-  %rest:produces('text/html')
+  %rest:path('/gdp/bibliography/manifestations/{$manifestationId}')
+  %rest:produces('*/*', 'text/html')
   %output:method("html")
   %output:html-version("5.0")
 function manifestation($manifestationId) {
@@ -267,13 +374,13 @@ function manifestation($manifestationId) {
  : ressource function for a bibliographical manifestation item
  :
  : @param $manifestationId the bibliographical work expression ID
- : @return a bibliographical expression by ID in JSON
+ : @return a json bibliographical expression by ID
  :)
 declare
-  %rest:path('/gdp/bibliography/manifestations/{$manifestationId=.+\.json}')
+  %rest:path('/gdp/bibliography/manifestations/{$manifestationId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
-  %output:method('xml')
+  %output:method('json')
 function manifestationJson($manifestationId) {
   let $manifestationId := fn:substring-before($manifestationId, '.json')
   let $queryParams := map {
@@ -286,7 +393,7 @@ function manifestationJson($manifestationId) {
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'xquery' : 'tei2json'
+    'xquery' : 'tei2html'
     }
   return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)  
 };
@@ -294,7 +401,8 @@ function manifestationJson($manifestationId) {
 (:~
  : ressource function for a bibliographical item list
  :
- : @return a collection of bibliographical items
+ : @return an html collection of bibliographical items
+ : @rmq none defined as 2019
  :)
 declare
   %rest:path('/gdp/bibliography/items')
@@ -319,10 +427,39 @@ function items() {
 };
 
 (:~
+ : ressource function for a bibliographical item list
+ :
+ : @return a json collection of bibliographical items
+ : @rmq none defined as 2019
+ :)
+declare
+  %rest:path('/gdp/bibliography/items')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function itemsJson() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalItemsList'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
  : ressource function for a bibliographical item
  :
  : @param $itemId the bibliographical item ID
- : @return a bibliographical item by ID
+ : @return an html bibliographical item by ID
+ : @rmq none defined as 2019
  :)
 declare
   %rest:path('/gdp/bibliography/items/{$itemId}')
@@ -347,4 +484,32 @@ function gdp.biblio:item($itemId) {
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
-
+(:~
+ : ressource function for a bibliographical item
+ :
+ : @param $itemId the bibliographical item ID
+ : @return a json bibliographical item by ID
+ : @rmq none defined as 2019
+ :)
+declare
+  %rest:path('/gdp/bibliography/items/{$itemId}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function gdp.biblio:itemJson($itemId) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getBibliographicalItem',
+    'itemId' : $itemId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incBiblioItem.xhtml',
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)  
+};
