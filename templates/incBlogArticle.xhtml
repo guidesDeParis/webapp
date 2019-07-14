@@ -6,11 +6,20 @@
   <section class="abstract">{abstract}</section>
   <section class="meta">
     <ul class="date">{date}</ul>
-    <ul class="author">{autor}</ul>
+    <ul class="author">{author}</ul>
     <ul class="category">Categorie</ul>
     <ul class="keywords">mot-clef1, mot-clef2</ul>
     <ul class="url"><a href="{url}">{url}</a></ul>
   </section>
   <section class="text">{tei}</section>
-  <section class="text">{tei}</section>
+  <section class="post-nav">
+    <div class="post-before">
+      <strong>Avant</strong><br/>
+      <a href="{itemBeforeUrl}" rel="prev">{itemBeforeTitle}</a>
+    </div>
+    <div class="post-after">
+      <strong>Après</strong><br/>
+      <a href="{itemAfterUrl}" rel="next">{itemAfterTitle}</a>
+    </div>
+  </section>
 </article>

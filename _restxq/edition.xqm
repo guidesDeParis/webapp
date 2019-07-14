@@ -70,30 +70,6 @@ function editionHome() {
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
-(:~
- : resource function for the home
- :
- : @return a json home page for the edition
- :)
-declare 
-  %rest:path('/gdp/home')
-  %rest:produces('application/json')
-  %output:media-type('application/json')
-  %output:method('json')
-function editionHomeJson() {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei', 
-    'function' : 'getHome'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'xquery' : 'tei2html'
-    }
-    return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
-}; 
 
 (:~
  : resource function for corpus list
@@ -116,7 +92,7 @@ function corpus() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'incCorpusItem.xhtml',
+    'pattern' : 'incCorpus.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
@@ -170,7 +146,7 @@ function corpusItem($corpusId as xs:string) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'incCorpusCard.xhtml',
+    'pattern' : 'incText.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
@@ -242,19 +218,19 @@ declare
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function textItem($textId as xs:string) {
+function textItems($textId as xs:string) {
   let $queryParams := map {
     'textId' : $textId,
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
-    'function' : 'getTextById'
+    'function' : 'getTextItemsById'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'incCorpusCard.xhtml',
+    'pattern' : 'incTextItem.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
@@ -271,13 +247,13 @@ declare
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
-function textItemJson($textId as xs:string) {
+function textItemsJson($textId as xs:string) {
   let $queryParams := map {
     'textId' : $textId,
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
-    'function' : 'getTextById'
+    'function' : 'getTextItemsById'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
@@ -294,13 +270,13 @@ function textItemJson($textId as xs:string) {
  : @return an html representation of the text item
  :)
 declare 
-  %rest:path('/gdp/texts/{$textId}/{$itemId}')
+  %rest:path('/gdp/items/{$itemId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
-function textItem($textId as xs:string, $itemId as xs:string) {
+function items($itemId as xs:string) {
   let $queryParams := map {
-    'textId' : $textId,
+    
     'itemId' : $itemId,
     'project' : 'gdp',
     'dbName' : 'gdp',
@@ -324,13 +300,13 @@ function textItem($textId as xs:string, $itemId as xs:string) {
  : @return a json representation of the text item
  :)
 declare 
-  %rest:path('/gdp/texts/{$textId}/{$itemId}')
+  %rest:path('/gdp/items/{$itemId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
-function textItemJson($textId as xs:string, $itemId as xs:string) {
+function itemsJson($itemId as xs:string) {
   let $queryParams := map {
-    'textId' : $textId,
+    
     'itemId' : $itemId,
     'project' : 'gdp',
     'dbName' : 'gdp',
@@ -419,14 +395,14 @@ function about() {
     'project' :'gdp',
     'dbName' : 'blog',
     'model' : 'tei',
-    'function' : 'getAbout',
+    'function' : 'getBlogItem',
     'entryId' : 'gdpPresentation2014'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'about.xhtml',
+    'pattern' : 'incBlogArticle.xhtml',
     'xquery' : 'tei2html'
     }
   return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)

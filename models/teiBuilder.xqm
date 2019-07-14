@@ -38,7 +38,7 @@ declare default function namespace 'gdp.models.tei' ;
  : @param $lang iso langcode starts
  : @return a tei abstract
  :)
-declare function getAbstract($content as element()*, $lang as xs:string){
+declare function getAbstract($content as element()*, $lang as xs:string) {
   $content//tei:div[@type='abstract']
 };
 
@@ -49,9 +49,23 @@ declare function getAbstract($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a distinct-values comma separated list
  :)
-declare function getAuthors($content as element()*, $lang as xs:string) {
+declare function getAuthors($content as element()*, $lang as xs:string) as xs:string {
   fn:string-join(
-      for $name in $content//tei:titleStmt//tei:respStmt[tei:resp[@key='aut']]
+      for $name in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author
+      return getName($name, $lang),
+    ', ')
+};
+
+(:~
+ : this function get blog authors
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a distinct-values comma separated list
+ :)
+declare function getBlogAuthors($content as element()*, $lang as xs:string) as xs:string {
+  fn:string-join(
+      for $name in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:respStmt[tei:resp[@key='aut']]
       return getName($name, $lang),
     ', ')
 };
@@ -66,8 +80,10 @@ declare function getAuthors($content as element()*, $lang as xs:string) {
  : @rmq if a sequence get the first one
  : @todo make it better !
  :)
-declare function getCopyright($content as element()*, $lang as xs:string) {
-  $content//tei:licence[1]/@target
+declare function getCopyright($content as element()*, $lang as xs:string) as xs:string {  fn:string-join(
+    $content//tei:licence[1]/@target,
+    ', '
+  )
 };
 
 (:~
@@ -91,7 +107,7 @@ declare function getDate($content as element()*, $dateFormat as xs:string) {
  : @todo formats
  :)
 declare function getEditionDates($content as element()*, $dateFormat as xs:string) {
-  let $dates := for $date in $content//*:date/fn:substring(@when, 1, 4) 
+  let $dates := for $date in ($content//*:date/fn:substring(@when, 1, 4), $content//*:date/fn:substring(@from, 1, 4), $content//*:date/fn:substring(@to, 1, 4))
     where $date != '' 
     return xs:double($date)
   return fn:min($dates) || '-' || fn:max($dates)
@@ -254,13 +270,13 @@ declare function getName($named as element()*, $lang as xs:string) as xs:string 
  : @param $lang iso langcode starts
  : @return a blog post
  :)
-declare function getTextBefore($queryParams as map(*), $text as element(), $lang as xs:string) as element()? {
+declare function getBlogItemBefore($queryParams as map(*), $text as element(), $lang as xs:string) as element()? {
   let $entryId := map:get($queryParams, 'entryId')
   let $sequence := 
-    for $text in synopsx.models.synopsx:getDb($queryParams)/tei:TEI
-    order by $text/tei:teiHeader//tei:publicationStmt/tei:date//@when 
+    for $text in synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI
+    order by $text/tei:teiHeader/tei:publicationStmt/tei:date/@when 
     return $text
-  let $position := fn:index-of($sequence, $sequence[//tei:sourceDesc[@xml:id = $entryId]])
+  let $position := fn:index-of($sequence, $sequence[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $entryId]])
   return $sequence[fn:position() = $position - 1]
 };
 
@@ -272,13 +288,13 @@ declare function getTextBefore($queryParams as map(*), $text as element(), $lang
  : @param $lang iso langcode starts
  : @return a blog post
  :)
-declare function getTextAfter($queryParams as map(*), $text as element(), $lang as xs:string) as element()? {
+declare function getBlogItemAfter($queryParams as map(*), $text as element(), $lang as xs:string) as element()? {
   let $entryId := map:get($queryParams, 'entryId')
   let $sequence := 
-    for $text in synopsx.models.synopsx:getDb($queryParams)/tei:TEI
-    order by $text/tei:teiHeader//tei:publicationStmt/tei:date//@when 
+    for $text in synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI
+    order by $text/tei:teiHeader/tei:publicationStmt/tei:date/@when 
     return $text
-  let $position := fn:index-of($sequence, $sequence[//tei:sourceDesc[@xml:id = $entryId]])
+  let $position := fn:index-of($sequence, $sequence[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $entryId]])
   return $sequence[fn:position() = $position + 1]
 };
 
@@ -339,7 +355,7 @@ declare function getTitle($content as element()*, $lang as xs:string){
  : @return a div
  :)
 declare function getItemAfter($item as element(), $lang as xs:string) as element()? {
-  $item/following-sibling::tei:div[@type = 'item'][1]
+  $item/following-sibling::tei:div[@type = 'section' or @type = 'item' or @type = 'chapter' or @type = 'part' ][1]
 };
 
 (:~
@@ -350,7 +366,7 @@ declare function getItemAfter($item as element(), $lang as xs:string) as element
  : @return a div
  :)
 declare function getItemBefore($item as element(), $lang as xs:string) as element()? {
-  $item/preceding-sibling::tei:div[@type = 'item'][1]
+  $item/preceding-sibling::tei:div[@type = 'section' or @type = 'item' or @type = 'chapter' or @type = 'part' ][1]
 };
 
 (:~

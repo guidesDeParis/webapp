@@ -46,7 +46,7 @@ declare function getBlogHome($queryParams as map(*)) as map(*) {
   let $meta := map{
     'title' : 'Home page du blog', 
     'quantity' : getQuantity($posts, 'expression', 'expressions'),
-    'author' : getAuthors($posts, $lang),
+    'author' : getBlogAuthors($posts, $lang),
     'copyright' : getCopyright($posts, $lang),
     'description' : getDescription($posts, $lang),
     'keywords' : getKeywords($posts, $lang) 
@@ -55,7 +55,7 @@ declare function getBlogHome($queryParams as map(*)) as map(*) {
     'title' : getTitle($post, $lang),
     'subtitle' : getSubtitle($post, $lang),
     'date' : getDate($post, $dateFormat),
-    'author' : getAuthors($post, $lang),
+    'author' : getBlogAuthors($post, $lang),
     'abstract' : getAbstract($post, $lang),
     'tei' : $post
     }
@@ -78,7 +78,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
   let $meta := map{
     'title' : 'Liste des articles de blog', 
     'quantity' : getQuantity($posts, 'article de blog', 'articles de blogs'),
-    'author' : getAuthors($posts, $lang),
+    'author' : getBlogAuthors($posts, $lang),
     'copyright' : getCopyright($posts, $lang),
     'description' : getDescription($posts, $lang),
     'keywords' : getKeywords($posts, $lang)
@@ -88,7 +88,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
     'title' : getTitle($post, $lang),
     'subtitle' : getSubtitle($post, $lang),
     'date' : getDate($post, $dateFormat),
-    'author' : getAuthors($post, $lang),
+    'author' : getBlogAuthors($post, $lang),
     'abstract' : getAbstract($post, $lang),
     'url' : getUrl($post//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
     'tei' : $post
@@ -110,26 +110,26 @@ declare function getBlogItem($queryParams as map(*)) {
   let $entryId := map:get($queryParams, 'entryId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $article := synopsx.models.synopsx:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
+  let $article := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id=$entryId]]
   let $meta := map{
     'title' : getTitles($article, $lang),
-    'author' : getAuthors($article, $lang),
+    'author' : getBlogAuthors($article, $lang),
     'copyright' : getCopyright($article, $lang),
     'description' : getDescription($article, $lang),
     'keywords' : getKeywords($article, $lang)
     }
   let $content := for $item in $article return map {
     'rubrique' : 'Article de blog',
-    'title' : getTitle($item, $lang),
+    'title' : getTitles($item, $lang),
     'subtitle' : getSubtitle($item, $lang),
     'date' : getDate($item, $dateFormat),
-    'author' : getAuthors($item, $lang),
+    'author' : getBlogAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'tei' : $item,
-    'itemBeforeTitle' : getTitles(getTextBefore($queryParams, $item, $lang), 'fr'),
-    (: 'itemBeforeUrl' : getUrl(getTextBefore($queryParams, $item, $lang)/@xml:id, '/blog/', $lang), :)
-    'itemAfterTitle' : getTitles(getTextAfter($queryParams, $item, $lang), 'fr')
-    (: 'itemAfterUrl' : getUrl(getTextAfter($queryParams, $item, $lang)/@xml:id, '/blog/', $lang) :)
+    'itemBeforeTitle' : getTitles(getBlogItemBefore($queryParams, $item, $lang), $lang),
+    'itemBeforeUrl' : getUrl(getBlogItemBefore($queryParams, $item, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
+    'itemAfterTitle' : getTitles(getBlogItemAfter($queryParams, $item, $lang), $lang),
+    'itemAfterUrl' : getUrl(getBlogItemAfter($queryParams, $item, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -201,13 +201,6 @@ declare function getHome($queryParams as map(*)) as map(*) {
     'content' : $content
     }
 };
-
-(:~
- : this function get the corpus list
- :
- : @param $queryParams the request params sent by restxq 
- : @return a map with meta and content
- :)
 declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
@@ -264,8 +257,10 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'date' : getEditionDates(getOtherEditions(getRef($text))/tei:biblStruct, $dateFormat),
     'author' : getAuthors($text, $lang),
     'biblio' : getRef($text)/tei:monogr,
+    'abstract' : getAbstract($text, $lang),
     'format' : getRef($text)//tei:dim[@type = 'format'],
     'itemsNb' : fn:string(fn:count($corpus/tei:TEI//tei:div[@type = 'item' and @xml:id])),
+    'weight' : getStringLength($text),
     'tei' : $text,
     'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang),
     'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct)
@@ -314,26 +309,26 @@ declare function getTextsList($queryParams) {
  : @return a map with meta and content
  : @todo suppress the @xml:id filter on div
  :)
-declare function getTextById($queryParams as map(*)) as map(*) {
+declare function getTextItemsById($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
     'title' : 'Liste des items disponibles', 
-    'quantity' : getQuantity($text, 'manifestation disponibles', 'manifestations disponibles'), (: @todo internationalize :)
+    'quantity' : getRef($text),
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
     'keywords' : getKeywords($text, $lang)
     }
-  let $content := for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id ) or (@type = 'chapter' and @xml:id )][1] return map {
+  let $content := for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id ) or (@type = 'chapter' and @xml:id )] return map {
     'title' : if ($item/tei:head[1]) then $item/tei:head[1] else $item/tei:p/tei:label[1] ,
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'tei' : $item,
-    'url' : getUrl(if ($item/@xml:id) then $item/@xml:id else 'toto' , '/gdp/texts/' || $textId || '/', $lang)   
+    'url' : getUrl(if ($item/@xml:id) then $item/@xml:id else 'toto' , '/gdp/items/', $lang)   
     }
   return  map{
     'meta'    : $meta,
@@ -348,8 +343,8 @@ declare function getTextById($queryParams as map(*)) as map(*) {
  : @return a map with meta and content
  :)
 declare function getItemById($queryParams as map(*)) as map(*) {
-  let $textId := map:get($queryParams, 'textId')
   let $itemId := map:get($queryParams, 'itemId')
+  let $textId := fn:tokenize($itemId, '(Front|Body|Back|T)')[1] (: map:get($queryParams, 'textId') :)
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $text := (synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]])[1]
@@ -357,23 +352,29 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $meta := map{
     'title' : 'Item', 
     'quantity' : getQuantity($item, 'item disponible', 'items disponibles'), (: @todo internationalize :)
-    'author' : getAuthors($item, $lang),
-    'copyright'  : getCopyright($item, $lang),
-    'description' : getDescription($item, $lang),
-    'keywords' : getKeywords($item, $lang)
+    'author' : getAuthors($text, $lang),
+    'copyright'  : getCopyright($text, $lang),
+    'description' : getDescription($text, $lang),
+    'keywords' : getKeywords($text, $lang)
     }
   let $content := map {
-    'title' : $item/tei:head[1],
+    'title' : if ($textId = 'gdpBrice1684') 
+      then $item/tei:p[1]/tei:label 
+      else $item/tei:head[1],
     'rubrique' : 'Rubrique',
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'tei' : $item,
-    'url' : getUrl($item/@xml:id, '/gdp/texts/' || $textId || '/', $lang),
-    'itemBeforeTitle' : (getItemBefore($item, $lang)/tei:head)[1],
-    'itemBeforeUrl' : getUrl(getItemBefore($item, $lang)/@xml:id, '/gdp/texts/' || $textId || '/', $lang),
-    'itemAfterTitle' : (getItemAfter($item, $lang)/tei:head)[1],
-    'itemAfterUrl' : getUrl(getItemBefore($item, $lang)/@xml:id, '/gdp/texts/' || $textId || '/', $lang)
+    'url' : getUrl($item/@xml:id, '/gdp/items/', $lang),
+    'itemBeforeTitle' : if ($textId = 'gdpBrice1684') 
+      then getItemBefore($item, $lang)/tei:p[1]/tei:label 
+      else getItemBefore($item, $lang)/tei:head[1],
+    'itemBeforeUrl' : getUrl(getItemBefore($item, $lang)/@xml:id, '/gdp/items/', $lang),
+    'itemAfterTitle' : if ($textId = 'gdpBrice1684') 
+      then getItemAfter($item, $lang)/tei:p[1]/tei:label 
+      else getItemAfter($item, $lang)/tei:head[1],
+    'itemAfterUrl' : getUrl(getItemAfter($item, $lang)/@xml:id, '/gdp/items/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -686,6 +687,161 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
     'tei' : $bibliographicalItem,
     'url' : getUrl($bibliographicalItem/@xml:id, '/gdp/bibliography/items/', $lang)
     }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the search results
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getSearch($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $search := map:get($queryParams, 'search')
+  let $data := db:open('gdp')//tei:div[@type="section"]
+  (: let $results := if ($search != "") 
+    then (
+      $data//tei:div[@type="section"]/text() contains text {$search} 
+      all words 
+      using case insensitive
+      using diacritics insensitive
+      ordered distance at most 5 words
+      )
+    else 'pas de résultats' :)
+  let $meta := map{
+    'title' : 'Résultats de la recherche',
+    'author' : 'Guides de Paris',
+    'quantity' : $search
+    }
+  let $content := 
+    if ($search != "") 
+    then 
+      for $result in $data
+      where $result[text() contains text {$search} 
+        all words 
+        using case insensitive
+        using diacritics insensitive
+        using stemming
+        ordered distance at most 5 words]
+      return map {
+        'result' : $result
+        }
+    else map {
+        'result' : 'pas de résultats'
+      }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the index list
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getIndex($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $search := map:get($queryParams, 'search')
+  let $data := db:open('gdp')//tei:listObject/tei:object
+  let $meta := map{
+    'title' : 'Liste des index',
+    'author' : 'Guides de Paris',
+    'quantity' : $search
+    }
+  let $content := for $entry in $data
+    return map {
+        'title' : $entry/tei:objectName,
+        'url' : getUrl($entry/tei:relation[@type="locus"]/@ref, '/gdp/items/', $lang)
+      }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the index locorum
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getIndexLocorum($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $search := map:get($queryParams, 'search')
+  let $data := db:open('gdp')//tei:listPlace/tei:place
+  let $meta := map{
+    'title' : 'Index locorum',
+    'author' : 'Guides de Paris',
+    'quantity' : $search
+    }
+  let $content := for $entry in $data
+    return map {
+        'title' : $entry/tei:placeName,
+        'url' : getUrl($entry/tei:relation[@type="locus"]/@ref, '/gdp/items/', $lang)
+      }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the index locorum
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getIndexNominum($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $search := map:get($queryParams, 'search')
+  let $data := db:open('gdp')//tei:listPerson/tei:person
+  let $meta := map{
+    'title' : 'Index nominum',
+    'author' : 'Guides de Paris',
+    'quantity' : $search
+    }
+  let $content := for $entry in $data
+    return map {
+        'title' : $entry/tei:persName,
+        'url' : getUrl($entry/tei:relation[@type="locus"]/@ref, '/gdp/items/', $lang)
+      }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the index locorum
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getIndexOperum($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $search := map:get($queryParams, 'search')
+  let $data := db:open('gdp')//tei:listObjet/tei:objet
+  let $meta := map{
+    'title' : 'Index operum',
+    'author' : 'Guides de Paris',
+    'quantity' : $search
+    }
+  let $content := for $entry in $data
+    return map {
+        'title' : $entry/tei:objectName,
+        'url' : getUrl($entry/tei:relation[@type="locus"]/@ref, '/gdp/items/', $lang)
+      }
   return  map{
     'meta'    : $meta,
     'content' : $content
