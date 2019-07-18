@@ -386,7 +386,7 @@ function model() {
  : @todo use this tag !
  :)
 declare 
-  %rest:path("/about")
+  %rest:path("/gdp/about")
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -454,12 +454,168 @@ function getHtmlFooter() {
  :)
 
 (:~
- : index topo
+ : resource function for the indexLocorum
+ :
+ : @return a list of index entries
  :)
- 
+declare 
+  %rest:path('/gdp/index')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function indexes() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getIndexList'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incIndex.xhtml',
+    'xquery' : 'tei2html'
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
 (:~
- : index prosopo
+ : resource function for the indexLocorum
+ :
+ : @return a list of index entries
  :)
+declare 
+  %rest:path('/gdp/indexLocorum')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function indexLocorum() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getIndexLocorum'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incIndex.xhtml',
+    'xquery' : 'tei2html'
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for the indexLocorum
+ :
+ : @return a list of index entries
+ :)
+declare 
+  %rest:path('/gdp/indexOperum')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function indexOperum() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getIndexOperum'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incIndex.xhtml',
+    'xquery' : 'tei2html'
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for the indexOperum item
+ :
+ : @return a list of index entries
+ :)
+declare 
+  %rest:path('/gdp/indexOperum/{$itemId}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function indexOperumItem($itemId) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getIndexOperumItem',
+    'itemId' : $itemId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incIndexOperum.xhtml',
+    'xquery' : 'tei2html'
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for the indexLocorum
+ :
+ : @return a list of index entries
+ :)
+declare 
+  %rest:path('/gdp/indexNominum')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function indexNominum() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getIndexNominum'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incIndex.xhtml',
+    'xquery' : 'tei2html'
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for the indexNominum item
+ :
+ : @return a list of index entries
+ :)
+declare 
+  %rest:path('/gdp/indexNominum/{$itemId}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function indexNominumItem($itemId) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getIndexNominumItem',
+    'itemId' : $itemId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incIndexNominum.xhtml',
+    'xquery' : 'tei2html'
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
  
 (:~
  : index œuvres

@@ -259,7 +259,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'biblio' : getRef($text)/tei:monogr,
     'abstract' : getAbstract($text, $lang),
     'format' : getRef($text)//tei:dim[@type = 'format'],
-    'itemsNb' : fn:string(fn:count($corpus/tei:TEI//tei:div[@type = 'item' and @xml:id])),
+    'itemsNb' : fn:count($corpus/tei:TEI//tei:div[@type = 'item' and @xml:id]),
     'weight' : getStringLength($text),
     'tei' : $text,
     'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang),
@@ -350,7 +350,9 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $text := (synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]])[1]
   let $item := $text//tei:div[@xml:id = $itemId]
   let $meta := map{
-    'title' : 'Item', 
+    'title' : if ($textId = 'gdpBrice1684') 
+      then $item/tei:p[1]/tei:label 
+      else $item/tei:head[1],
     'quantity' : getQuantity($item, 'item disponible', 'items disponibles'), (: @todo internationalize :)
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
@@ -361,7 +363,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'title' : if ($textId = 'gdpBrice1684') 
       then $item/tei:p[1]/tei:label 
       else $item/tei:head[1],
-    'rubrique' : 'Rubrique',
+    'rubrique' : 'Item',
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
@@ -746,11 +748,11 @@ declare function getSearch($queryParams as map(*)) as map(*) {
  : @param $queryParams the request params sent by restxq
  : @return a map of two map
  :)
-declare function getIndex($queryParams as map(*)) as map(*) {
+declare function getIndexList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $search := map:get($queryParams, 'search')
-  let $data := db:open('gdp')//tei:listObject/tei:object
+  let $data := (db:open('gdp')//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexNominum'], db:open('gdp')//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexLocorum'], db:open('gdp')//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexOperum'])
   let $meta := map{
     'title' : 'Liste des index',
     'author' : 'Guides de Paris',
@@ -758,8 +760,8 @@ declare function getIndex($queryParams as map(*)) as map(*) {
     }
   let $content := for $entry in $data
     return map {
-        'title' : $entry/tei:objectName,
-        'url' : getUrl($entry/tei:relation[@type="locus"]/@ref, '/gdp/items/', $lang)
+        'title' : $entry//tei:fileDesc/tei:titleStmt/tei:title,
+        'url' : getUrl(fn:substring-after($entry//tei:fileDesc/tei:sourceDesc/@xml:id, 'gdpI'), '/gdp/i', $lang)
       }
   return  map{
     'meta'    : $meta,
@@ -786,7 +788,7 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
   let $content := for $entry in $data
     return map {
         'title' : $entry/tei:placeName,
-        'url' : getUrl($entry/tei:relation[@type="locus"]/@ref, '/gdp/items/', $lang)
+        'url' : getUrl($entry/@xml:id, '/gdp/indexLocorum/', $lang)
       }
   return  map{
     'meta'    : $meta,
@@ -795,7 +797,39 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
 };
 
 (:~
- : this function get the index locorum
+ : this function get the index locorum item
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $itemId := map:get($queryParams, 'itemId')
+  let $entry := db:open('gdp')//tei:place[@xml:id = $itemId]
+  let $meta := map{
+    'rubrique' : 'Index locorum',
+    'author' : 'Guides de Paris'
+    }
+  let $content :=
+    map {
+      'rubrique' : 'Index locorum',
+      'title' : $entry/tei:placeName,
+      'type' : $entry/tei:trait,
+      'country' : $entry/tei:country,
+      'district' : $entry/tei:district,
+      'note' : $entry/tei:note,
+      'url' : getUrl($entry/@xml:id, '/gdp/indexLocorum/', $lang),
+      'occurences' : '' (: @todo :)
+      }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the index nominum
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map
@@ -812,8 +846,12 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
     }
   let $content := for $entry in $data
     return map {
-        'title' : $entry/tei:persName,
-        'url' : getUrl($entry/tei:relation[@type="locus"]/@ref, '/gdp/items/', $lang)
+        'title' : $entry/tei:persName[1],
+        'forename' : $entry/tei:persName/tei:forename,
+        'surname' : $entry/tei:persName/tei:surname,
+        'birth' : $entry/tei:birth/tei:date,
+        'death' : $entry/tei:death/tei:date,
+        'url' : getUrl($entry/@xml:id, '/gdp/indexNominum/', $lang)
       }
   return  map{
     'meta'    : $meta,
@@ -822,7 +860,39 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
 };
 
 (:~
- : this function get the index locorum
+ : this function get the index nominum item
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $itemId := map:get($queryParams, 'itemId')
+  let $entry := db:open('gdp')//tei:person[@xml:id = $itemId]
+  let $meta := map{
+    'rubrique' : 'Index nominum',
+    'author' : 'Guides de Paris'
+    }
+  let $content :=
+    map {
+      'rubrique' : 'Index nominum',
+      'title' : $entry/tei:persName[1],
+      'forename' : $entry/tei:persName/tei:forename,
+      'surname' : $entry/tei:persName/tei:surname,
+      'birth' : $entry/tei:birth/tei:date,
+      'death' : $entry/tei:death/tei:date,
+      'url' : getUrl($entry/@xml:id, '/gdp/indexNominum/', $lang),
+      'occurences' : '' (: @todo :)
+      }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the index operum
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map
@@ -830,17 +900,46 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
 declare function getIndexOperum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $search := map:get($queryParams, 'search')
-  let $data := db:open('gdp')//tei:listObjet/tei:objet
+  let $data := db:open('gdp')//tei:listObject/tei:object
   let $meta := map{
     'title' : 'Index operum',
-    'author' : 'Guides de Paris',
-    'quantity' : $search
+    'author' : 'Guides de Paris'
     }
   let $content := for $entry in $data
     return map {
         'title' : $entry/tei:objectName,
-        'url' : getUrl($entry/tei:relation[@type="locus"]/@ref, '/gdp/items/', $lang)
+        'url' : getUrl($entry/@xml:id, '/gdp/indexOperum/', $lang)
+      }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get the index operum item
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map
+ :)
+declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $itemId := map:get($queryParams, 'itemId')
+  let $entry := db:open('gdp')//tei:object[@xml:id = $itemId]
+  let $meta := map{
+    'rubrique' : 'Index operum',
+    'author' : 'Guides de Paris'
+    }
+  let $content :=
+    map {
+      'rubrique' : 'Index operum',
+      'title' : $entry/tei:objectName,
+      'type' : $entry/tei:label,
+      'date' : $entry/tei:date,
+      'desc' : $entry/tei:desc,
+      'url' : getUrl($entry/@xml:id, '/gdp/indexOperum/', $lang),
+      'occurences' : getUrl($entry/tei:relation[@type="locus"]/@ref, '/gdp/indexOperum/', $lang)
       }
   return  map{
     'meta'    : $meta,

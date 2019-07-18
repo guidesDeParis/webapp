@@ -257,7 +257,7 @@ declare function getTextsQuantity($corpus as element(), $lang) {
  :)
 declare function getName($named as element()*, $lang as xs:string) as xs:string {
   fn:normalize-space(
-    for $person in $named/tei:persName 
+    for $person in $named/tei:persName[1] 
       return ($person/tei:forename || ' ' || $person/tei:surname)
     )
 };
