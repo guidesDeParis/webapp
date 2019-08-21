@@ -750,12 +750,11 @@ declare function getSearch($queryParams as map(*)) as map(*) {
 declare function getIndexList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $search := map:get($queryParams, 'search')
   let $data := (db:open('gdp')//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexNominum'], db:open('gdp')//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexLocorum'], db:open('gdp')//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexOperum'])
   let $meta := map{
     'title' : 'Liste des index',
     'author' : 'Guides de Paris',
-    'quantity' : $search
+    'quantity' : getQuantity($data, 'index', 'index')
     }
   let $content := for $entry in $data
     return map {
@@ -777,12 +776,11 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
 declare function getIndexLocorum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $search := map:get($queryParams, 'search')
   let $data := db:open('gdp')//tei:listPlace/tei:place
   let $meta := map{
     'title' : 'Index locorum',
     'author' : 'Guides de Paris',
-    'quantity' : $search
+    'quantity' : getQuantity($data, 'entrée', 'entrées')
     }
   let $content := for $entry in $data
     return map {
@@ -808,7 +806,8 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
   let $entry := db:open('gdp')//tei:place[@xml:id = $itemId]
   let $meta := map{
     'rubrique' : 'Index locorum',
-    'author' : 'Guides de Paris'
+    'author' : 'Guides de Paris',
+    'quantity' : getQuantity($entry, 'occurence', 'occurences')
     }
   let $content :=
     map {
@@ -841,7 +840,7 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
   let $meta := map{
     'title' : 'Index nominum',
     'author' : 'Guides de Paris',
-    'quantity' : $search
+    'quantity' : getQuantity($data, 'entrée', 'entrées')
     }
   let $content := for $entry in $data
     return map {
@@ -871,7 +870,8 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
   let $entry := db:open('gdp')//tei:person[@xml:id = $itemId]
   let $meta := map{
     'rubrique' : 'Index nominum',
-    'author' : 'Guides de Paris'
+    'author' : 'Guides de Paris',
+    'quantity' : getQuantity($entry, 'occurence', 'occurences')
     }
   let $content :=
     map {
@@ -902,7 +902,8 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
   let $data := db:open('gdp')//tei:listObject/tei:object
   let $meta := map{
     'title' : 'Index operum',
-    'author' : 'Guides de Paris'
+    'author' : 'Guides de Paris',
+    'quantity' : getQuantity($data, 'entrée', 'entrées')
     }
   let $content := for $entry in $data
     return map {
@@ -928,7 +929,8 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
   let $entry := db:open('gdp')//tei:object[@xml:id = $itemId]
   let $meta := map{
     'rubrique' : 'Index operum',
-    'author' : 'Guides de Paris'
+    'author' : 'Guides de Paris',
+    'quantity' : getQuantity($entry, 'occurence', 'occurences')
     }
   let $content :=
     map {
