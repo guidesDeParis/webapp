@@ -207,7 +207,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $corpora := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus
   let $meta := map{
     'title' : 'Liste des corpus', 
-    'quantity' : getQuantity($corpora/tei:teiCorpus, 'corpus disponible', 'corpora disponibles'), (: @todo internationalize :)
+    'quantity' : getQuantity($corpora/tei:teiCorpus, 'corpus disponible', 'corpora disponibles'),
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
@@ -222,7 +222,6 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'editionsQuantity' : getQuantity(getOtherEditions(getRef($corpus))/tei:biblStruct, 'édition', ' éditions'),
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte disponible', 'textes disponibles'),
     'url' : getUrl($corpus/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/corpus/', $lang),
-    'tei' : $corpus,
     'editions' : getOtherEditions(getRef($corpus)),
     'weight' : getStringLength($corpus)
     }
