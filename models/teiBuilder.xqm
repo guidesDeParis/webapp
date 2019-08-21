@@ -51,21 +51,7 @@ declare function getAbstract($content as element()*, $lang as xs:string) {
  :)
 declare function getAuthors($content as element()*, $lang as xs:string) as xs:string {
   fn:string-join(
-      for $name in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author
-      return getName($name, $lang),
-    ', ')
-};
-
-(:~
- : this function get blog authors
- :
- : @param $content texts to process
- : @param $lang iso langcode starts
- : @return a distinct-values comma separated list
- :)
-declare function getBlogAuthors($content as element()*, $lang as xs:string) as xs:string {
-  fn:string-join(
-      for $name in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:respStmt[tei:resp[@key='aut']]
+      for $name in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author | $content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:respStmt[tei:resp[@key='aut']]
       return getName($name, $lang),
     ', ')
 };
@@ -311,16 +297,6 @@ declare function getRef($content as element()) {
   return (db:open('gdp')//tei:biblStruct[@xml:id = $refId] | db:open('gdp')//tei:bibl[@xml:id = $refId])[1]
 };
 
-(:~
- : this function get subtitle
- :
- : @param $content texts to process
- : @param $lang iso langcode starts
- : @return a string of comma separated titles
- :)
-declare function getSubtitle($content as element()*, $lang as xs:string){
-  $content//tei:titleStmt//tei:title[@type = 'sub']
-};
 
 (:~
  : this function get titles
@@ -343,8 +319,19 @@ declare function getTitles($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
  :)
-declare function getTitle($content as element()*, $lang as xs:string){
-  ($content//tei:titleStmt//tei:title[@type = 'main'])[1]
+declare function getMainTitle($content as element()*, $lang as xs:string){
+  ($content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type = 'main'])[1]
+};
+
+(:~
+ : this function get subtitle
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a string of comma separated titles
+ :)
+declare function getSubtitle($content as element()*, $lang as xs:string){
+  ($content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type = 'sub'])[1]
 };
 
 (:~

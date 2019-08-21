@@ -39,59 +39,25 @@ declare default function namespace 'gdp.models.tei' ;
  : @param $queryParams the request params sent by restxq
  : @return a map with meta and content
  :)
-declare function getBlogHome($queryParams as map(*)) as map(*) {
+declare function getBlogPosts($queryParams as map(*)) as map(*) {
   let $posts := synopsx.models.synopsx:getDb($queryParams)//tei:TEI
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $meta := map{
-    'title' : 'Home page du blog', 
+    'title' : 'Page d’accueil du blog', 
     'quantity' : getQuantity($posts, 'expression', 'expressions'),
-    'author' : getBlogAuthors($posts, $lang),
+    'author' : getAuthors($posts, $lang),
     'copyright' : getCopyright($posts, $lang),
     'description' : getDescription($posts, $lang),
     'keywords' : getKeywords($posts, $lang) 
     }
   let $content := for $post in $posts return map {
-    'title' : getTitle($post, $lang),
+    'title' : getMainTitle($post, $lang),
     'subtitle' : getSubtitle($post, $lang),
     'date' : getDate($post, $dateFormat),
-    'author' : getBlogAuthors($post, $lang),
+    'author' : getAuthors($post, $lang),
     'abstract' : getAbstract($post, $lang),
-    'tei' : $post
-    }
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
-
-(:~
- : this function get the blog posts list
- :
- : @param $queryParams the request params sent by restxq
- : @return a map with meta and content
- :)
-declare function getBlogPosts($queryParams as map(*)) as map(*) {
-  let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
-  let $posts := synopsx.models.synopsx:getDb($queryParams)//tei:TEI
-  let $meta := map{
-    'title' : 'Liste des articles de blog', 
-    'quantity' : getQuantity($posts, 'article de blog', 'articles de blogs'),
-    'author' : getBlogAuthors($posts, $lang),
-    'copyright' : getCopyright($posts, $lang),
-    'description' : getDescription($posts, $lang),
-    'keywords' : getKeywords($posts, $lang)
-    }
-  let $content := for $post in $posts return map {
-    'rubrique' : 'Article de blog',
-    'title' : getTitle($post, $lang),
-    'subtitle' : getSubtitle($post, $lang),
-    'date' : getDate($post, $dateFormat),
-    'author' : getBlogAuthors($post, $lang),
-    'abstract' : getAbstract($post, $lang),
-    'url' : getUrl($post//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
-    'tei' : $post
+    'url' : getUrl($post//tei:sourceDesc/@xml:id, '/blog/posts/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -105,6 +71,8 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
  : @param $queryParams the request params sent by restxq
  : @param $entryId the blog post ID
  : @return a map with meta and content
+ :
+ : @bug le contenu de la clef tei génère un bug de la sérialisation json
  :)
 declare function getBlogItem($queryParams as map(*)) {
   let $entryId := map:get($queryParams, 'entryId')
@@ -113,23 +81,23 @@ declare function getBlogItem($queryParams as map(*)) {
   let $article := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id=$entryId]]
   let $meta := map{
     'title' : getTitles($article, $lang),
-    'author' : getBlogAuthors($article, $lang),
+    'author' : getAuthors($article, $lang),
     'copyright' : getCopyright($article, $lang),
     'description' : getDescription($article, $lang),
     'keywords' : getKeywords($article, $lang)
     }
-  let $content := for $item in $article return map {
+  let $content := map {
     'rubrique' : 'Article de blog',
-    'title' : getTitles($item, $lang),
-    'subtitle' : getSubtitle($item, $lang),
-    'date' : getDate($item, $dateFormat),
-    'author' : getBlogAuthors($item, $lang),
-    'abstract' : getAbstract($item, $lang),
-    'tei' : $item,
-    'itemBeforeTitle' : getTitles(getBlogItemBefore($queryParams, $item, $lang), $lang),
-    'itemBeforeUrl' : getUrl(getBlogItemBefore($queryParams, $item, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
-    'itemAfterTitle' : getTitles(getBlogItemAfter($queryParams, $item, $lang), $lang),
-    'itemAfterUrl' : getUrl(getBlogItemAfter($queryParams, $item, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang)
+    'title' : getMainTitle($article, $lang),
+    'subtitle' : getSubtitle($article, $lang),
+    'date' : getDate($article, $dateFormat),
+    'author' : getAuthors($article, $lang),
+    'abstract' : getAbstract($article, $lang),
+    'tei' : $article//tei:text/*,
+    'itemBeforeTitle' : getTitles(getBlogItemBefore($queryParams, $article, $lang), $lang),
+    'itemBeforeUrl' : getUrl(getBlogItemBefore($queryParams, $article, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
+    'itemAfterTitle' : getTitles(getBlogItemAfter($queryParams, $article, $lang), $lang),
+    'itemAfterUrl' : getUrl(getBlogItemAfter($queryParams, $article, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -144,7 +112,7 @@ declare function getBlogItem($queryParams as map(*)) {
  :)
 
 (:~
- : this function get the à propos page
+ : this function get the about page
  :
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
@@ -155,7 +123,7 @@ declare function getAbout($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $article := synopsx.models.synopsx:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $meta := map{
-    'title' : getTitle($article, $lang), 
+    'title' : getTitles($article, $lang), 
     'subtitle' : getSubtitle($article, $lang), 
     'author' : getAuthors($article, $lang),
     'copyright' : getCopyright($article, $lang),
@@ -260,7 +228,6 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'format' : getRef($text)//tei:dim[@type = 'format'],
     'itemsNb' : fn:count($corpus/tei:TEI//tei:div[@type = 'item' and @xml:id]),
     'weight' : getStringLength($text),
-    'tei' : $text,
     'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang),
     'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct)
     }
@@ -346,12 +313,12 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $textId := fn:tokenize($itemId, '(Front|Body|Back|T)')[1] (: map:get($queryParams, 'textId') :)
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $text := (synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]])[1]
+  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
   let $item := $text//tei:div[@xml:id = $itemId]
   let $meta := map{
     'title' : if ($textId = 'gdpBrice1684') 
-      then $item/tei:p[1]/tei:label 
-      else $item/tei:head[1],
+      then $item/tei:p/tei:label 
+      else $item/tei:head,
     'quantity' : getQuantity($item, 'item disponible', 'items disponibles'), (: @todo internationalize :)
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
@@ -360,8 +327,8 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     }
   let $content := map {
     'title' : if ($textId = 'gdpBrice1684') 
-      then $item/tei:p[1]/tei:label 
-      else $item/tei:head[1],
+      then $item/tei:p/tei:label 
+      else $item/tei:head,
     'rubrique' : 'Item',
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
@@ -369,12 +336,12 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'tei' : $item,
     'url' : getUrl($item/@xml:id, '/gdp/items/', $lang),
     'itemBeforeTitle' : if ($textId = 'gdpBrice1684') 
-      then getItemBefore($item, $lang)/tei:p[1]/tei:label 
-      else getItemBefore($item, $lang)/tei:head[1],
+      then getItemBefore($item, $lang)/tei:p/tei:label 
+      else getItemBefore($item, $lang)/tei:head,
     'itemBeforeUrl' : getUrl(getItemBefore($item, $lang)/@xml:id, '/gdp/items/', $lang),
     'itemAfterTitle' : if ($textId = 'gdpBrice1684') 
-      then getItemAfter($item, $lang)/tei:p[1]/tei:label 
-      else getItemAfter($item, $lang)/tei:head[1],
+      then getItemAfter($item, $lang)/tei:p/tei:label 
+      else getItemAfter($item, $lang)/tei:head,
     'itemAfterUrl' : getUrl(getItemAfter($item, $lang)/@xml:id, '/gdp/items/', $lang)
     }
   return  map{
