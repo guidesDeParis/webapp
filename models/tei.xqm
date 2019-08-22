@@ -671,20 +671,13 @@ declare function getSearch($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $search := map:get($queryParams, 'search')
-  let $data := db:open('gdp')//tei:div[@type="section"]
-  (: let $results := if ($search != "") 
-    then (
-      $data//tei:div[@type="section"]/text() contains text {$search} 
-      all words 
-      using case insensitive
-      using diacritics insensitive
-      ordered distance at most 5 words
-      )
-    else 'pas de résultats' :)
+  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:div[@type="section"]/tei:p
+  let $results := <i></i>
   let $meta := map{
     'title' : 'Résultats de la recherche',
     'author' : 'Guides de Paris',
-    'quantity' : $search
+    'search' : $search,
+    'quantity' : getQuantity($results, 'résultat', 'résultats')
     }
   let $content := 
     if ($search != "") 
@@ -696,8 +689,15 @@ declare function getSearch($queryParams as map(*)) as map(*) {
         using diacritics insensitive
         using stemming
         ordered distance at most 5 words]
+        let $textId := getTextId($result)
       return map {
-        'result' : $result
+        'title' : if ($textId = 'gdpBrice1684')
+          then $result/ancestor-or-self::tei:div[1]/tei:p/tei:label[1]/*
+          else $result/ancestor-or-self::tei:div[1]/tei:head/*,
+        'result' : $result/ancestor-or-self::tei:div[1],
+        'extract' : ft:extract($result[text() contains text {$search}]),
+        'textId' : $textId,
+        'url' : getUrl($result/parent::*/@xml:id, '/gdp/items/', $lang)
         }
     else map {
         'result' : 'pas de résultats'

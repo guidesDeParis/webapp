@@ -409,3 +409,15 @@ declare function getStringLength($content as element()*){
   )
 };
 
+(:~
+ : this function get text Id
+ :
+ : @param $extractId id of the extract to process
+ : @return text Id
+ :)
+declare function getTextId($extract as element()) as xs:string {
+  fn:normalize-space(
+    $extract/ancestor::tei:TEI[1]//tei:sourceDesc/@xml:id
+  )
+};
+

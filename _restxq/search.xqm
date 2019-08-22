@@ -30,19 +30,18 @@ import module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' at '../mappi
 
 declare default function namespace 'gdp.search' ;
 
-
 (:~
  : This function consumes new expertises 
  : @param $param content
  : @bug change of cote and dossier doesn’t work
  :)
 declare
-%rest:path('/gdp/search')
-%output:method('xml')
-%rest:header-param('Referer', '{$referer}', 'none')
-%rest:form-param('search', '{$search}', 'none')
-%rest:POST
-function xformResult($search, $referer) {
+  %rest:path('/gdp/search')
+  %rest:POST
+  %output:method('xml')
+  %rest:header-param('Referer', '{$referer}', 'none')
+  %rest:form-param('search', '{$search}', 'none')
+function result($search, $referer) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
