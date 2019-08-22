@@ -180,34 +180,6 @@ function corpusItemJson($corpusId as xs:string) {
 };
 
 (:~
- : resource function for a corpus ID
- :
- : @param $corpusId the corpus ID
- : @return an html representation of the corpus resource
- :)
-(: declare 
-  %rest:path('/gdp/texts')
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-function texts($corpusId as xs:string) {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei',
-    'function' : 'getTextsList'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incCorpusCard.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
-}; :)
-
-(:~
  : resource function for a text by ID
  :
  : @param $textId the text ID

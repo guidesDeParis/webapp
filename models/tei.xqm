@@ -94,6 +94,7 @@ declare function getBlogItem($queryParams as map(*)) {
     'author' : getAuthors($article, $lang),
     'abstract' : getAbstract($article, $lang),
     'tei' : $article//tei:text/*,
+    'url' : getUrl($article//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
     'itemBeforeTitle' : getTitles(getBlogItemBefore($queryParams, $article, $lang), $lang),
     'itemBeforeUrl' : getUrl(getBlogItemBefore($queryParams, $article, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
     'itemAfterTitle' : getTitles(getBlogItemAfter($queryParams, $article, $lang), $lang),
@@ -116,6 +117,7 @@ declare function getBlogItem($queryParams as map(*)) {
  :
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
+ : @todo check url
  :)
 declare function getAbout($queryParams as map(*)) as map(*) {
   let $entryId := map:get($queryParams, 'entryId')
@@ -136,6 +138,7 @@ declare function getAbout($queryParams as map(*)) as map(*) {
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
+    'url' : getUrl($article//tei:sourceDesc/@xml:id, '/gdp/', $lang),
     'tei' : $item
     }
   return  map{
@@ -223,44 +226,13 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'title' : getTitles($text, $lang),
     'date' : getEditionDates(getOtherEditions(getRef($text))/tei:biblStruct, $dateFormat),
     'author' : getAuthors($text, $lang),
-    'biblio' : getRef($text)/tei:monogr,
+    'biblio' : getRef($text),
     'abstract' : getAbstract($text, $lang),
     'format' : getRef($text)//tei:dim[@type = 'format'],
-    'itemsNb' : fn:count($corpus/tei:TEI//tei:div[@type = 'item' and @xml:id]),
+    'itemsNb' : fn:count($text//tei:*[@type = 'item' or @type = 'section']),
     'weight' : getStringLength($text),
     'url' : getUrl($text/tei:teiHeader//tei:sourceDesc/@xml:id, '/gdp/texts/', $lang),
     'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct)
-    }
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
-
-(:~
- : this function get the texts list
- :
- : @param $queryParams the request params sent by restxq
- : @return a map of two map
- :)
-declare function getTextsList($queryParams) {
-  let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
-  let $texts := synopsx.models.synopsx:getDb($queryParams)//tei:TEI/tei:teiHeader
-  let $meta := map{
-    'title' : 'Liste des textes', 
-    'author' : getAuthors($texts, $lang),
-    'copyright' : getCopyright($texts, $lang),
-    'description' : getDescription($texts, $lang),
-    'keywords' : getKeywords($texts, $lang)
-    }
-  let $content := for $text in $texts return map {
-    'title' : getTitles($text, $lang),
-    'date' : getDate($text, $dateFormat),
-    'author' : getAuthors($text, $lang),
-    'abstract' : getAbstract($text, $lang),
-    'biblio' : getRef($text),
-    'tei' : $text
     }
   return  map{
     'meta'    : $meta,

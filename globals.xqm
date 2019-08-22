@@ -16,5 +16,5 @@ module namespace gdp.globals = 'gdp.globals' ;
  :)
  
  
- (: declare variable $gdp.globals:root := 'http://www.guidesdeparis.net' ; :)
- declare variable $gdp.globals:root := 'http://localhost:8984' ;
+ declare variable $gdp.globals:root := 'http://guidesdeparis.net' ;
+ (: declare variable $gdp.globals:root := 'http://localhost:8984' ; :)
