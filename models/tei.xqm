@@ -718,13 +718,14 @@ declare function getSearch($queryParams as map(*)) as map(*) {
   let $content := 
     if ($search != "") 
     then 
-      for $result in $data
-      where $result[text() contains text {$search} 
+      for $result score $s in $data[text() contains text {$search}
         all words 
         using case insensitive
         using diacritics insensitive
         using stemming
+        using fuzzy
         ordered distance at most 5 words]
+      order by $s descending
       let $textId := getTextId($result)
       let $uuid := $result/parent::*/@xml:id
       return map {
