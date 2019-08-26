@@ -82,6 +82,7 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
               (: case xs:anyAtomicType return fn:data($b)
               case xs:anyAtomicType+ return for $i in $b return fn:data($b) :)
               case xs:integer return fn:data($b)
+              case attribute() return fn:string($b)
               default return render($queryParams, $outputParams, $b)
             }
           else typeswitch($b)
@@ -91,6 +92,7 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
               (: case xs:anyAtomicType return fn:data($b)
               case xs:anyAtomicType+ return for $i in $b return fn:data($b) :)
               case xs:integer return fn:data($b)
+              case attribute() return fn:string($b)
               default return render($queryParams, $outputParams, $b)
         )
       }

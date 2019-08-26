@@ -61,7 +61,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
     'abstract' : getAbstract($post, $lang),
     'uuid' : $uuid,
     'path' : '/blog/posts/',
-    'uri' : $gdp.globals:root || '/blog/posts/' || $uuid
+    'url' : $gdp.globals:root || '/blog/posts/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -101,7 +101,7 @@ declare function getBlogItem($queryParams as map(*)) {
     'tei' : $article//tei:text/*,
     'uuid' : $uuid,
     'path' : '/blog/posts/',
-    'uri' : $gdp.globals:root || '/blog/posts/' || $uuid,
+    'url' : $gdp.globals:root || '/blog/posts/' || $uuid,
     'itemBeforeTitle' : getTitles(getBlogItemBefore($queryParams, $article, $lang), $lang),
     'itemBeforeUrl' : getUrl(getBlogItemBefore($queryParams, $article, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
     'itemAfterTitle' : getTitles(getBlogItemAfter($queryParams, $article, $lang), $lang),
@@ -176,7 +176,7 @@ declare function getHome($queryParams as map(*)) as map(*) {
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
     'keywords' : getKeywords($corpora, $lang),
-    'url' : $gdp.globals:root || '/gdp/home/'
+    'url' : $gdp.globals:root || '/gdp/home'
     }
   let $content := map {
     }
@@ -870,6 +870,7 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
       'birth' : $entry/tei:birth/tei:date,
       'death' : $entry/tei:death/tei:date,
       'uuid' : $uuid,
+      'path' : '/gdp/indexNominum/',
       'url' : $gdp.globals:root || '/gdp/indexNominum/' || $uuid
       }
   return  map{
@@ -975,8 +976,8 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
       'ref' : getRef($text/ancestor::tei:TEI),
       'author' : getAuthors($text, $lang),
       'uuid' : $uuid,
-      'url' : $gdp.globals:root || $uuid,
-      'url' : getUrl(fn:substring-after($occurence/@ref, '#'), '/gdp/items/', $lang)
+      'path' : '/gdp/items/',
+      'url' : $gdp.globals:root || '/gdp/items/' || $uuid
       }
   return  map{
     'meta'    : $meta,
