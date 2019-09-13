@@ -36,13 +36,13 @@
         </div>
         <div class="navigation-tools">
           <div class="search-bar">
-            <div class="search-and-submit">
-              <input type="search" placeholder="Recherche" />
-              <button type="submit">
-                <img src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon.png" alt="Search Icon"/>
-              </button>
-            </div>
-          </div>
+          <form id="simple-search" class="search-and-submit" action="/gdp/searche" method="get">
+            <input type="search" id="search" name="search" placeholder="Recherche" />
+            <button type="submit">
+              <img src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon.png" alt="Search Icon"/>
+            </button>
+          </form>
+        </div>
           <a href="javascript:void(0)" class="sign-up">S’inscrire</a>
         </div>
       </div>

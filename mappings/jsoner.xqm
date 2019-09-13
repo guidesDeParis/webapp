@@ -54,9 +54,9 @@ declare function jsoner($queryParams as map(*), $data as map(*), $outputParams a
     'content' : if (fn:count($contents) > 1) then array{ 
         for $content in $contents 
         return sequence2ArrayInMap($queryParams, $content, $outputParams) 
-      }
-      else sequence2ArrayInMap($queryParams, $contents, $outputParams)
-  } 
+        }
+        else sequence2ArrayInMap($queryParams, $contents, $outputParams)
+    } 
 };
 
 (:~

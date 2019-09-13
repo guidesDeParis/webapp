@@ -100,8 +100,7 @@ function resultJson($referer, $search as xs:string, $exact, $start as xs:int, $c
  : @bug change of cote and dossier doesn’t work
  :)
 declare
-  %rest:path('/gdp/search')
-  %rest:GET
+  %rest:path('/gdp/searche')
   %output:method('xml')
   %rest:header-param('Referer', '{$referer}', 'none')
   %rest:query-param("search", "{$search}", 'none')
@@ -134,7 +133,6 @@ function resultGet($referer, $search as xs:string, $start as xs:int?, $count as 
  :)
 declare
   %rest:path('/gdp/search')
-  %rest:GET
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')

@@ -730,9 +730,9 @@ declare function getSearch($queryParams as map(*)) as map(*) {
       let $uuid := $result/parent::*/@xml:id
       return map {
         'title' : if ($textId = 'gdpBrice1684')
-          then $result/ancestor-or-self::tei:div[1]/tei:p/tei:label[1]/*
+          then $result/ancestor-or-self::tei:div[1]/tei:p[1]/tei:label[1]
           else $result/ancestor-or-self::tei:div[1]/tei:head/*,
-        'result' : $result/ancestor-or-self::tei:div[1],
+        (: 'result' : ($result/ancestor-or-self::tei:div)[1], :)
         'extract' : ft:extract($result[text() contains text {$search}]),
         'textId' : $textId,
         'uuid' : $uuid,
