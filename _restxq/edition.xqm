@@ -27,6 +27,7 @@ import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm'
 
 import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
 import module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' at '../mappings/jsoner.xqm' ;
+import module namespace gdp.mappings.tei2rdf = 'gdp.mappings.tei2rdf' at '../mappings/tei2rdf.xqm' ;
 
 declare default function namespace 'gdp.edition' ;
 
@@ -423,12 +424,13 @@ function getHtmlFooter() {
 
 (:~
  : sommaire d‘un texte
+ : @todo
  :)
 
 (:~
  : resource function for the indexLocorum
  :
- : @return a list of index entries
+ : @return an html list of indexes
  :)
 declare 
   %rest:path('/gdp/index')
@@ -455,7 +457,7 @@ function indexes() {
 (:~
  : resource function for the indexLocorum
  :
- : @return a json list of index entries
+ : @return a json list of indexLocorum entries
  :)
 declare 
   %rest:path('/gdp/index')
@@ -480,7 +482,7 @@ function indexesJson() {
 (:~
  : resource function for the indexLocorum
  :
- : @return a list of index entries
+ : @return an html list of indexLocorum entries
  :)
 declare 
   %rest:path('/gdp/indexLocorum')
@@ -507,7 +509,7 @@ function indexLocorum() {
 (:~
  : resource function for the indexLocorum
  :
- : @return a json list of index entries
+ : @return a json list of indexLocorum entries
  :)
 declare 
   %rest:path('/gdp/indexLocorum')
@@ -530,9 +532,65 @@ function indexLocorumJson() {
 };
 
 (:~
- : resource function for the indexLocorum
+ : resource function for the indexLocorum item
  :
- : @return a list of index entries
+ : @param $itemId the item ID
+ : @return an html representation of an indexLocorum item
+ :)
+declare 
+  %rest:path('/gdp/indexLocorum/{$itemId}')
+  %rest:produces('text/html')
+  %output:method("html")
+  %output:html-version("5.0")
+function indexLocorumItem($itemId) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getIndexLocorumItem',
+    'itemId' : $itemId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incIndexNominum.xhtml',
+    'xquery' : 'tei2html'
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for the indexLocorum item
+ :
+ : @param $itemId the item ID
+ : @return a json representation of an indexLocorum item
+ :)
+declare 
+  %rest:path('/gdp/indexLocorum/{$itemId}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function indexLocorumItemJson($itemId) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getIndexLocorumItem',
+    'itemId' : $itemId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+    return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for the indexOperum
+ :
+ : @return an html list of indexOperum entries
  :)
 declare 
   %rest:path('/gdp/indexOperum')
@@ -557,9 +615,9 @@ function indexOperum() {
 };
 
 (:~
- : resource function for the indexLocorum
+ : resource function for the indexOperum
  :
- : @return a json list of index entries
+ : @return a json list of indexOperum entries
  :)
 declare 
   %rest:path('/gdp/indexOperum')
@@ -582,9 +640,10 @@ function indexOperumJson() {
 };
 
 (:~
- : resource function for the indexOperum item
+ : resource function for an indexOperum item
  :
- : @return a list of index entries
+ : @param $itemId the item ID
+ : @return an html reprenstation of an indexOperum item
  :)
 declare 
   %rest:path('/gdp/indexOperum/{$itemId}')
@@ -610,9 +669,10 @@ function indexOperumItem($itemId) {
 };
 
 (:~
- : resource function for the indexOperum item
+ : resource function for an indexOperum item
  :
- : @return a json list of index entries
+ : @param $itemId the item ID
+ : @return a json reprenstation of an indexOperum item
  :)
 declare 
   %rest:path('/gdp/indexOperum/{$itemId}')
@@ -636,9 +696,9 @@ function indexOperumItemJson($itemId) {
 };
 
 (:~
- : resource function for the indexLocorum
+ : resource function for the indexNominum
  :
- : @return a list of index entries
+ : @return a html list of indexNominum entries
  :)
 declare 
   %rest:path('/gdp/indexNominum')
@@ -663,9 +723,9 @@ function indexNominum() {
 };
 
 (:~
- : resource function for the indexLocorum
+ : resource function for the indexNominum
  :
- : @return a json list of index entries
+ : @return a json list of indexNominum entries
  :)
 declare 
   %rest:path('/gdp/indexNominum')
@@ -690,7 +750,8 @@ function indexNominumJson() {
 (:~
  : resource function for the indexNominum item
  :
- : @return a list of index entries
+ : @param $itemId the item ID
+ : @return an html representation of an indexNominum item
  :)
 declare 
   %rest:path('/gdp/indexNominum/{$itemId}')
@@ -718,7 +779,8 @@ function indexNominumItem($itemId) {
 (:~
  : resource function for the indexNominum item
  :
- : @return a json list of index entries
+ : @param $itemId the item ID
+ : @return a json representation of an indexNominum item
  :)
 declare 
   %rest:path('/gdp/indexNominum/{$itemId}')
@@ -741,6 +803,33 @@ function indexNominumItemJson($itemId) {
     return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
  
+(:~
+ : resource function for the indexNominum item
+ :
+ : @param $itemId the item ID
+ : @return a jsonLD representation of an indexNominum item
+ :)
+declare 
+  %rest:path('/gdp/indexNominum/{$itemId}/rdf')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function indexNominumItemRdf($itemId) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei', 
+    'function' : 'getIndexNominumItem',
+    'itemId' : $itemId
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2rdf'
+    }
+    return gdp.mappings.tei2rdf:tei2rdf($queryParams, $result, $outputParams)
+};
+
 (:~
  : index œuvres
  :)

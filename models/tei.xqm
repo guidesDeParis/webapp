@@ -359,7 +359,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
  : this function get the texts list
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getModel($queryParams) {
   let $lang := 'fr'
@@ -395,7 +395,7 @@ declare function getModel($queryParams) {
  : this function get the bibliographical works list
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -434,7 +434,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
  : this function get the bibliographical work by ID
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  : @todo clean the meta
  :)
 declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
@@ -473,7 +473,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
  : this function get the bibliographical expressions list
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  : @todo check why double title elements
  :)
 declare function getBibliographicalExpressionsList($queryParams) {
@@ -514,7 +514,7 @@ declare function getBibliographicalExpressionsList($queryParams) {
  : this function get the bibliographical expression by ID
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getBibliographicalExpression($queryParams) {
   let $bibliographicalExpressionId := map:get($queryParams, 'expressionId')
@@ -551,7 +551,7 @@ declare function getBibliographicalExpression($queryParams) {
  : this function get the bibliographical manifestation list
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getBibliographicalManifestationsList($queryParams) {
   let $lang := 'fr'
@@ -590,7 +590,7 @@ declare function getBibliographicalManifestationsList($queryParams) {
  : this function get the bibliographical manifestation by ID
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  : @bug doesnt bring authors, url properly
  :)
 declare function getBibliographicalManifestation($queryParams) {
@@ -627,7 +627,7 @@ declare function getBibliographicalManifestation($queryParams) {
  : this function get the bibliographical item list
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -666,7 +666,7 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
  : this function get the bibliographical item by ID
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
   let $bibliographicalItemId := map:get($queryParams, 'itemId')
@@ -701,7 +701,7 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
  : this function get the search results
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getSearch($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -752,7 +752,7 @@ declare function getSearch($queryParams as map(*)) as map(*) {
  : this function get the index list
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getIndexList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -782,7 +782,7 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
  : this function get the index locorum
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getIndexLocorum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -812,7 +812,7 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
  : this function get the index locorum item
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -836,7 +836,7 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
       'uuid' : $uuid,
       'path' : '/gdp/indexLocorum/',
       'url' : $gdp.globals:root || '/gdp/indexLocorum/' || $uuid,
-      'occurences' : '' (: @todo :)
+      'occurences' : '@todo'
       }
   return  map{
     'meta'    : $meta,
@@ -848,7 +848,7 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
  : this function get the index nominum
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
  :)
 declare function getIndexNominum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -883,7 +883,8 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
  : this function get the index nominum item
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
+ : @todo deal with dates according to the serialization
  :)
 declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -902,12 +903,20 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
       'title' : $entry/tei:persName[1],
       'forename' : $entry/tei:persName/tei:forename,
       'surname' : $entry/tei:persName/tei:surname,
-      'birth' : $entry/tei:birth/tei:date,
+      'birthDate' : $entry/tei:birth/tei:date,
+      'birthPlace' : $entry/tei:birth/tei:placeName,
       'death' : $entry/tei:death/tei:date,
+      'deathPlace' : $entry/tei:death/tei:placeName,
+      'occupation' : $entry/tei:occupation,
+      'autBnf' : $entry/tei:idno[@type="autBnf"],
+      'isni' : $entry/tei:idno[@type="isni"],
+      'wikidata' : $entry/tei:idno[@type="wikidata"],
       'uuid' : $uuid,
       'path' : '/gdp/indexNominum/',
       'url' : $gdp.globals:root || '/gdp/indexNominum/' || $uuid,
-      'occurences' : '' (: @todo :)
+      'attestedForms' : fn:distinct-values(db:open('gdp')//tei:persName[@ref=$uuid]),
+      'occurences' : '@todo collection',
+      'relations' : '@todo collection'
       }
   return  map{
     'meta'    : $meta,
@@ -919,7 +928,8 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
  : this function get the index operum
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content
+ : @todo deal with dates according to the serialization
  :)
 declare function getIndexOperum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -949,7 +959,8 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
  : this function get the index operum item
  :
  : @param $queryParams the request params sent by restxq
- : @return a map of two map
+ : @return a map of two map for meta and content for meta and content
+ : @todo deal with dates according to the serialization
  :)
 declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
