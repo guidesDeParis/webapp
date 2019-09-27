@@ -769,8 +769,8 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
     return map {
       'title' : $entry//tei:fileDesc/tei:titleStmt/tei:title,
       'uuid' : $uuid,
-      'path' : '/gdp/i',
-      'url' : $gdp.globals:root || '/gdp/i' || $uuid
+      'path' : '/gdp/index',
+      'url' : $gdp.globals:root || '/gdp/index' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -789,7 +789,7 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place
   let $meta := map{
-    'title' : 'Index locorum',
+    'title' : 'Index des lieux',
     'author' : 'Guides de Paris',
     'quantity' : getQuantity($data, 'entrée', 'entrées')
     }
@@ -798,6 +798,10 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
     let $uuid := $entry/@xml:id
     return map {
       'title' : $entry/tei:placeName,
+      'type' : $entry/tei:trait,
+      'country' : $entry/tei:country,
+      'district' : $entry/tei:district,
+      'geo' : $entry/tei:location/tei:geo,
       'uuid' : $uuid,
       'path' : '/gdp/indexLocorum/',
       'url' : $gdp.globals:root || $uuid
@@ -820,18 +824,19 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
   let $itemId := map:get($queryParams, 'itemId')
   let $entry := synopsx.models.synopsx:getDb($queryParams)//tei:place[@xml:id = $itemId]
   let $meta := map{
-    'rubrique' : 'Index locorum',
+    'rubrique' : 'Index des lieux',
     'author' : 'Guides de Paris',
     'quantity' : getQuantity($entry, 'occurence', 'occurences')
     }
   let $uuid := $entry/@xml:id
   let $content :=
     map {
-      'rubrique' : 'Index locorum',
+      'rubrique' : 'Index des lieux',
       'title' : $entry/tei:placeName,
       'type' : $entry/tei:trait,
       'country' : $entry/tei:country,
       'district' : $entry/tei:district,
+      'geo' : $entry/tei:location/tei:geo,
       'note' : $entry/tei:note,
       'uuid' : $uuid,
       'path' : '/gdp/indexLocorum/',
@@ -856,7 +861,7 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
   let $search := map:get($queryParams, 'search')
   let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person
   let $meta := map{
-    'title' : 'Index nominum',
+    'title' : 'Index des personnes',
     'author' : 'Guides de Paris',
     'quantity' : getQuantity($data, 'entrée', 'entrées')
     }
@@ -869,6 +874,7 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
       'surname' : $entry/tei:persName/tei:surname,
       'birth' : $entry/tei:birth/tei:date,
       'death' : $entry/tei:death/tei:date,
+      'occupation' : $entry/tei:occupation,
       'uuid' : $uuid,
       'path' : '/gdp/indexNominum/',
       'url' : $gdp.globals:root || '/gdp/indexNominum/' || $uuid
@@ -892,14 +898,14 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
   let $itemId := map:get($queryParams, 'itemId')
   let $entry := synopsx.models.synopsx:getDb($queryParams)//tei:person[@xml:id = $itemId]
   let $meta := map{
-    'rubrique' : 'Index nominum',
+    'rubrique' : 'Index des personnes',
     'author' : 'Guides de Paris',
     'quantity' : getQuantity($entry, 'occurence', 'occurences')
     }
   let $uuid := $entry/@xml:id
   let $content :=
     map {
-      'rubrique' : 'Index nominum',
+      'rubrique' : 'Index des personnes',
       'title' : $entry/tei:persName[1],
       'forename' : $entry/tei:persName/tei:forename,
       'surname' : $entry/tei:persName/tei:surname,
@@ -936,7 +942,7 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object
   let $meta := map{
-    'title' : 'Index operum',
+    'title' : 'Index des œuvres',
     'author' : 'Guides de Paris',
     'quantity' : getQuantity($data, 'entrée', 'entrées')
     }
@@ -945,6 +951,8 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
     let $uuid := $entry/@xml:id
     return map {
       'title' : $entry/tei:objectName,
+      'type' : $entry/tei:label,
+      'date' : $entry/tei:date,
       'uuid' : $uuid,
       'path' : '/gdp/indexOperum/',
       'url' : $gdp.globals:root || '/gdp/indexOperum/' || $uuid
@@ -969,7 +977,7 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
   let $entry := synopsx.models.synopsx:getDb($queryParams)//tei:object[@xml:id = $itemId]
   let $occurences := $entry/tei:relation[@type="locus"]
   let $meta := map{
-    'rubrique' : 'Index operum',
+    'rubrique' : 'Index des œuvres',
     'author' : 'Guides de Paris',
     'title' : $entry/tei:objectName,
     'type' : $entry/tei:label,

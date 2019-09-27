@@ -428,7 +428,7 @@ function getHtmlFooter() {
  :)
 
 (:~
- : resource function for the indexLocorum
+ : resource function for the index list
  :
  : @return an html list of indexes
  :)
@@ -500,7 +500,7 @@ function indexLocorum() {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'incIndex.xhtml',
+    'pattern' : 'incIndexLocorum.xhtml',
     'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
