@@ -35,11 +35,11 @@ declare default function namespace 'gdp.edition' ;
  : this resource function redirect to /home
  :)
 declare 
-  %rest:path('/gdp')
+  %rest:path('/')
 function index() {
   <rest:response>
     <http:response status="303" message="See Other">
-      <http:header name="location" value="/gdp/home"/>
+      <http:header name="location" value="/home"/>
     </http:response>
   </rest:response>
 };
@@ -50,7 +50,7 @@ function index() {
  : @return an html home page for the edition
  :)
 declare 
-  %rest:path('/gdp/home')
+  %rest:path('/home')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -78,10 +78,10 @@ function editionHome() {
  : @return an html representation of the corpus resource
  :)
 declare 
-  %rest:path('/gdp/corpus')
+  %rest:path('/corpus')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function corpus() {
   let $queryParams := map {
     'project' : 'gdp',
@@ -105,7 +105,7 @@ function corpus() {
  : @return a json representation of the corpus resource
  :)
 declare 
-  %rest:path('/gdp/corpus')
+  %rest:path('/corpus')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -131,10 +131,10 @@ function corpusJson() {
  : @return an html representation of the corpus resource
  :)
 declare 
-  %rest:path('/gdp/corpus/{$corpusId}')
+  %rest:path('/corpus/{$corpusId}')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function corpusItem($corpusId as xs:string) {
   let $queryParams := map {
     'corpusId' : $corpusId,
@@ -160,7 +160,7 @@ function corpusItem($corpusId as xs:string) {
  : @return a json representation of the corpus resource
  :)
 declare 
-  %rest:path('/gdp/corpus/{$corpusId}')
+  %rest:path('/corpus/{$corpusId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -187,10 +187,10 @@ function corpusItemJson($corpusId as xs:string) {
  : @return an html representation of the text resource
  :)
 declare 
-  %rest:path('/gdp/texts/{$textId}')
+  %rest:path('/texts/{$textId}')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function textItems($textId as xs:string) {
   let $queryParams := map {
     'textId' : $textId,
@@ -216,7 +216,7 @@ function textItems($textId as xs:string) {
  : @return a json representation of the text resource
  :)
 declare 
-  %rest:path('/gdp/texts/{$textId}')
+  %rest:path('/texts/{$textId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -243,10 +243,10 @@ function textItemsJson($textId as xs:string) {
  : @return an html representation of the text item
  :)
 declare 
-  %rest:path('/gdp/items/{$itemId}')
+  %rest:path('/items/{$itemId}')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function items($itemId as xs:string) {
   let $queryParams := map {
     
@@ -273,7 +273,7 @@ function items($itemId as xs:string) {
  : @return a json representation of the text item
  :)
 declare 
-  %rest:path('/gdp/items/{$itemId}')
+  %rest:path('/items/{$itemId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -301,11 +301,11 @@ function itemsJson($itemId as xs:string) {
  : @todo use this tag !
  :)
 declare 
-  %rest:path("/gdp/resp/list/html")
+  %rest:path('/resp/list/html')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-  %rest:query-param("pattern", "{$pattern}")
+  %output:method('html')
+  %output:html-version('5.0')
+  %rest:query-param('pattern', '{$pattern}')
 function biblioListHtml($pattern as xs:string?) {
   let $queryParams := map {
     'project' :'gdp',
@@ -330,10 +330,10 @@ function biblioListHtml($pattern as xs:string?) {
  : @todo use this tag !
  :)
 declare 
-  %rest:path("/gdp/model")
+  %rest:path('/model')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function model() {
   let $queryParams := map {
     'project' :'gdp',
@@ -359,10 +359,10 @@ function model() {
  : @todo use this tag !
  :)
 declare 
-  %rest:path("/gdp/about")
+  %rest:path('/about')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function about() {
   let $queryParams := map {
     'project' :'gdp',
@@ -388,10 +388,10 @@ function about() {
  : @todo use this tag !
  :)
 declare 
-  %rest:path("/documentation")
+  %rest:path('/documentation')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function documentation() {
   let $queryParams := map {
     'project' :'gdp',
@@ -411,13 +411,13 @@ function documentation() {
 };
 
 declare 
-  %rest:path("/gdp/html/header")
+  %rest:path('/html/header')
 function getHtmlHeader() {
   fn:doc($G:WORKSPACE||'gdp/templates/header.xhtml')
 };
 
 declare 
-  %rest:path("/gdp/html/footer")
+  %rest:path('/html/footer')
 function getHtmlFooter() {
   fn:doc($G:WORKSPACE||'gdp/templates/footer.xhtml')
 };
@@ -433,10 +433,10 @@ function getHtmlFooter() {
  : @return an html list of indexes
  :)
 declare 
-  %rest:path('/gdp/index')
+  %rest:path('/index')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function indexes() {
   let $queryParams := map {
     'project' : 'gdp',
@@ -460,7 +460,7 @@ function indexes() {
  : @return a json list of indexLocorum entries
  :)
 declare 
-  %rest:path('/gdp/index')
+  %rest:path('/index')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -485,10 +485,10 @@ function indexesJson() {
  : @return an html list of indexLocorum entries
  :)
 declare 
-  %rest:path('/gdp/indexLocorum')
+  %rest:path('/indexLocorum')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function indexLocorum() {
   let $queryParams := map {
     'project' : 'gdp',
@@ -512,7 +512,7 @@ function indexLocorum() {
  : @return a json list of indexLocorum entries
  :)
 declare 
-  %rest:path('/gdp/indexLocorum')
+  %rest:path('/indexLocorum')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -538,10 +538,10 @@ function indexLocorumJson() {
  : @return an html representation of an indexLocorum item
  :)
 declare 
-  %rest:path('/gdp/indexLocorum/{$itemId}')
+  %rest:path('/indexLocorum/{$itemId}')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function indexLocorumItem($itemId) {
   let $queryParams := map {
     'project' : 'gdp',
@@ -567,7 +567,7 @@ function indexLocorumItem($itemId) {
  : @return a json representation of an indexLocorum item
  :)
 declare 
-  %rest:path('/gdp/indexLocorum/{$itemId}')
+  %rest:path('/indexLocorum/{$itemId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -593,10 +593,10 @@ function indexLocorumItemJson($itemId) {
  : @return an html list of indexOperum entries
  :)
 declare 
-  %rest:path('/gdp/indexOperum')
+  %rest:path('/indexOperum')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function indexOperum() {
   let $queryParams := map {
     'project' : 'gdp',
@@ -620,7 +620,7 @@ function indexOperum() {
  : @return a json list of indexOperum entries
  :)
 declare 
-  %rest:path('/gdp/indexOperum')
+  %rest:path('/indexOperum')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -646,10 +646,10 @@ function indexOperumJson() {
  : @return an html reprenstation of an indexOperum item
  :)
 declare 
-  %rest:path('/gdp/indexOperum/{$itemId}')
+  %rest:path('/indexOperum/{$itemId}')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function indexOperumItem($itemId) {
   let $queryParams := map {
     'project' : 'gdp',
@@ -675,7 +675,7 @@ function indexOperumItem($itemId) {
  : @return a json reprenstation of an indexOperum item
  :)
 declare 
-  %rest:path('/gdp/indexOperum/{$itemId}')
+  %rest:path('/indexOperum/{$itemId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -701,10 +701,10 @@ function indexOperumItemJson($itemId) {
  : @return a html list of indexNominum entries
  :)
 declare 
-  %rest:path('/gdp/indexNominum')
+  %rest:path('/indexNominum')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function indexNominum() {
   let $queryParams := map {
     'project' : 'gdp',
@@ -728,7 +728,7 @@ function indexNominum() {
  : @return a json list of indexNominum entries
  :)
 declare 
-  %rest:path('/gdp/indexNominum')
+  %rest:path('/indexNominum')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -754,10 +754,10 @@ function indexNominumJson() {
  : @return an html representation of an indexNominum item
  :)
 declare 
-  %rest:path('/gdp/indexNominum/{$itemId}')
+  %rest:path('/indexNominum/{$itemId}')
   %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
+  %output:method('html')
+  %output:html-version('5.0')
 function indexNominumItem($itemId) {
   let $queryParams := map {
     'project' : 'gdp',
@@ -783,7 +783,7 @@ function indexNominumItem($itemId) {
  : @return a json representation of an indexNominum item
  :)
 declare 
-  %rest:path('/gdp/indexNominum/{$itemId}')
+  %rest:path('/indexNominum/{$itemId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -810,7 +810,7 @@ function indexNominumItemJson($itemId) {
  : @return a jsonLD representation of an indexNominum item
  :)
 declare 
-  %rest:path('/gdp/indexNominum/{$itemId}/rdf')
+  %rest:path('/indexNominum/{$itemId}/rdf')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')

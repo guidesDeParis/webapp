@@ -149,8 +149,8 @@ declare function getAbout($queryParams as map(*)) as map(*) {
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'uuid' : $uuid,
-    'path' : '/gdp/',
-    'url' : $gdp.globals:root || '/gdp/' || $uuid,
+    'path' : '/about/',
+    'url' : $gdp.globals:root || '/' || $uuid,
     'tei' : $item
     }
   return  map{
@@ -176,7 +176,7 @@ declare function getHome($queryParams as map(*)) as map(*) {
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
     'keywords' : getKeywords($corpora, $lang),
-    'url' : $gdp.globals:root || '/gdp/home'
+    'url' : $gdp.globals:root || '/home'
     }
   let $content := map {
     }
@@ -209,8 +209,8 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'editionsQuantity' : getQuantity(getOtherEditions(getRef($corpus))/tei:biblStruct, 'édition', ' éditions'),
     'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte disponible', 'textes disponibles'),
     'uuid' : $uuid,
-    'path' : '/gdp/corpus/',
-    'url' : $gdp.globals:root || '/gdp/corpus/' || $uuid,
+    'path' : '/corpus/',
+    'url' : $gdp.globals:root || '/corpus/' || $uuid,
     'editions' : getOtherEditions(getRef($corpus)),
     'weight' : getStringLength($corpus)
     }
@@ -253,8 +253,8 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'itemsNb' : fn:count($text//tei:*[@type = 'item' or @type = 'section']),
     'weight' : getStringLength($text),
     'uuid' : $uuid,
-    'path' : '/gdp/texts/',
-    'url' : $gdp.globals:root || '/gdp/texts/' || $uuid,
+    'path' : '/texts/',
+    'url' : $gdp.globals:root || '/texts/' || $uuid,
     'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct)
     }
   return  map{
@@ -293,9 +293,9 @@ declare function getTextItemsById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'tei' : $item,
-    'path' : '/gdp/items/',
+    'path' : '/items/',
     'uuid' : $uuid,
-    'url' : $gdp.globals:root || '/gdp/items/' || $uuid
+    'url' : $gdp.globals:root || '/items/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -337,9 +337,9 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'tei' : $item,
-    'path' : '/gdp/items/',
+    'path' : '/items/',
     'uuid' : $uuid,
-    'url' : $gdp.globals:root || '/gdp/items/' || $uuid,
+    'url' : $gdp.globals:root || '/items/' || $uuid,
     'itemBeforeTitle' : if ($textId = 'gdpBrice1684') 
       then getItemBefore($item, $lang)/tei:p/tei:label 
       else getItemBefore($item, $lang)/tei:head,
@@ -408,7 +408,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des œuvres de la bibliographie des Guides de Paris, au sens des FRBR',
     'keywords' : getKeywords($bibliography, $lang),
-    'url' : $gdp.globals:root || '/gdp/bibliography/works'
+    'url' : $gdp.globals:root || '/bibliography/works'
     }
   let $content := 
     for $bibliographicalWork in $bibliographicalWorks 
@@ -421,8 +421,8 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     'expressions' : getBiblExpressions($bibliographicalWork, $lang),
     'manifestations' : getBiblManifestations($bibliographicalWork, $lang),
     'uuid' : $uuid,
-    'path' : '/gdp/bibliography/works/',
-    'url' : $gdp.globals:root || '/gdp/bibliography/works/' || $uuid
+    'path' : '/bibliography/works/',
+    'url' : $gdp.globals:root || '/bibliography/works/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -460,8 +460,8 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
     'manifestations' : getBiblManifestations($bibliographicalWork, $lang),
     'tei' : $bibliographicalWork,
     'uuid' : $uuid,
-    'path' : '/gdp/bibliography/works/',
-    'url' : $gdp.globals:root || '/gdp/bibliography/works/' || $uuid
+    'path' : '/bibliography/works/',
+    'url' : $gdp.globals:root || '/bibliography/works/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -488,7 +488,7 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des expressions de la bibliographie des Guides de Paris, au sens des FRBR',
     'keywords' : getKeywords($bibliography, $lang),
-    'url' : $gdp.globals:root || '/gdp/bibliography/expressions'
+    'url' : $gdp.globals:root || '/bibliography/expressions'
     }
   let $content := 
     for $bibliographicalExpression in $bibliographicalExpressions 
@@ -501,8 +501,8 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'manifestations' : getBiblManifestations($bibliographicalExpression, $lang),
     'tei' : $bibliographicalExpression,
     'uuid' : $uuid,
-    'path' : '/gdp/bibliography/expressions/',
-    'url' : $gdp.globals:root || '/gdp/bibliography/expressions/' || $uuid
+    'path' : '/bibliography/expressions/',
+    'url' : $gdp.globals:root || '/bibliography/expressions/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -538,8 +538,8 @@ declare function getBibliographicalExpression($queryParams) {
     'dates' : getDate($bibliographicalExpression, $dateFormat),
     'tei' : $bibliographicalExpression,
     'uuid' : $uuid,
-    'path' : '/gdp/bibliography/expressions/',
-    'url' : $gdp.globals:root || '/gdp/bibliography/expressions/' || $uuid
+    'path' : '/bibliography/expressions/',
+    'url' : $gdp.globals:root || '/bibliography/expressions/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -577,8 +577,8 @@ declare function getBibliographicalManifestationsList($queryParams) {
     'dates' : getBiblDates($bibliographicalManifestation, $dateFormat),
     'tei' : $bibliographicalManifestation,
     'uuid' : $uuid,
-    'path' : '/gdp/bibliography/manifestations/',
-    'url' : $gdp.globals:root || '/gdp/bibliography/manifestations/' || $uuid
+    'path' : '/bibliography/manifestations/',
+    'url' : $gdp.globals:root || '/bibliography/manifestations/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -614,8 +614,8 @@ declare function getBibliographicalManifestation($queryParams) {
     'dates' : getBiblDates($bibliographicalManifestation, $dateFormat),
     'tei' : $bibliographicalManifestation,
     'uuid' : $uuid,
-    'path' : '/gdp/bibliography/manifestations/',
-    'url' : $gdp.globals:root || '/gdp/bibliography/manifestations/' || $uuid
+    'path' : '/bibliography/manifestations/',
+    'url' : $gdp.globals:root || '/bibliography/manifestations/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -653,8 +653,8 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
     'dates' : getBiblDates($bibliographicalItem, $dateFormat),
     'tei' : $bibliographicalItem,
     'uuid' : $uuid,
-    'path' : '/gdp/bibliography/items/',
-    'url' : $gdp.globals:root || '/gdp/bibliography/items/' || $uuid
+    'path' : '/bibliography/items/',
+    'url' : $gdp.globals:root || '/bibliography/items/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -688,8 +688,8 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
     'dates' : getDate($bibliographicalItem, $dateFormat),   
     'tei' : $bibliographicalItem,
     'uuid' : $uuid,
-    'path' : '/gdp/bibliography/items/',
-    'url' : $gdp.globals:root || '/gdp/bibliography/items/' || $uuid
+    'path' : '/bibliography/items/',
+    'url' : $gdp.globals:root || '/bibliography/items/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -736,8 +736,8 @@ declare function getSearch($queryParams as map(*)) as map(*) {
         'extract' : ft:extract($result[text() contains text {$search}]),
         'textId' : $textId,
         'uuid' : $uuid,
-        'path' : '/gdp/items/',
-        'url' : $gdp.globals:root || '/gdp/items/' || $uuid
+        'path' : '/items/',
+        'url' : $gdp.globals:root || '/items/' || $uuid
         }
     else map {
         'result' : 'pas de résultats'
@@ -769,8 +769,8 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
     return map {
       'title' : $entry//tei:fileDesc/tei:titleStmt/tei:title,
       'uuid' : $uuid,
-      'path' : '/gdp/index',
-      'url' : $gdp.globals:root || '/gdp/index' || $uuid
+      'path' : '/index',
+      'url' : $gdp.globals:root || '/index' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -803,7 +803,7 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
       'district' : $entry/tei:district,
       'geo' : $entry/tei:location/tei:geo,
       'uuid' : $uuid,
-      'path' : '/gdp/indexLocorum/',
+      'path' : '/indexLocorum/',
       'url' : $gdp.globals:root || $uuid
       }
   return  map{
@@ -839,8 +839,8 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
       'geo' : $entry/tei:location/tei:geo,
       'note' : $entry/tei:note,
       'uuid' : $uuid,
-      'path' : '/gdp/indexLocorum/',
-      'url' : $gdp.globals:root || '/gdp/indexLocorum/' || $uuid,
+      'path' : '/indexLocorum/',
+      'url' : $gdp.globals:root || '/indexLocorum/' || $uuid,
       'occurences' : '@todo'
       }
   return  map{
@@ -876,8 +876,8 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
       'death' : $entry/tei:death/tei:date,
       'occupation' : $entry/tei:occupation,
       'uuid' : $uuid,
-      'path' : '/gdp/indexNominum/',
-      'url' : $gdp.globals:root || '/gdp/indexNominum/' || $uuid
+      'path' : '/indexNominum/',
+      'url' : $gdp.globals:root || '/indexNominum/' || $uuid
       }
   return  map{
     'meta'    : $meta,
@@ -918,8 +918,8 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
       'isni' : $entry/tei:idno[@type="isni"],
       'wikidata' : $entry/tei:idno[@type="wikidata"],
       'uuid' : $uuid,
-      'path' : '/gdp/indexNominum/',
-      'url' : $gdp.globals:root || '/gdp/indexNominum/' || $uuid,
+      'path' : '/indexNominum/',
+      'url' : $gdp.globals:root || '/indexNominum/' || $uuid,
       'attestedForms' : fn:distinct-values(db:open('gdp')//tei:persName[@ref=$uuid]),
       'occurences' : '@todo collection',
       'relations' : '@todo collection'
@@ -954,8 +954,8 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
       'type' : $entry/tei:label,
       'date' : $entry/tei:date,
       'uuid' : $uuid,
-      'path' : '/gdp/indexOperum/',
-      'url' : $gdp.globals:root || '/gdp/indexOperum/' || $uuid
+      'path' : '/indexOperum/',
+      'url' : $gdp.globals:root || '/indexOperum/' || $uuid
       }
   return  map{
     'meta'    : $meta,
@@ -995,8 +995,8 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
       'ref' : getRef($text/ancestor::tei:TEI),
       'author' : getAuthors($text, $lang),
       'uuid' : $uuid,
-      'path' : '/gdp/items/',
-      'url' : $gdp.globals:root || '/gdp/items/' || $uuid
+      'path' : '/items/',
+      'url' : $gdp.globals:root || '/items/' || $uuid
       }
   return  map{
     'meta'    : $meta,
