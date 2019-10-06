@@ -36,7 +36,7 @@ declare default function namespace 'gdp.search' ;
  : @bug change of cote and dossier doesn’t work
  :)
 declare
-  %rest:path('/gdp/searchPost')
+  %rest:path('/searchPost')
   %rest:POST
   %output:method('xml')
   %rest:header-param('Referer', '{$referer}', 'none')
@@ -68,7 +68,7 @@ function result($referer, $search as xs:string, $exact, $start as xs:int, $count
  : @bug change of cote and dossier doesn’t work
  :)
 declare
-  %rest:path('/gdp/searchPost')
+  %rest:path('/searchPost')
   %rest:POST
   %rest:produces('application/json')
   %output:media-type('application/json')
@@ -100,7 +100,7 @@ function resultJson($referer, $search as xs:string, $exact, $start as xs:int, $c
  : @bug change of cote and dossier doesn’t work
  :)
 declare
-  %rest:path('/gdp/searche')
+  %rest:path('/searche')
   %output:method('xml')
   %rest:header-param('Referer', '{$referer}', 'none')
   %rest:query-param("search", "{$search}", 'none')
@@ -132,7 +132,7 @@ function resultGet($referer, $search as xs:string, $start as xs:int?, $count as 
  : @bug change of cote and dossier doesn’t work
  :)
 declare
-  %rest:path('/gdp/search')
+  %rest:path('/search')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')

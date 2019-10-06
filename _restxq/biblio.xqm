@@ -44,11 +44,11 @@ declare default function namespace 'gdp.biblio';
  :
  : @return redirect to the works list
  :)
-declare %rest:path("gdp/bibliography")
+declare %rest:path("/bibliography")
 function bibliography(){
   <rest:response>
     <http:response status="303" message="See Other">
-      <http:header name="location" value="/gdp/bibliography/home"/>
+      <http:header name="location" value="/bibliography/home"/>
     </http:response>
   </rest:response>
 };
@@ -59,11 +59,11 @@ function bibliography(){
  : @return a collection of available bibliographical expressions
  :)
 declare
-  %rest:path("/gdp/bibliography/home")
+  %rest:path("/bibliography/home")
 function biblHome() {
   <rest:response>
     <http:response status="303" message="See Other">
-      <http:header name="location" value="/gdp/bibliography/expressions"/>
+      <http:header name="location" value="/bibliography/expressions"/>
     </http:response>
   </rest:response>
 };
@@ -74,7 +74,7 @@ function biblHome() {
  : @return an html collection of works
  :)
 declare
-  %rest:path("/gdp/bibliography/works")
+  %rest:path("/bibliography/works")
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -101,7 +101,7 @@ function works() {
  : @return a json html collection of works
  :)
 declare
-  %rest:path("/gdp/bibliography/works")
+  %rest:path("/bibliography/works")
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -127,7 +127,7 @@ function worksJson() {
  : @return an html bibliographical work by ID
  :)
 declare
-  %rest:path('/gdp/bibliography/works/{$workId}')
+  %rest:path('/bibliography/works/{$workId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -156,7 +156,7 @@ function work($workId) {
  : @return a json bibliographical work by ID
  :)
 declare
-  %rest:path('/gdp/bibliography/works/{$workId}')
+  %rest:path('/bibliography/works/{$workId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -182,7 +182,7 @@ function workJson($workId) {
  : @return an html collection of bibliographical expressions
  :)
 declare
-  %rest:path('/gdp/bibliography/expressions')
+  %rest:path('/bibliography/expressions')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -209,7 +209,7 @@ function expressions() {
  : @return an html collection of bibliographical expressions
  :)
 declare
-  %rest:path('/gdp/bibliography/expressions')
+  %rest:path('/bibliography/expressions')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -235,7 +235,7 @@ function expressionsJson() {
  : @return an html bibliographical expression by ID
  :)
 declare
-  %rest:path('/gdp/bibliography/expressions/{$expressionId}')
+  %rest:path('/bibliography/expressions/{$expressionId}')
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version("5.0")
@@ -264,7 +264,7 @@ function expression($expressionId) {
  : @return a json bibliographical expression by ID
  :)
 declare
-  %rest:path('/gdp/bibliography/expressions/{$expressionId}')
+  %rest:path('/bibliography/expressions/{$expressionId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -291,7 +291,7 @@ function expressionJson($expressionId) {
  : @return an html collection of bibliographical manifestations
  :)
 declare
-  %rest:path('/gdp/bibliography/manifestations')
+  %rest:path('/bibliography/manifestations')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -318,7 +318,7 @@ function manifestations() {
  : @return a json collection of bibliographical manifestations
  :)
 declare
-  %rest:path('/gdp/bibliography/manifestations')
+  %rest:path('/bibliography/manifestations')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -345,10 +345,10 @@ function manifestationsJson() {
  : @param $manifestationId the bibliographical work expression ID
  : @return an html bibliographical expression by ID
  :
- : @ex http://localhost:8984/gdp/bibliography/manifestations/brice1684bManifestation
+ : @ex http://localhost:8984/bibliography/manifestations/brice1684bManifestation
  :)
 declare
-  %rest:path('/gdp/bibliography/manifestations/{$manifestationId}')
+  %rest:path('/bibliography/manifestations/{$manifestationId}')
   %rest:produces('*/*', 'text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -377,7 +377,7 @@ function manifestation($manifestationId) {
  : @return a json bibliographical expression by ID
  :)
 declare
-  %rest:path('/gdp/bibliography/manifestations/{$manifestationId}')
+  %rest:path('/bibliography/manifestations/{$manifestationId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -405,7 +405,7 @@ function manifestationJson($manifestationId) {
  : @rmq none defined as 2019
  :)
 declare
-  %rest:path('/gdp/bibliography/items')
+  %rest:path('/bibliography/items')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -433,7 +433,7 @@ function items() {
  : @rmq none defined as 2019
  :)
 declare
-  %rest:path('/gdp/bibliography/items')
+  %rest:path('/bibliography/items')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -462,7 +462,7 @@ function itemsJson() {
  : @rmq none defined as 2019
  :)
 declare
-  %rest:path('/gdp/bibliography/items/{$itemId}')
+  %rest:path('/bibliography/items/{$itemId}')
   %rest:produces('text/html')
   %output:method("html")
   %output:html-version("5.0")
@@ -492,7 +492,7 @@ function gdp.biblio:item($itemId) {
  : @rmq none defined as 2019
  :)
 declare
-  %rest:path('/gdp/bibliography/items/{$itemId}')
+  %rest:path('/bibliography/items/{$itemId}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')

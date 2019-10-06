@@ -343,11 +343,11 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'itemBeforeTitle' : if ($textId = 'gdpBrice1684') 
       then getItemBefore($item, $lang)/tei:p/tei:label 
       else getItemBefore($item, $lang)/tei:head,
-    'itemBeforeUrl' : getUrl(getItemBefore($item, $lang)/@xml:id, '/gdp/items/', $lang),
+    'itemBeforeUrl' : getUrl(getItemBefore($item, $lang)/@xml:id, '/items/', $lang),
     'itemAfterTitle' : if ($textId = 'gdpBrice1684') 
       then getItemAfter($item, $lang)/tei:p/tei:label 
       else getItemAfter($item, $lang)/tei:head,
-    'itemAfterUrl' : getUrl(getItemAfter($item, $lang)/@xml:id, '/gdp/items/', $lang)
+    'itemAfterUrl' : getUrl(getItemAfter($item, $lang)/@xml:id, '/items/', $lang)
     }
   return  map{
     'meta'    : $meta,
@@ -449,7 +449,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : $bibliographicalWork,
     'keywords' : getKeywords($bibliography, $lang),
-    'url' : getUrl($bibliographicalWork/@xml:id, '/gdp/bibliography/works/', $lang) 
+    'url' : getUrl($bibliographicalWork/@xml:id, '/bibliography/works/', $lang) 
     }
   let $uuid := $bibliographicalWork/@xml:id
   let $content := map {
@@ -528,7 +528,7 @@ declare function getBibliographicalExpression($queryParams) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : $bibliographicalExpression,
     'keywords' : getKeywords($bibliography, $lang),
-    'url' : getUrl($bibliographicalExpression/@xml:id, '/gdp/bibliography/expressions/', $lang) 
+    'url' : getUrl($bibliographicalExpression/@xml:id, '/bibliography/expressions/', $lang) 
     }
   let $uuid := $bibliographicalExpression/@xml:id
   let $content := map {
@@ -565,7 +565,7 @@ declare function getBibliographicalManifestationsList($queryParams) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des manifestations de la bibliographie des Guides de Paris, au sens des FRBR',
     'keywords' : getKeywords($bibliography, $lang),
-    'url' : $gdp.globals:root || 'gdp/bibliography/manifestations'
+    'url' : $gdp.globals:root || '/bibliography/manifestations'
     }
   let $content := 
     for $bibliographicalManifestation in $bibliographicalManifestations 
@@ -605,7 +605,7 @@ declare function getBibliographicalManifestation($queryParams) {
     (: 'copyright' : getCopyright($bibliography, $lang), :)
     'description' : $bibliographicalManifestation,
     'keywords' : getKeywords($bibliography, $lang),
-    'url' : getUrl($bibliographicalManifestation/@xml:id, '/gdp/bibliography/manifestations/', $lang)
+    'url' : getUrl($bibliographicalManifestation/@xml:id, '/bibliography/manifestations/', $lang)
     }
   let $uuid := $bibliographicalManifestation/@xml:id
   let $content := map {
@@ -641,7 +641,7 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : getDescription($bibliography, $lang),
     'keywords' : getKeywords($bibliography, $lang),
-    'url' : $gdp.globals:root || 'gdp/bibliography/items'
+    'url' : $gdp.globals:root || '/bibliography/items'
     }
   let $content := 
     for $bibliographicalItem in $bibliographicalItems 
