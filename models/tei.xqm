@@ -702,21 +702,17 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map for meta and content
+ : @todo deal with sections levels
  :)
 declare function getSearch($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
+  let $referer := map:get($queryParams, 'referer')
   let $search := map:get($queryParams, 'search')
+  let $start := map:get($queryParams, 'start')
+  let $count := map:get($queryParams, 'count')
   let $data := synopsx.models.synopsx:getDb($queryParams)//tei:div[@type="section"]/tei:p
-  let $results := <i></i>
-  let $meta := map{
-    'title' : 'Résultats de la recherche',
-    'author' : 'Guides de Paris',
-    'search' : $search,
-    'quantity' : getQuantity($results, 'résultat', 'résultats')
-    }
-  let $content := 
-    if ($search != "") 
+  let $results := if ($search != "") 
     then 
       for $result score $s in $data[text() contains text {$search}
         all words 
@@ -739,9 +735,18 @@ declare function getSearch($queryParams as map(*)) as map(*) {
         'path' : '/items/',
         'url' : $gdp.globals:root || '/items/' || $uuid
         }
-    else map {
-        'result' : 'pas de résultats'
-      }
+    else ()
+  let $meta := map{
+    'title' : 'Résultats de la recherche',
+    'author' : 'Guides de Paris',
+    'referer' : $referer,
+    'search' : $search,
+    'start' : $start,
+    'count' : $count,
+    'quantity' : if (fn:count($results)) then getQuantity($results, 'résultat', 'résultats') else 'pas de résultats'
+    }
+  let $content := fn:subsequence($results, $start, $count)
+    
   return  map{
     'meta'    : $meta,
     'content' : $content

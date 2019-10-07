@@ -365,7 +365,7 @@ declare function getItemBefore($item as element(), $lang as xs:string) as elemen
  : @return concatenate quantity and a message
  : @todo to internationalize
  :)
-declare function getQuantity($content as element()*, $unit as xs:string, $units as xs:string){
+declare function getQuantity($content as item()*, $unit as xs:string, $units as xs:string){
   fn:normalize-space(
     if (fn:count($content) > 1) 
       then fn:count($content) || ' ' || $units
