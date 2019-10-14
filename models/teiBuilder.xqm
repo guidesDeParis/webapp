@@ -421,3 +421,32 @@ declare function getTextId($extract as element()) as xs:string {
   )
 };
 
+declare function content($nodes, $lang) as map(*) {
+  for $node in $nodes
+  return
+  map {
+    'type' : $node/@type,
+    'title' : $node/tei:head,
+    'content' : passthru($node, map {})
+  }
+};
+
+declare function dispatch($node as node()*, $options as map(*)) as item()* {
+  let $lang := 'fr'
+  return typeswitch($node)
+    case element(tei:group) return passthru($node, map {})
+    case element(tei:front) return content($node/tei:div, $lang)
+    case element(tei:body) return content($node/tei:div, $lang)
+    case element(tei:back) return content($node/tei:div, $lang)
+    case element(tei:div) return content($node, $lang)
+    default return ''
+};
+
+(:~
+ : This function pass through child nodes (xsl:apply-templates)
+ :)
+declare function passthru($div as node(), $options as map(*)) as item()* {
+  let $lang := 'fr'
+  for $node in $div/node()
+  return dispatch($node, map{})
+};

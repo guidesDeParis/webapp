@@ -197,7 +197,7 @@ function textItems($textId as xs:string) {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
-    'function' : 'getTextItemsById'
+    'function' : 'getTextById'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
@@ -226,7 +226,34 @@ function textItemsJson($textId as xs:string) {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
-    'function' : 'getTextItemsById'
+    'function' : 'getTextById'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for a text by ID
+ :
+ : @param $textId the text ID
+ : @return a json representation of the text resource
+ :)
+declare 
+  %rest:path('/texts/{$textId}/toc')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function textItemsTocJson($textId as xs:string) {
+  let $queryParams := map {
+    'textId' : $textId,
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getTocByTextId'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)

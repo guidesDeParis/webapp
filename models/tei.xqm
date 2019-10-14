@@ -270,6 +270,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
  : @return a map with meta and content
  : @todo suppress the @xml:id filter on div
  : @todo check the text hierarchy
+ : @todo old function to delete
  :)
 declare function getTextItemsById($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
@@ -285,7 +286,8 @@ declare function getTextItemsById($queryParams as map(*)) as map(*) {
     'keywords' : getKeywords($text, $lang)
     }
   let $content := 
-    for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id ) or (@type = 'chapter' and @xml:id )]
+    (: for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id ) or (@type = 'chapter' and @xml:id )] :)
+    for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
     let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
     return map {
     'title' : if ($item/tei:head[1]) then $item/tei:head[1] else $item/tei:p/tei:label[1] ,
@@ -297,6 +299,72 @@ declare function getTextItemsById($queryParams as map(*)) as map(*) {
     'uuid' : $uuid,
     'url' : $gdp.globals:root || '/items/' || $uuid
     }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get text by ID
+ :
+ : @param $queryParams the request params sent by restxq 
+ : @return a map with meta and content
+ : @todo suppress the @xml:id filter on div
+ : @todo check the text hierarchy
+ :)
+declare function getTextById($queryParams as map(*)) as map(*) {
+  let $textId := map:get($queryParams, 'textId')
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $meta := map{
+    'title' : 'Sommaire de ' || getTitles($text, $lang), 
+    'quantity' : getRef($text),
+    'author' : getAuthors($text, $lang),
+    'copyright'  : getCopyright($text, $lang),
+    'description' : getDescription($text, $lang),
+    'keywords' : getKeywords($text, $lang)
+    }
+  let $content := 
+    for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
+    let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
+    return map {
+    'title' : if ($item/tei:head[1]) then $item/tei:head[1] else $item/tei:p/tei:label[1] ,
+    'date' : getDate($item, $dateFormat),
+    'author' : getAuthors($item, $lang),
+    'abstract' : getAbstract($item, $lang),
+    'tei' : $item,
+    'path' : '/items/',
+    'uuid' : $uuid,
+    'url' : $gdp.globals:root || '/items/' || $uuid
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
+ : this function get text by ID
+ :
+ : @param $queryParams the request params sent by restxq 
+ : @return a map with meta and content
+ :)
+declare function getTocByTextId($queryParams as map(*)) as map(*) {
+  let $textId := map:get($queryParams, 'textId')
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $meta := map{
+    'title' : 'Sommaire de ' || getTitles($text, $lang), 
+    'quantity' : getRef($text),
+    'author' : getAuthors($text, $lang),
+    'copyright'  : getCopyright($text, $lang),
+    'description' : getDescription($text, $lang),
+    'keywords' : getKeywords($text, $lang)
+    }
+  let $content := for $text in $text//tei:text return content($text/*, $lang)
   return  map{
     'meta'    : $meta,
     'content' : $content
@@ -703,6 +771,8 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
  : @param $queryParams the request params sent by restxq
  : @return a map of two map for meta and content
  : @todo deal with sections levels
+ : @todo add a synopsx getIndexDb function
+ : @todo search on head
  :)
 declare function getSearch($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -711,7 +781,7 @@ declare function getSearch($queryParams as map(*)) as map(*) {
   let $search := map:get($queryParams, 'search')
   let $start := map:get($queryParams, 'start')
   let $count := map:get($queryParams, 'count')
-  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:div[@type="section"]/tei:p
+  let $data := db:open('gdpFtIndex')//tei:div[@type="section" or @type="item"]/tei:p
   let $results := if ($search != "") 
     then 
       for $result score $s in $data[text() contains text {$search}
