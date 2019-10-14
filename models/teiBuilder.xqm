@@ -426,7 +426,7 @@ declare function content($nodes, $lang) as map(*) {
   return
   map {
     'type' : $node/@type,
-    'title' : $node/tei:head,
+    'title' : $node/tei:head/node(),
     'content' : passthru($node, map {})
   }
 };
@@ -450,3 +450,4 @@ declare function passthru($div as node(), $options as map(*)) as item()* {
   for $node in $div/node()
   return dispatch($node, map{})
 };
+

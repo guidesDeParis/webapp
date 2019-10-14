@@ -290,7 +290,7 @@ declare function getTextItemsById($queryParams as map(*)) as map(*) {
     for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
     let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
     return map {
-    'title' : if ($item/tei:head[1]) then $item/tei:head[1] else $item/tei:p/tei:label[1] ,
+    'title' : if ($item/tei:head[1]) then $item/tei:head[1]/node() else $item/tei:p/tei:label[1]/node() ,
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
@@ -330,7 +330,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
     let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
     return map {
-    'title' : if ($item/tei:head[1]) then $item/tei:head[1] else $item/tei:p/tei:label[1] ,
+    'title' : if ($item/tei:head[1]) then $item/tei:head[1]/node() else $item/tei:p/tei:label[1]/node() ,
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
@@ -386,8 +386,8 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $item := $text//tei:div[@xml:id = $itemId]
   let $meta := map{
     'title' : if ($textId = 'gdpBrice1684') 
-      then $item/tei:p/tei:label 
-      else $item/tei:head,
+      then $item/tei:p/tei:label/node() 
+      else $item/tei:head/node(),
     'quantity' : getQuantity($item, 'item disponible', 'items disponibles'), (: @todo internationalize :)
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
@@ -398,8 +398,8 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $content := 
   map {
     'title' : if ($textId = 'gdpBrice1684') 
-      then $item/tei:p/tei:label 
-      else $item/tei:head,
+      then $item/tei:p/tei:label/node() 
+      else $item/tei:head/node(),
     'rubrique' : 'Item',
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
@@ -409,12 +409,12 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'uuid' : $uuid,
     'url' : $gdp.globals:root || '/items/' || $uuid,
     'itemBeforeTitle' : if ($textId = 'gdpBrice1684') 
-      then getItemBefore($item, $lang)/tei:p/tei:label 
-      else getItemBefore($item, $lang)/tei:head,
+      then getItemBefore($item, $lang)/tei:p/tei:label/node() 
+      else getItemBefore($item, $lang)/tei:head/node(),
     'itemBeforeUrl' : getUrl(getItemBefore($item, $lang)/@xml:id, '/items/', $lang),
     'itemAfterTitle' : if ($textId = 'gdpBrice1684') 
-      then getItemAfter($item, $lang)/tei:p/tei:label 
-      else getItemAfter($item, $lang)/tei:head,
+      then getItemAfter($item, $lang)/tei:p/tei:label/node()
+      else getItemAfter($item, $lang)/tei:head/node(),
     'itemAfterUrl' : getUrl(getItemAfter($item, $lang)/@xml:id, '/items/', $lang)
     }
   return  map{
@@ -794,11 +794,11 @@ declare function getSearch($queryParams as map(*)) as map(*) {
       order by $s descending
       let $textId := getTextId($result)
       let $uuid := $result/parent::*/@xml:id
+      let $segment := synopsx.models.synopsx:getDb($queryParams)//*[@xml:id=$uuid]
       return map {
         'title' : if ($textId = 'gdpBrice1684')
-          then $result/ancestor-or-self::tei:div[1]/tei:p[1]/tei:label[1]
-          else $result/ancestor-or-self::tei:div[1]/tei:head/*,
-        (: 'result' : ($result/ancestor-or-self::tei:div)[1], :)
+          then $segment/tei:label/node()
+          else $segment/tei:head/node(),
         'extract' : ft:extract($result[text() contains text {$search}]),
         'textId' : $textId,
         'uuid' : $uuid,
@@ -1066,7 +1066,7 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
     let $text := synopsx.models.synopsx:getDb($queryParams)//*[@xml:id= $uuid]
     return map {
       'rubrique' : 'occurence',
-      'title' : $text/ancestor::tei:div[1]/tei:head,
+      'title' : $text/ancestor::tei:div[1]/tei:head/node(),
       'ref' : getRef($text/ancestor::tei:TEI),
       'author' : getAuthors($text, $lang),
       'uuid' : $uuid,
