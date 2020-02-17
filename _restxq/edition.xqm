@@ -109,6 +109,7 @@ declare
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
+  %output:json("indent=no, escape=yes")
 function corpusJson() {
   let $queryParams := map {
     'project' : 'gdp',
@@ -262,6 +263,7 @@ function textItemsTocJson($textId as xs:string) {
     }
   return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
+
 
 (:~
  : resource function for a text item by ID
@@ -581,7 +583,7 @@ function indexLocorumItem($itemId) {
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
     'layout' : 'page.xhtml',
-    'pattern' : 'incIndexNominum.xhtml',
+    'pattern' : 'incIndexLocorum.xhtml',
     'xquery' : 'tei2html'
     }
     return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)

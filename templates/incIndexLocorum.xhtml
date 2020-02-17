@@ -4,13 +4,29 @@
     <h1>{title}</h1>
     <hr/>
   </header>
-  <p><span>Type : </span> {type}</p>  
-  <p><span>Pays : </span> {country}</p>
+  <div>
+    <p><span>Type : </span> {type}</p>  
+    <p><span>Pays : </span> {country}</p>
     <p><span>Localisation : </span> {district}</p>
     <p><span>Note : </span> {note}</p>
-    <a href="{uuid}" >{uuid}</a>
-    <a href="{path}" >{path}</a>
-    <a href="{url}" >{url}</a>
     <hr/>
-    <p><span>Occurences :</span> {relations}</p>  
+    <p><span>Occurences :</span> {relations}</p>
+  </div>
+  <div>
+    <h2>Notices d’autorités</h2>
+    <ul>
+    <li><a href="{autBnf}">{autBnf}</a></li>
+    <li><a href="{isni}">{isni}</a></li>
+    <li><a href="{tgn}">{tgn}</a></li>
+    <li><a href="{wikidata}">{wikidata}</a></li>
+    </ul>
+    <hr/>
+  </div>
+  <div>
+    <h2>Identifiants</h2>
+    <p><span>uuid : </span> <a href="{uuid}">{uuid}</a></p>
+    <p><span>chemin : </span> <a href="{path}">{path}</a></p>
+    <p><span>url : </span> <a href="{url}">{url}</a></p>
+    <hr/>
+  </div>
 </article>

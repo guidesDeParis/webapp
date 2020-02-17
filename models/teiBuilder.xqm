@@ -421,33 +421,51 @@ declare function getTextId($extract as element()) as xs:string {
   )
 };
 
-declare function content($nodes, $lang) as map(*) {
-  for $node in $nodes
-  return
-  map {
-    'type' : $node/@type,
-    'title' : $node/tei:head/node(),
-    'content' : passthru($node, map {})
-  }
-};
 
-declare function dispatch($node as node()*, $options as map(*)) as item()* {
-  let $lang := 'fr'
+(:~
+ : this function get the toc
+ :
+ : @param $node text to process
+ : @param $options options
+ : @return a sequence of map
+ :)
+declare function getToc($node, $options) {
+  let $options := ''
   return typeswitch($node)
-    case element(tei:group) return passthru($node, map {})
-    case element(tei:front) return content($node/tei:div, $lang)
-    case element(tei:body) return content($node/tei:div, $lang)
-    case element(tei:back) return content($node/tei:div, $lang)
-    case element(tei:div) return content($node, $lang)
-    default return ''
+    case element(tei:front) return getTitleMap($node, $options)
+    case element(tei:body) return getTitleMap($node, $options)
+    case element(tei:back) return getTitleMap($node, $options)
+    case element(tei:titlePage) return getTitleMap($node, $options)
+    case element(tei:div) return if ($node[* except tei:div]) then getTitleMap($node, $options) else getNextDiv($node, $options)
+    default return getNextDiv($node, $options)
 };
 
 (:~
- : This function pass through child nodes (xsl:apply-templates)
+ : this function builds a title map
+ :
+ : @param $node node to process
+ : @param $options options
+ : @return a map for each title in the corpora
  :)
-declare function passthru($div as node(), $options as map(*)) as item()* {
-  let $lang := 'fr'
-  for $node in $div/node()
-  return dispatch($node, map{})
+declare function getTitleMap($nodes, $options) {
+  let $options := $options
+  for $node in $nodes
+  return map {
+      'type' : if ($node/@type) then fn:string($node/@type) else $node/fn:name(),
+      'title' : if ($node/tei:head) then $node/tei:head else $node/*/tei:label,
+      'uuid' : fn:string($node/@xml:id),
+      'children' : getNextDiv($node, $options)
+    }
 };
 
+(:~
+ : this function get next div
+ :
+ : @param $node node to process
+ : @param $options options
+ : @return a kind of apply-templates
+ :)
+declare function getNextDiv($nodes, $options) {
+  for $node in $nodes/node()
+  return getToc($node, $options)
+};

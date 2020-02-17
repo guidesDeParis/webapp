@@ -4,13 +4,33 @@
     <h1>{title}</h1>
     <hr/>
   </header>
+  <div>
     <p><span>Prénom : </span> {forename}</p>
     <p><span>Nom : </span> {surname}</p>
-    <p><span>Date de naissance : </span> {birth}</p>
-    <p><span>Date de décès : </span> {death}</p>
-    <a href="{uuid}" >{uuid}</a>
-    <a href="{path}" >{path}</a>
-    <a href="{url}" >{url}</a>
+    <p><span>Date de naissance : </span> {birthDate}</p>
+    <p><span>Lieu de naissance : </span> {birthPlace}</p>
+    <p><span>Date de décès : </span> {deathDate}</p>
+    <p><span>Lieu de décès : </span> {deathPlace}</p>
+    <p><span>Sexe : </span> {sex}</p>
+    <p><span>Occupation : </span> {occupation}</p>
+    <p><span>Note : </span> {note}</p>
+    <p>{attestedForms}</p>
+  </div>
+  <div>
+    <h2>Notices d’autorités</h2>
+    <ul>
+    <li><a href="{autBnf}">{autBnf}</a></li>
+    <li><a href="{isni}">{isni}</a></li>
+    <li><a href="{ulan}">{ulan}</a></li>
+    <li><a href="{wikidata}">{wikidata}</a></li>
+    </ul>
     <hr/>
-    <p><span>Occurences :</span></p>  
+  </div>
+  <div>
+    <h2>Identifiants</h2>
+    <p><span>uuid : </span> <a href="{uuid}">{uuid}</a></p>
+    <p><span>chemin : </span> <a href="{path}">{path}</a></p>
+    <p><span>url : </span> <a href="{url}">{url}</a></p>
+    <hr/>
+    </div>
 </article>

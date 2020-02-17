@@ -77,20 +77,22 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
           then array{
             typeswitch($b)
               case empty-sequence() return ()
+              case map(*)+ return $b ! sequence2ArrayInMap($queryParams, ., $outputParams)
               case xs:string return $b
               case xs:string+ return $b
               (: case xs:anyAtomicType return fn:data($b)
-              case xs:anyAtomicType+ return for $i in $b return fn:data($b) :)
+              case xs:anyAtomicType+ return $b ! fn:data(.) :)
               case xs:integer return fn:data($b)
               case attribute() return fn:string($b)
               default return render($queryParams, $outputParams, $b)
             }
           else typeswitch($b)
               case empty-sequence() return ()
+              case map(*)+ return $b ! sequence2ArrayInMap($queryParams, ., $outputParams)
               case xs:string return $b
               case xs:string+ return $b
               (: case xs:anyAtomicType return fn:data($b)
-              case xs:anyAtomicType+ return for $i in $b return fn:data($b) :)
+              case xs:anyAtomicType+ return $b ! fn:data(.) :)
               case xs:integer return fn:data($b)
               case attribute() return fn:string($b)
               default return render($queryParams, $outputParams, $b)
@@ -98,6 +100,10 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
       }
     )
   )) 
+};
+
+declare function recurse($queryParams, $map as map(*), $outputParams) {
+  sequence2ArrayInMap($queryParams, $map, $outputParams)
 };
 
 (:~
@@ -108,6 +114,7 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
  : @return an html serialization
  :
  : @todo check the xslt with an xslt 1.0
+ : @todo select the xquery transformation from xqm
  :)
 declare function render($queryParams as map(*), $outputParams as map(*), $value as item()* ) as item()* {
   let $xquery := map:get($outputParams, 'xquery')
