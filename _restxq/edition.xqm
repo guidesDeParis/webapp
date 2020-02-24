@@ -59,7 +59,7 @@ function editionHome() {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
-    'function' : 'getHome'
+    'function' : 'getCorpusList'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
