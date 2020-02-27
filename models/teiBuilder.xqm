@@ -351,8 +351,9 @@ declare function getSubtitle($content as element()*, $lang as xs:string){
  : @param 
  : @param $lang iso langcode starts
  : @return a div
+ : @todo retirer * et utiliser toc
  :)
-declare function getItemAfter($item as element(), $lang as xs:string) as element()? {
+declare function getItemAfter($item as element()*, $lang as xs:string) as element()? {
   $item/following-sibling::tei:div[@type = 'section' or @type = 'item' or @type = 'chapter' or @type = 'part' ][1]
 };
 
@@ -362,8 +363,9 @@ declare function getItemAfter($item as element(), $lang as xs:string) as element
  : @param 
  : @param $lang iso langcode starts
  : @return a div
+ : @todo retirer * et utiliser toc
  :)
-declare function getItemBefore($item as element(), $lang as xs:string) as element()? {
+declare function getItemBefore($item as element()*, $lang as xs:string) as element()? {
   $item/preceding-sibling::tei:div[@type = 'section' or @type = 'item' or @type = 'chapter' or @type = 'part' ][1]
 };
 
@@ -444,7 +446,7 @@ declare function getOccurences($entry as element()) as map(*)* {
   let $entry := getDivFromId($id) 
   return map { 
     'id' : $id,
-    'title' : if ($entry/tei:head) then $entry/tei:head else $entry/*/tei:label,
+    'title' : getSectionTitle($entry),
     'uuid' : $entry/@xml:id
   }
 };

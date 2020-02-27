@@ -1003,7 +1003,7 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
     for $entry in $data
     let $uuid := $entry/@xml:id
     return map {
-      'title' : $entry/tei:objectName,
+      'title' : dispatch($entry/tei:objectName, map{}),
       'type' : $entry/tei:label,
       'date' : $entry/tei:date,
       'uuid' : fn:string($uuid),
@@ -1032,21 +1032,19 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
   let $meta := map{
     'rubrique' : 'Entrée de l’index des œuvres',
     'author' : 'Guides de Paris',
-    'title' : $entry/tei:objectName,
+    'title' : dispatch($entry/tei:objectName[1], map{}),
     'type' : $entry/tei:label,
     'date' : $entry/tei:date,
     'desc' : $entry/tei:desc,
     'quantity' : getQuantity($occurences, 'occurence', 'occurences')
     }
+  let $uuid := $entry/@xml:id
   let $content := 
-    for $occurence in $occurences 
-    let $uuid := fn:substring-after($occurence/@ref, '#')
-    let $text := synopsx.models.synopsx:getDb($queryParams)//*[@xml:id= $uuid]
-    return map {
+    map {
       'rubrique' : 'Entrée d’index des œuvres',
-      'title' : $text/ancestor::tei:div[1]/tei:head/node(),
-      'ref' : getRef($text/ancestor::tei:TEI),
-      'author' : getAuthors($text, $lang),
+      'title' : dispatch($entry/tei:objectName[1], map{}),
+      'ref' : getRef($entry/ancestor::tei:TEI),
+      'author' : getAuthors($entry, $lang),
       'uuid' : fn:string($uuid),
       'path' : '/items/',
       'url' : $gdp.globals:root || '/items/' || $uuid,
