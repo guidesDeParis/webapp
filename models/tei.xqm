@@ -818,8 +818,8 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
     for $entry in $data
     let $uuid := fn:replace($entry//tei:fileDesc/tei:sourceDesc/@xml:id, 'gdpI', 'i')
     return map {
-      'title' : $entry//tei:fileDesc/tei:titleStmt/tei:title,
-      'uuid' : $uuid,
+      'title' : $entry//tei:fileDesc/tei:titleStmt/tei:title => dispatch(map{}),
+      'uuid' : fn:string($uuid),
       'path' : '/',
       'url' : $gdp.globals:root || '/' || $uuid
     }
@@ -848,12 +848,12 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
     for $entry in $data
     let $uuid := $entry/@xml:id
     return map {
-      'title' : $entry/tei:placeName/node(),
-      'type' : $entry/tei:trait,
-      'country' : $entry/tei:country,
-      'ville' : $entry/tei:district,
-      'geo' : $entry/tei:location/tei:geo,
-      'uuid' : $uuid,
+      'title' : $entry/tei:placeName[1] => dispatch(map{}),
+      'type' : $entry/tei:trait => dispatch(map{}),
+      'country' : $entry/tei:country => dispatch(map{}),
+      'ville' : $entry/tei:district => dispatch(map{}),
+      'geo' : $entry/tei:location/tei:geo => dispatch(map{}),
+      'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
       'url' : $gdp.globals:root || '/indexLocorum/' || $uuid
       }
@@ -883,12 +883,12 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
   let $content :=
     map {
       'rubrique' : 'Entrée d’index de lieux',
-      'title' : $entry/tei:placeName,
-      'type' : $entry/tei:trait/tei:label,
-      'country' : $entry/tei:country,
-      'ville' : $entry/tei:district,
-      'geo' : $entry/tei:location/tei:geo,
-      'note' : $entry/tei:note,
+      'title' : $entry/tei:placeName => dispatch(map{}),
+      'type' : $entry/tei:trait/tei:label => dispatch(map{}),
+      'country' : $entry/tei:country => dispatch(map{}),
+      'ville' : $entry/tei:district => dispatch(map{}),
+      'geo' : $entry/tei:location/tei:geo => dispatch(map{}),
+      'note' : $entry/tei:note => dispatch(map{}),
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
       'url' : $gdp.globals:root || '/indexLocorum/' || $uuid,
@@ -920,12 +920,12 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
     for $entry in $data
     let $uuid := $entry/@xml:id
     return map {
-      'title' : $entry/tei:persName[1]/node(),
-      'forename' : $entry/tei:persName/tei:forename,
-      'surname' : $entry/tei:persName/tei:surname,
-      'birth' : $entry/tei:birth/tei:date,
-      'death' : $entry/tei:death/tei:placeName,
-      'occupation' : $entry/tei:occupation,
+      'title' : $entry/tei:persName[1] => dispatch(map{}),
+      'forename' : $entry/tei:persName/tei:forename => dispatch(map{}),
+      'surname' : $entry/tei:persName/tei:surname => dispatch(map{}),
+      'birth' : $entry/tei:birth/tei:date => dispatch(map{}),
+      'death' : $entry/tei:death/tei:placeName => dispatch(map{}),
+      'occupation' : $entry/tei:occupation => dispatch(map{}),
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid
@@ -957,20 +957,20 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
   let $content :=
     map {
       'rubrique' : 'Entrée de l’index des personnes',
-      'title' : $entry/tei:persName[1]/node(),
-      'forename' : $entry/tei:persName/tei:forename/node(),
-      'surname' : $entry/tei:persName/tei:surname/node(),
-      'birthDate' : $entry/tei:birth/tei:date/node(),
-      'birthPlace' : $entry/tei:birth/tei:placeName/node(),
-      'deathDate' : $entry/tei:death/tei:date/node(),
-      'deathPlace' : $entry/tei:death/tei:placeName/node(),
-      'sex' : $entry/tei:sex/node(),
-      'occupation' : $entry/tei:occupation/node(),
-      'note' : $entry/tei:note/node(),
-      'autBnf' : $entry/tei:idno[@type="dataBnf"]/node(),
-      'isni' : $entry/tei:idno[@type="isni"]/node(),
-      'ulan' : $entry/tei:idno[@type="ulan"]/node(),
-      'wikidata' : $entry/tei:idno[@type="wikidata"]/node(),
+      'title' : $entry/tei:persName[1] => dispatch(map{}),
+      'forename' : $entry/tei:persName/tei:forename => dispatch(map{}),
+      'surname' : $entry/tei:persName/tei:surname => dispatch(map{}),
+      'birthDate' : $entry/tei:birth/tei:date => dispatch(map{}),
+      'birthPlace' : $entry/tei:birth/tei:placeName => dispatch(map{}),
+      'deathDate' : $entry/tei:death/tei:date => dispatch(map{}),
+      'deathPlace' : $entry/tei:death/tei:placeName => dispatch(map{}),
+      'sex' : $entry/tei:sex => dispatch(map{}),
+      'occupation' : $entry/tei:occupation => dispatch(map{}),
+      'note' : $entry/tei:note => dispatch(map{}),
+      'autBnf' : $entry/tei:idno[@type="dataBnf"] => dispatch(map{}),
+      'isni' : $entry/tei:idno[@type="isni"] => dispatch(map{}),
+      'ulan' : $entry/tei:idno[@type="ulan"] => dispatch(map{}),
+      'wikidata' : $entry/tei:idno[@type="wikidata"] => dispatch(map{}),
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid,
@@ -1004,8 +1004,8 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
     let $uuid := $entry/@xml:id
     return map {
       'title' : dispatch($entry/tei:objectName, map{}),
-      'type' : $entry/tei:label,
-      'date' : $entry/tei:date,
+      'type' : $entry/tei:label => dispatch(map{}),
+      'date' : $entry/tei:date => dispatch(map{}),
       'uuid' : fn:string($uuid),
       'path' : '/indexOperum/',
       'url' : $gdp.globals:root || '/indexOperum/' || $uuid
@@ -1032,18 +1032,18 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
   let $meta := map{
     'rubrique' : 'Entrée de l’index des œuvres',
     'author' : 'Guides de Paris',
-    'title' : dispatch($entry/tei:objectName[1], map{}),
-    'type' : $entry/tei:label,
-    'date' : $entry/tei:date,
-    'desc' : $entry/tei:desc,
+    'title' : $entry/tei:objectName[1] => dispatch(map{}),
+    'type' : $entry/tei:label => dispatch(map{}),
+    'date' : $entry/tei:date => dispatch(map{}),
+    'desc' : $entry/tei:desc => dispatch(map{}),
     'quantity' : getQuantity($occurences, 'occurence', 'occurences')
     }
   let $uuid := $entry/@xml:id
   let $content := 
     map {
       'rubrique' : 'Entrée d’index des œuvres',
-      'title' : dispatch($entry/tei:objectName[1], map{}),
-      'ref' : getRef($entry/ancestor::tei:TEI),
+      'title' : $entry/tei:objectName[1] => dispatch(map{}),
+      'ref' : getRef($entry/ancestor::tei:TEI) => dispatch(map{}),
       'author' : getAuthors($entry, $lang),
       'uuid' : fn:string($uuid),
       'path' : '/items/',
