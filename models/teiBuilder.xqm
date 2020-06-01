@@ -495,10 +495,13 @@ declare function getToc($node, $options) {
 declare function getTitleMap($nodes, $options) {
   let $options := $options
   for $node in $nodes
+  let $uuid := fn:string($node/@xml:id)
   return map {
       'type' : if ($node/@type) then fn:string($node/@type) else $node/fn:name(),
       'title' : getSectionTitle($node),
-      'uuid' : fn:string($node/@xml:id),
+      'uuid' : $uuid,
+      'path' : '/items/',
+      'url' : $gdp.globals:root || '/items/' || $uuid,
       'children' : getNextDiv($node, $options)
     }
 };

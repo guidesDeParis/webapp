@@ -207,6 +207,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
  : @todo suppress @xml:id filter on div
+ : @todo appliquer la fonction biblio
  :)
 declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $corpusId := map:get($queryParams, 'corpusId')
