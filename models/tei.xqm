@@ -379,9 +379,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $uuid := $item/@xml:id
   let $content := 
   map {
-    'title' : if ($textId = 'gdpBrice1684') 
-      then $item/tei:p/tei:label/node() 
-      else $item/tei:head/node(),
+    'title' : getSectionTitle($item),
     'rubrique' : 'Item',
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
