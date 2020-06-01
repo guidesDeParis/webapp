@@ -118,10 +118,15 @@ declare function getDate($content as element()*, $dateFormat as xs:string) {
  : @todo formats
  :)
 declare function getEditionDates($content as element()*, $dateFormat as xs:string) {
-  let $dates := for $date in ($content//*:date/fn:substring(@when, 1, 4), $content//*:date/fn:substring(@from, 1, 4), $content//*:date/fn:substring(@to, 1, 4))
-    where $date != '' 
+  let $dates :=
+    for $date in (
+      $content//tei:date/fn:substring(@when, 1, 4),
+      $content//tei:date/fn:substring(@from, 1, 4),
+      $content//tei:date/fn:substring(@to, 1, 4)
+      )
+    where $date != ''
     return xs:double($date)
-  return fn:min($dates) || '-' || fn:max($dates)
+  return if ($dates > 1) then fn:min($dates) || '-' || fn:max($dates) else $dates
 };
 
 (:~

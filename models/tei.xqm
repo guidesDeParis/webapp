@@ -164,6 +164,7 @@ declare function getAbout($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
+ : @todo remplacer weight par une valeur dans extent
  :)
 declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -175,23 +176,23 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
-    'keywords' : getKeywords($corpora, $lang),
-    'tei' : $corpora/tei:teiHeader
+    'keywords' : getKeywords($corpora, $lang)
     }
   let $content := 
     for $corpus at $count in $corpora/tei:teiCorpus 
-    let $uuid := $corpus/tei:teiHeader//tei:sourceDesc/@xml:id
+    let $uuid := $corpus/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
+    let $otherEditions := getOtherEditions(getRef($corpus))
     return map {
     'title' : getTitles($corpus, $lang),
-    'date' : getEditionDates(getOtherEditions(getRef($corpus))/tei:biblStruct, $dateFormat),
+    'date' : getEditionDates($otherEditions/tei:biblStruct, $dateFormat),
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
-    'editionsQuantity' : getQuantity(getOtherEditions(getRef($corpus))/tei:biblStruct, 'édition', ' éditions'),
-    'textsQuantity' : getQuantity($corpus//tei:TEI, 'texte disponible', 'textes disponibles'),
+    'editionsQuantity' : getQuantity($otherEditions/tei:biblStruct, 'édition', ' éditions'),
+    'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
     'uuid' : $uuid,
     'path' : '/corpus/',
     'url' : $gdp.globals:root || '/corpus/' || $uuid,
-    'editions' : getOtherEditions(getRef($corpus)),
+    (:'editions' : getOtherEditions(getRef($corpus)),:)
     'weight' : getStringLength($corpus)
     }
   return  map{
