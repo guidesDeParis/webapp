@@ -754,31 +754,31 @@ declare function getSearch($queryParams as map(*)) as map(*) {
   let $search := map:get($queryParams, 'search')
   let $start := map:get($queryParams, 'start')
   let $count := map:get($queryParams, 'count')
-  let $data := db:open('gdpFtIndex')//tei:div[@type="section" or @type="item"]/tei:p
+  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $gdp := db:open('gdp')
   let $results := if ($search != "") 
-    then 
-      for $result score $s in $data[text() contains text {$search}
+    then for $result score $s in $gdpFtIndex//tei:div[@type="section" or @type="item"]/tei:p[
+        text() contains text {$search}
         all words 
         using case insensitive
         using diacritics insensitive
         using stemming
         using fuzzy
-        ordered distance at most 5 words]
+        ]
       order by $s descending
-      let $textId := getTextId($result)
+      (:let $textId := getTextId($result):)
       let $uuid := $result/parent::*/@xml:id
-      let $segment := synopsx.models.synopsx:getDb($queryParams)//*[@xml:id=$uuid]
+      let $segment := $gdp//*[@xml:id=$uuid]
       return map {
-        'title' : if ($textId = 'gdpBrice1684')
-          then $segment/tei:label/node()
-          else $segment/tei:head/node(),
+        'title' : getSectionTitle($segment),
         'extract' : ft:extract($result[text() contains text {$search}]),
-        'textId' : $textId,
+        'textId' : '' (:$textId:),
+        'score' : fn:string($s),
         'uuid' : $uuid,
         'path' : '/items/',
         'url' : $gdp.globals:root || '/items/' || $uuid
         }
-    else ()
+    else ''
   let $meta := map{
     'title' : 'Résultats de la recherche',
     'author' : 'Guides de Paris',
@@ -786,15 +786,26 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     'search' : $search,
     'start' : $start,
     'count' : $count,
-    'quantity' : if (fn:count($results)) then getQuantity($results, 'résultat', 'résultats') else 'pas de résultats'
+    'quantity' : getQuantity($results, 'résultat', 'résultats')
     }
   let $content := fn:subsequence($results, $start, $count)
-    
+
   return  map{
     'meta'    : $meta,
     'content' : $content
     }
 };
+
+(:
+for $result score $s in $data[text() contains text {$search}
+        all words
+        using case insensitive
+        using diacritics insensitive
+        using stemming
+        using fuzzy
+        ordered distance at most 5 words]
+      order by $s descending
+:)
 
 (:~
  : this function get the index list
