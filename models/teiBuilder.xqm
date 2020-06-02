@@ -384,11 +384,11 @@ declare function getItemBefore($item as element()*, $lang as xs:string) as eleme
  : @todo to internationalize
  :)
 declare function getQuantity($content as item()*, $unit as xs:string, $units as xs:string){
-  fn:normalize-space(
-    if (fn:count($content) > 1) 
-      then fn:count($content) || ' ' || $units
-      else fn:count($content) || ' ' || $unit
-    )
+  let $nb := fn:count($content)
+  return switch ($nb)
+    case ($nb = 0) return fn:normalize-space('pas de ' ||  $units)
+    case ($nb = 1) return fn:normalize-space($nb || ' ' || $unit)
+    default return fn:normalize-space($nb || ' ' || $units)
 };
 
 (:~
