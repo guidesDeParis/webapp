@@ -540,7 +540,7 @@ function dispatch($node as node()*, $options as map(*)) as item()* {
     case text() return $node[fn:normalize-space(.)!='']
     case element(tei:label) return $node ! label(., $options)
     case element(tei:hi) return $node ! hi(., $options)
-    case element(tei:emph) return $node ! hi(., $options)
+    case element(tei:emph) return $node ! emph(., $options)
     default return $node ! passthru(., $options)
 };
 
