@@ -452,11 +452,6 @@ function getHtmlFooter() {
 };
 
 (:~
- : sommaire d‘un texte
- : @todo
- :)
-
-(:~
  : resource function for the index list
  :
  : @return an html list of indexes
@@ -859,10 +854,6 @@ function indexNominumItemRdf($itemId) {
     return gdp.mappings.tei2rdf:tei2rdf($queryParams, $result, $outputParams)
 };
 
-(:~
- : index œuvres
- :)
- 
 (:~
  : entrées d’index d’un texte ???
  :)

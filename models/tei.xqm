@@ -76,7 +76,6 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
  : @param $entryId the blog post ID
  : @return a map with meta and content
  :
- : @bug le contenu de la clef tei génère un bug de la sérialisation json
  :)
 declare function getBlogItem($queryParams as map(*)) {
   let $entryId := map:get($queryParams, 'entryId')
@@ -124,7 +123,6 @@ declare function getBlogItem($queryParams as map(*)) {
  :
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
- : @todo check url
  :)
 declare function getAbout($queryParams as map(*)) as map(*) {
   let $entryId := map:get($queryParams, 'entryId')
@@ -164,7 +162,7 @@ declare function getAbout($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
- : @todo remplacer weight par une valeur dans extent
+ : @todo pour éviter le calcul de weight, fournir une valeur avec extent dans le teiHeader
  :)
 declare function getCorpusList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -206,7 +204,6 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
- : @todo suppress @xml:id filter on div
  : @todo appliquer la fonction biblio
  :)
 declare function getCorpusById($queryParams as map(*)) as map(*) {
@@ -252,7 +249,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
  : @return a map with meta and content
  : @todo suppress the @xml:id filter on div
  : @todo check the text hierarchy
- : @todo old function to delete
+ : @rmq depreciated, replaced by getTocByTextId()
  :)
 declare function getTextItemsById($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
@@ -635,7 +632,7 @@ declare function getBibliographicalManifestationsList($queryParams) {
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map for meta and content
- : @bug doesnt bring authors, url properly
+ : @bug doesnt always bring authors, url properly
  :)
 declare function getBibliographicalManifestation($queryParams) {
   let $bibliographicalManifestationId := map:get($queryParams, 'manifestationId')
