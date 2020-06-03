@@ -55,7 +55,13 @@ declare function jsoner($queryParams as map(*), $data as map(*), $outputParams a
         for $content in $contents
         return sequence2ArrayInMap($queryParams, $content, $outputParams)
         }
+        (:
         else sequence2ArrayInMap($queryParams, $contents, $outputParams)
+        :)
+        (: for debug :)
+        else if (fn:count($contents) = 0)
+          then 'vide'
+          else sequence2ArrayInMap($queryParams, $contents, $outputParams)
     } 
 };
 
@@ -83,6 +89,7 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
               (: case xs:anyAtomicType return fn:data($b)
               case xs:anyAtomicType+ return $b ! fn:data(.) :)
               case xs:integer return fn:data($b)
+              case xs:double return fn:format-number($b, "0.00")
               case attribute() return fn:string($b)
               default return render($queryParams, $outputParams, $b)
             }
@@ -94,6 +101,7 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
               (: case xs:anyAtomicType return fn:data($b)
               case xs:anyAtomicType+ return $b ! fn:data(.) :)
               case xs:integer return fn:data($b)
+              case xs:double return fn:format-number($b, "0.00")
               case attribute() return fn:string($b)
               default return render($queryParams, $outputParams, $b)
         )

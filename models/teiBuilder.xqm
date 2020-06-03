@@ -432,11 +432,24 @@ declare function getStringLength($content as element()*){
  :
  : @param $extractId id of the extract to process
  : @return text Id
+ : @todo replace with getTextIdWithRegex (more effective)
  :)
 declare function getTextId($extract as element()) as xs:string {
   fn:normalize-space(
     $extract/ancestor::tei:TEI[1]//tei:sourceDesc/@xml:id
   )
+};
+
+(:~
+ : this function get text Id with a regex
+ :
+ : @param $extractId id of the extract to process
+ : @return text Id
+ :)
+declare function getTextIdWithRegex($extract as element()) as xs:string {
+  let $extractId := $extract/ancestor::tei:*[@xml:id][1]/@xml:id
+  let $parse := fn:analyze-string($extractId, '^gdp.*[1-9]{4}')
+  return fn:string($parse/fn:match)
 };
 
 (:~

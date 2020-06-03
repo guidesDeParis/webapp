@@ -127,9 +127,13 @@ function getSearch($referer, $search as xs:string, $start as xs:int?, $count as 
 };
 
 (:~
- : This function consumes new expertises 
- : @param $param content
- : @bug change of cote and dossier doesn’t work
+ : This function is a simple search
+ : @param $referer a referer
+ : @param $search the search string
+ : @param $combining the combining method ('all', 'all words', 'any', 'phrase')
+ : @param $exact exact search as boolean
+ : @param $start start for pagination
+ : @param $start count for pagination
  :)
 declare
   %rest:path('/search')
@@ -138,17 +142,27 @@ declare
   %output:method('json')
   %rest:header-param('Referer', '{$referer}', 'none')
   %rest:query-param("search", "{$search}", 'none')
+  %rest:query-param("combining", "{$combining}", 'all')
   %rest:query-param("exact", "{$exact}", 0)
   %rest:query-param("start", "{$start}", 1)
   %rest:query-param("count", "{$count}", 10)
-function getSearchJson($referer, $search as xs:string, $exact, $start as xs:int, $count as xs:int) {
-  let $function := if($exact and $exact eq "false") then 'getSearchExact' else 'getSearch'
+function getSearchJson(
+    $referer,
+    $search as xs:string,
+    $combining as xs:string,
+    $exact,
+    $start as xs:int,
+    $count as xs:int
+    ) {
+  let $function := 'getSearch'
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
     'function' : $function,
     'search' : $search,
+    'combining' : $combining,
+    'exact' : $exact,
     'start' : $start,
     'count' : $count
     }
@@ -176,15 +190,12 @@ declare
   %rest:query-param("start", "{$start}", 1)
   %rest:query-param("count", "{$count}", 10)
 function getAdvancedSearchJson($referer, $search as xs:string, $exact, $start as xs:int, $count as xs:int) {
-  let $function := if($exact and $exact eq "false") then 'getSearchExact' else 'getSearch'
+  let $function := 'getSearch'
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
-    'function' : $function,
-    'search' : $search,
-    'start' : $start,
-    'count' : $count
+    'function' : $function
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)

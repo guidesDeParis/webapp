@@ -750,50 +750,169 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
 declare function getSearch($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $referer := map:get($queryParams, 'referer')
-  let $search := map:get($queryParams, 'search')
-  let $start := map:get($queryParams, 'start')
-  let $count := map:get($queryParams, 'count')
   let $gdpFtIndex := db:open('gdpFtIndex')
   let $gdp := db:open('gdp')
-  let $results := if ($search != "") 
-    then for $result score $s in $gdpFtIndex//tei:div[@type="section" or @type="item"]/tei:p[
-        text() contains text {$search}
-        all words 
-        using case insensitive
-        using diacritics insensitive
-        using stemming
-        using fuzzy
-        ]
-      order by $s descending
-      (:let $textId := getTextId($result):)
-      let $uuid := $result/parent::*/@xml:id
-      let $segment := $gdp//*[@xml:id=$uuid]
-      return map {
-        'title' : getSectionTitle($segment),
-        'extract' : ft:extract($result[text() contains text {$search}]),
-        'textId' : '' (:$textId:),
-        'score' : fn:string($s),
-        'uuid' : $uuid,
-        'path' : '/items/',
-        'url' : $gdp.globals:root || '/items/' || $uuid
-        }
-    else ''
+  let $combining := $queryParams?combining
+  let $results := if ($queryParams?search = '') then ''
+    else if ($queryParams?exact) then getSearchExact($queryParams)
+    else if ($combining = "any") then getSearchAny($queryParams)
+    else if ($combining = "all words") then getSearchAllWord($queryParams)
+    else if ($combining = "phrase") then getSearchPhrase($queryParams)
+    else getSearchAll($queryParams)
   let $meta := map{
     'title' : 'Résultats de la recherche',
     'author' : 'Guides de Paris',
-    'referer' : $referer,
-    'search' : $search,
-    'start' : $start,
-    'count' : $count,
+    'referer' : $queryParams?referer,
+    'search' : $queryParams?search,
+    'start' : $queryParams?start,
+    'count' : $queryParams?count,
+    'combining' : $queryParams?combining,
     'quantity' : getQuantity($results, 'résultat', 'résultats')
     }
-  let $content := fn:subsequence($results, $start, $count)
-
+  let $content := fn:subsequence($results, $queryParams?start, $queryParams?count)
   return  map{
     'meta'    : $meta,
     'content' : $content
     }
+};
+
+declare function getSearchExact($queryParams) {
+  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $gdp := db:open('gdp')
+  (: for $result score $s in $gdpFtIndex//tei:div[@type="section" or @type="item"]/tei:p :)
+  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+    text() contains text {$queryParams?search}
+    all
+    using case insensitive
+    using diacritics insensitive
+    using stemming
+    using fuzzy
+    ]
+  order by $s descending
+  (:let $textId := getTextId($result):)
+  let $uuid := $result/parent::*/@xml:id
+  let $segment := $gdp//*[@xml:id=$uuid]
+  let $textId := getTextIdWithRegex($segment)
+  return map {
+    'title' : getSectionTitle($segment),
+    'extract' : ft:extract($result[text() contains text {$queryParams?search}]),
+    'textId' : $textId,
+    'score' : $s,
+    'uuid' : $uuid,
+    'path' : '/items/',
+    'url' : $gdp.globals:root || '/items/' || $uuid,
+    'combining' : 'exact'
+  }
+};
+
+declare function getSearchAny($queryParams) {
+  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $gdp := db:open('gdp')
+  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+    text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
+    any
+    using case insensitive
+    using diacritics insensitive
+    using stemming
+    using fuzzy
+    ]
+  order by $s descending
+  (:let $textId := getTextId($result):)
+  let $uuid := $result/parent::*/@xml:id
+  let $segment := $gdp//*[@xml:id=$uuid]
+  let $textId := getTextIdWithRegex($segment)
+  return map {
+    'title' : getSectionTitle($segment),
+    'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
+    'textId' : $textId,
+    'score' : $s,
+    'uuid' : $uuid,
+    'path' : '/items/',
+    'url' : $gdp.globals:root || '/items/' || $uuid,
+    'combining' : 'any'
+  }
+};
+
+declare function getSearchAllWord($queryParams) {
+  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $gdp := db:open('gdp')
+  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+    text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
+    all words
+    using case insensitive
+    using diacritics insensitive
+    using stemming
+    using fuzzy
+    ]
+  order by $s descending
+  (:let $textId := getTextId($result):)
+  let $uuid := $result/parent::*/@xml:id
+  let $segment := $gdp//*[@xml:id=$uuid]
+  let $textId := getTextIdWithRegex($segment)
+  return map {
+    'title' : getSectionTitle($segment),
+    'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
+    'textId' : $textId,
+    'score' : $s,
+    'uuid' : $uuid,
+    'path' : '/items/',
+    'url' : $gdp.globals:root || '/items/' || $uuid
+  }
+};
+
+declare function getSearchPhrase($queryParams) {
+  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $gdp := db:open('gdp')
+  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+    text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
+    phrase
+    using case insensitive
+    using diacritics insensitive
+    using stemming
+    using fuzzy
+    ]
+  order by $s descending
+  (:let $textId := getTextId($result):)
+  let $uuid := $result/parent::*/@xml:id
+  let $segment := $gdp//*[@xml:id=$uuid]
+  let $textId := getTextIdWithRegex($segment)
+  return map {
+    'title' : getSectionTitle($segment),
+    'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
+    'textId' : $textId,
+    'score' : $s,
+    'uuid' : $uuid,
+    'path' : '/items/',
+    'url' : $gdp.globals:root || '/items/' || $uuid,
+    'combining' : 'phrase'
+  }
+};
+
+declare function getSearchAll($queryParams) {
+  let $gdpFtIndex := db:open('gdpFtIndex')
+  let $gdp := db:open('gdp')
+  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+    text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
+    all
+    using case insensitive
+    using diacritics insensitive
+    using stemming
+    using fuzzy
+    ]
+  order by $s descending
+  let $uuid := $result/parent::*/@xml:id
+  let $segment := $gdp//*[@xml:id=$uuid]
+  let $textId := getTextIdWithRegex($segment)
+  return map {
+    'title' : getSectionTitle($segment),
+    'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
+    'textId' : $textId,
+    'score' : $s,
+    'uuid' : $uuid,
+    'path' : '/items/',
+    'url' : $gdp.globals:root || '/items/' || $uuid,
+    'combining' : 'all'
+  }
 };
 
 (:
