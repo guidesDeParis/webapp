@@ -846,7 +846,7 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
 declare function getIndexLocorum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place
+  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id]
   let $meta := map{
     'title' : 'Index des lieux',
     'author' : 'Guides de Paris',
@@ -918,7 +918,7 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $search := map:get($queryParams, 'search')
-  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person
+  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person[@xml:id]
   let $meta := map{
     'title' : 'Index des personnes',
     'author' : 'Guides de Paris',
@@ -1001,7 +1001,7 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
 declare function getIndexOperum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object
+  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object[@xml:id]
   let $meta := map{
     'title' : 'Index des œuvres',
     'author' : 'Guides de Paris',
