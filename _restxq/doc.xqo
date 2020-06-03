@@ -1,0 +1,60 @@
+xquery version "3.0" ;
+module namespace gdp.doc = 'gdp.doc' ;
+
+(:~
+ : This module is a rest for Paris' guidebooks blog
+ :
+ : @version 1.0
+ : @date 2019-05
+ : @since 2015-02-05
+ : @author emchateau (Cluster Pasts in the Present)
+ : @see http://guidesdeparis.net
+ :
+ : This module uses SynopsX publication framework
+ : see https://github.com/ahn-ens-lyon/synopsx
+ : It is distributed under the GNU General Public Licence,
+ : see http://www.gnu.org/licenses/
+ :
+ : @qst give webpath by dates and pages ?
+ :)
+
+import module namespace rest = 'http://exquery.org/ns/restxq' ;
+
+import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
+
+import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
+
+import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../mappings/htmlWrapping.xqm' ;
+import module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' at '../mappings/jsoner.xqm' ;
+import module namespace gdp.mappings.tei2rdf = 'gdp.mappings.tei2rdf' at '../mappings/tei2rdf.xqm' ;
+
+declare namespace xq="http://www.xqdoc.org/1.0";
+
+declare default function namespace 'gdp.doc' ;
+
+(:~
+ : resource function for the blog's root
+ :
+ :)
+declare
+  %rest:path('/doc/{$module}')
+  %rest:produces('text/html')
+  %output:method('html')
+  %output:html-version('5.0')
+function doc($module) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'model' : '',
+    'function' : 'getDoc'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'layout' : 'page.xhtml',
+    'pattern' : 'incText.xhtml',
+    'xquery' : 'tei2html'
+    }
+    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+};
+

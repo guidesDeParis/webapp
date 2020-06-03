@@ -1,0 +1,57 @@
+xquery version "3.0" ;
+module namespace gdp.models.doc = 'gdp.models.doc' ;
+
+(:~
+ : This module is a doc models library for SynopsX
+ :
+ : @version 1.0
+ : @date 2020-05
+ : @since 2020-05
+ : @author emchateau (Cluster Pasts in the Present)
+ : @see http://guidesdeparis.net
+ :
+ : This module uses SynopsX publication framework 
+ : see https://github.com/ahn-ens-lyon/synopsx
+ : It is distributed under the GNU General Public Licence, 
+ : see http://www.gnu.org/licenses/
+ :
+ :)
+
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
+
+import module 'gdp.models.tei' at 'teiContent.xqm' , 'teiBuilder.xqm' ;
+
+import module namespace gdp.globals = 'gdp.globals' at '../globals.xqm' ;
+
+declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
+
+declare default function namespace 'gdp.models.doc' ;
+
+(:~
+ : this function get the doc home
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map with meta and content
+ :)
+declare function getBlogPosts($queryParams as map(*)) as map(*) {
+  let $posts := synopsx.models.synopsx:getDb($queryParams)//tei:TEI
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $meta := map{
+    'title' : 'Documentation de l’API',
+    'quantity' : 'x modules',
+    'author' : 'emchateau',
+    'copyright' : 'gnu gpl',
+    'description' : 'Documentation de l’API',
+    'keywords' : 'documentation, api'
+    }
+  let $content := for $module in ('edition.xqm', 'blog.xqm')
+    return map {
+    'title' : 'module titre',
+    'subtitle' : 'module sous-titre'
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
