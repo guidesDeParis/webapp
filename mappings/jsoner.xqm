@@ -51,11 +51,10 @@ declare function jsoner($queryParams as map(*), $data as map(*), $outputParams a
   let $meta := map:get($data, 'meta')
   return map{
     'meta' : sequence2ArrayInMap($queryParams, $meta, $outputParams),
-    'content' : if (fn:count($contents) > 1) then array{ 
-        for $content in $contents 
-        return sequence2ArrayInMap($queryParams, $content, $outputParams) 
-        }
-        else sequence2ArrayInMap($queryParams, $contents, $outputParams)
+    'content' : array{
+      for $content in $contents
+      return sequence2ArrayInMap($queryParams, $content, $outputParams)
+      }
     } 
 };
 
@@ -72,30 +71,19 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
       $map,
       function($a, $b) {
         map:entry(
-          $a ,
-          if (fn:count($b) > 1)
-          then array{
-            typeswitch($b)
-              case empty-sequence() return ()
-              case map(*)+ return $b ! sequence2ArrayInMap($queryParams, ., $outputParams)
-              case xs:string return $b
-              case xs:string+ return $b
-              (: case xs:anyAtomicType return fn:data($b)
-              case xs:anyAtomicType+ return $b ! fn:data(.) :)
-              case xs:integer return fn:data($b)
-              case attribute() return fn:string($b)
-              default return render($queryParams, $outputParams, $b)
-            }
-          else typeswitch($b)
-              case empty-sequence() return ()
-              case map(*)+ return $b ! sequence2ArrayInMap($queryParams, ., $outputParams)
-              case xs:string return $b
-              case xs:string+ return $b
-              (: case xs:anyAtomicType return fn:data($b)
-              case xs:anyAtomicType+ return $b ! fn:data(.) :)
-              case xs:integer return fn:data($b)
-              case attribute() return fn:string($b)
-              default return render($queryParams, $outputParams, $b)
+        $a ,
+        array{
+          typeswitch($b)
+            case empty-sequence() return ()
+            case map(*)+ return $b ! sequence2ArrayInMap($queryParams, ., $outputParams)
+            case xs:string return $b
+            case xs:string+ return $b
+            (: case xs:anyAtomicType return fn:data($b)
+            case xs:anyAtomicType+ return $b ! fn:data(.) :)
+            case xs:integer return fn:data($b)
+            case attribute() return fn:string($b)
+            default return render($queryParams, $outputParams, $b)
+          }
         )
       }
     )
