@@ -75,7 +75,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
  : @param $queryParams the request params sent by restxq
  : @param $entryId the blog post ID
  : @return a map with meta and content
- :
+ : @todo give uuid for blog item after/before
  :)
 declare function getBlogItem($queryParams as map(*)) {
   let $entryId := map:get($queryParams, 'entryId')
@@ -87,7 +87,7 @@ declare function getBlogItem($queryParams as map(*)) {
     'author' : getAuthors($article, $lang),
     'copyright' : getCopyright($article, $lang),
     'description' : getDescription($article, $lang),
-    'keywords' : getKeywords($article, $lang)
+    'keywords' : getKeywords($article, $lang) (: is a sequence :)
     }
   let $uuid := $article//tei:sourceDesc/@xml:id
   let $content := map {
@@ -130,18 +130,17 @@ declare function getAbout($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $article := synopsx.models.synopsx:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
   let $meta := map{
-    'title' : getTitles($article, $lang), 
-    'subtitle' : getSubtitle($article, $lang), 
+    'title' : getTitles($article, $lang),
     'author' : getAuthors($article, $lang),
     'copyright' : getCopyright($article, $lang),
     'description' : getDescription($article, $lang),
-    'keywords' : getKeywords($article, $lang)
+    'keywords' : getKeywords($article, $lang) (: is a sequence :)
     }
   let $content := 
     for $item in $article 
     let $uuid := $article//tei:sourceDesc/@xml:id
     return map {
-    'title' : getTitles($item, $lang),
+    'title' : getMainTitle($item, $lang),
     'subtitle' : getSubtitle($item, $lang),
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
@@ -174,18 +173,18 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
-    'keywords' : getKeywords($corpora, $lang)
+    'keywords' : getKeywords($corpora, $lang) (: is a sequence :)
     }
   let $content := 
     for $corpus at $count in $corpora/tei:teiCorpus 
     let $uuid := $corpus/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
     let $otherEditions := getOtherEditions(getRef($corpus))
     return map {
-    'title' : getTitles($corpus, $lang),
+    'title' : getTitles($corpus, $lang), (: @todo sequence or main and sub :)
     'date' : getEditionDates($otherEditions/tei:biblStruct, $dateFormat),
     'author' : getAuthors($corpus, $lang),
     'abstract' : getAbstract($corpus, $lang),
-    'editionsQuantity' : getQuantity($otherEditions/tei:biblStruct, 'édition', ' éditions'),
+    'editionsQuantity' : getQuantity($otherEditions/tei:biblStruct, 'édition', ' éditions'), (: @todo with or without unit :)
     'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
     'uuid' : $uuid,
     'path' : '/corpus/',
@@ -217,24 +216,24 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpus, $lang),
     'copyright'  : getCopyright($corpus, $lang),
     'description' : getDescription($corpus, $lang),
-    'keywords' : getKeywords($corpus, $lang)
+    'keywords' : getKeywords($corpus, $lang) (: is a sequence :)
     }
   let $content := 
     for $text in $corpus/tei:TEI 
     let $uuid := $text/tei:teiHeader//tei:sourceDesc/@xml:id
     return map {
-    'title' : getTitles($text, $lang),
+    'title' : getTitles($text, $lang), (: @todo sequence or main and sub :)
     'date' : getEditionDates(getOtherEditions(getRef($text))/tei:biblStruct, $dateFormat),
     'author' : getAuthors($text, $lang),
-    'biblio' : getRef($text),
+    'biblio' : getRef($text), (: todo check the serialization :)
     'abstract' : getAbstract($text, $lang),
     'format' : getRef($text)//tei:dim[@type = 'format'],
-    'itemsNb' : fn:count($text//tei:*[@type = 'item' or @type = 'section']),
+    'itemsNb' : fn:count($text//tei:*[@type = 'item' or @type = 'section']), (: todo value and unit :)
     'weight' : getStringLength($text),
     'uuid' : $uuid,
     'path' : '/texts/',
     'url' : $gdp.globals:root || '/texts/' || $uuid,
-    'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct)
+    'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct) (: todo value and unit :)
     }
   return  map{
     'meta'    : $meta,
@@ -264,14 +263,14 @@ declare function getTextItemsById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
-    'keywords' : getKeywords($text, $lang)
+    'keywords' : getKeywords($text, $lang) (: is a sequence :)
     }
   let $content := 
     (: for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id ) or (@type = 'chapter' and @xml:id )] :)
     for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
     let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
     return map {
-    'title' : getSectionTitle($item) ,
+    'title' : getSectionTitle($item), (: is a sequence :)
     'date' : getDate($ref, $dateFormat),
     'author' : getAuthors($text, $lang),
     'abstract' : getAbstract($text, $lang),
@@ -305,13 +304,13 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
-    'keywords' : getKeywords($text, $lang)
+    'keywords' : getKeywords($text, $lang) (: is a sequence :)
     }
   let $content := 
     for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
     let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
     return map {
-    'title' : getSectionTitle($item),
+    'title' : getSectionTitle($item), (: is a sequence :)
     'date' : getDate($text, $dateFormat),
     'author' : getAuthors($text, $lang),
     'abstract' : getAbstract($text, $lang),
@@ -343,7 +342,7 @@ declare function getTocByTextId($queryParams as map(*)) as map(*) {
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
-    'keywords' : getKeywords($text, $lang)
+    'keywords' : getKeywords($text, $lang) (: is a sequence :)
     }
   let $content := getToc($text, '')
   return map{
@@ -366,12 +365,12 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
   let $item := $text//tei:div[@xml:id = $itemId]
   let $meta := map{
-    'title' : getSectionTitle($item),
+    'title' : getSectionTitle($item), (: is a sequence :)
     'quantity' : getQuantity($item, 'item disponible', 'items disponibles'), (: @todo internationalize :)
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
-    'keywords' : getKeywords($text, $lang)
+    'keywords' : getKeywords($text, $lang) (: is a sequence :)
     }
   let $uuid := $item/@xml:id
   let $itemBefore := getItemBefore($item, $lang)
@@ -387,10 +386,10 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'path' : '/items/',
     'uuid' : $uuid,
     'url' : $gdp.globals:root || '/items/' || $uuid,
-    'itemBeforeTitle' : getSectionTitle($itemBefore),
+    'itemBeforeTitle' : getSectionTitle($itemBefore), (: is a sequence :)
     'itemBeforeUrl' : getUrl($itemBefore/@xml:id, '/items/', $lang),
     'itemBeforeUuid' : $itemBefore/@xml:id,
-    'itemAfterTitle' : getSectionTitle($itemAfter),
+    'itemAfterTitle' : getSectionTitle($itemAfter), (: is a sequence :)
     'itemAfterUrl' : getUrl($itemAfter/@xml:id, '/items/', $lang),
     'itemAfterUuid' : $itemAfter/@xml:id
     }
@@ -401,7 +400,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
 };
 
 (:~
- : this function get the texts list
+ : this function get the model
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map for meta and content
@@ -415,7 +414,7 @@ declare function getModel($queryParams) {
     'author' : getAuthors($model, $lang),
     'copyright' : getCopyright($model, $lang),
     'description' : getDescription($model, $lang),
-    'keywords' : getKeywords($model, $lang)
+    'keywords' : getKeywords($model, $lang) (: is a sequence :)
     }
   let $content := map {
     'title' : getTitles($model, $lang),
@@ -452,7 +451,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     'quantity' : getQuantity($bibliographicalWorks, 'œuvre', 'œuvres'),
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des œuvres de la bibliographie des Guides de Paris, au sens des FRBR',
-    'keywords' : getKeywords($bibliography, $lang),
+    'keywords' : getKeywords($bibliography, $lang), (: is a sequence :)
     'url' : $gdp.globals:root || '/bibliography/works'
     }
   let $content := 
@@ -532,7 +531,7 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'author' : getAuthors($bibliography, $lang),
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des expressions de la bibliographie des Guides de Paris, au sens des FRBR',
-    'keywords' : getKeywords($bibliography, $lang),
+    'keywords' : getKeywords($bibliography, $lang), (: is a sequence :)
     'url' : $gdp.globals:root || '/bibliography/expressions'
     }
   let $content := 
@@ -572,7 +571,7 @@ declare function getBibliographicalExpression($queryParams) {
     'author' : getAuthors($bibliography, $lang),
     'copyright' : getCopyright($bibliography, $lang),
     'description' : $bibliographicalExpression,
-    'keywords' : getKeywords($bibliography, $lang),
+    'keywords' : getKeywords($bibliography, $lang), (: is a sequence :)
     'url' : getUrl($bibliographicalExpression/@xml:id, '/bibliography/expressions/', $lang) 
     }
   let $uuid := $bibliographicalExpression/@xml:id
@@ -609,7 +608,7 @@ declare function getBibliographicalManifestationsList($queryParams) {
     'author' : getAuthors($bibliography, $lang),
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des manifestations de la bibliographie des Guides de Paris, au sens des FRBR',
-    'keywords' : getKeywords($bibliography, $lang),
+    'keywords' : getKeywords($bibliography, $lang), (: is a sequence :)
     'url' : $gdp.globals:root || '/bibliography/manifestations'
     }
   let $content := 
@@ -649,7 +648,7 @@ declare function getBibliographicalManifestation($queryParams) {
     'author' : getAuthors($bibliography, $lang),
     (: 'copyright' : getCopyright($bibliography, $lang), :)
     'description' : $bibliographicalManifestation,
-    'keywords' : getKeywords($bibliography, $lang),
+    'keywords' : getKeywords($bibliography, $lang), (: is a sequence :)
     'url' : getUrl($bibliographicalManifestation/@xml:id, '/bibliography/manifestations/', $lang)
     }
   let $uuid := $bibliographicalManifestation/@xml:id
@@ -685,7 +684,7 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($bibliography, $lang),
     'copyright' : getCopyright($bibliography, $lang),
     'description' : getDescription($bibliography, $lang),
-    'keywords' : getKeywords($bibliography, $lang),
+    'keywords' : getKeywords($bibliography, $lang), (: is a sequence :)
     'url' : $gdp.globals:root || '/bibliography/items'
     }
   let $content := 
@@ -798,7 +797,7 @@ declare function getSearchExact($queryParams) {
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : getSectionTitle($segment), (: is a sequence :)
     'extract' : ft:extract($result[text() contains text {$queryParams?search}]),
     'textId' : $textId,
     'score' : $s,
@@ -854,7 +853,7 @@ declare function getSearchAllWord($queryParams) {
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : getSectionTitle($segment), (: is a sequence :)
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
@@ -881,7 +880,7 @@ declare function getSearchPhrase($queryParams) {
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : getSectionTitle($segment), (: is a sequence :)
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
@@ -908,7 +907,7 @@ declare function getSearchAll($queryParams) {
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : getSectionTitle($segment), (: is a sequence :)
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
@@ -949,7 +948,7 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
     for $entry in $data
     let $uuid := fn:replace($entry//tei:fileDesc/tei:sourceDesc/@xml:id, 'gdpI', 'i')
     return map {
-      'title' : $entry//tei:fileDesc/tei:titleStmt/tei:title => dispatch(map{}),
+      'title' : $entry//tei:fileDesc/tei:titleStmt/tei:title,
       'uuid' : fn:string($uuid),
       'path' : '/',
       'url' : $gdp.globals:root || '/' || $uuid
@@ -979,11 +978,11 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
     for $entry in $data
     let $uuid := $entry/@xml:id
     return map {
-      'title' : $entry/tei:placeName[1] => dispatch(map{}),
-      'type' : $entry/tei:trait => dispatch(map{}),
-      'country' : $entry/tei:country => dispatch(map{}),
-      'ville' : $entry/tei:district => dispatch(map{}),
-      'geo' : $entry/tei:location/tei:geo => dispatch(map{}),
+      'title' : $entry/tei:placeName[1],
+      'type' : $entry/tei:trait,
+      'country' : $entry/tei:country,
+      'ville' : $entry/tei:district,
+      'geo' : $entry/tei:location/tei:geo,
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
       'url' : $gdp.globals:root || '/indexLocorum/' || $uuid
@@ -1014,12 +1013,12 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
   let $content :=
     map {
       'rubrique' : 'Entrée d’index de lieux',
-      'title' : $entry/tei:placeName => dispatch(map{}),
-      'type' : $entry/tei:trait/tei:label => dispatch(map{}),
-      'country' : $entry/tei:country => dispatch(map{}),
-      'ville' : $entry/tei:district => dispatch(map{}),
-      'geo' : $entry/tei:location/tei:geo => dispatch(map{}),
-      'note' : $entry/tei:note => dispatch(map{}),
+      'title' : $entry/tei:placeName,
+      'type' : $entry/tei:trait/tei:label,
+      'country' : $entry/tei:country,
+      'ville' : $entry/tei:district,
+      'geo' : $entry/tei:location/tei:geo,
+      'note' : $entry/tei:note,
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
       'url' : $gdp.globals:root || '/indexLocorum/' || $uuid,
@@ -1051,12 +1050,12 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
     for $entry in $data
     let $uuid := $entry/@xml:id
     return map {
-      'title' : $entry/tei:persName[1] => dispatch(map{}),
-      'forename' : $entry/tei:persName/tei:forename => dispatch(map{}),
-      'surname' : $entry/tei:persName/tei:surname => dispatch(map{}),
-      'birth' : $entry/tei:birth/tei:date => dispatch(map{}),
-      'death' : $entry/tei:death/tei:placeName => dispatch(map{}),
-      'occupation' : $entry/tei:occupation => dispatch(map{}),
+      'title' : $entry/tei:persName[1],
+      'forename' : $entry/tei:persName/tei:forename,
+      'surname' : $entry/tei:persName/tei:surname,
+      'birth' : $entry/tei:birth/tei:date,
+      'death' : $entry/tei:death/tei:placeName,
+      'occupation' : $entry/tei:occupation,
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid
@@ -1088,20 +1087,20 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
   let $content :=
     map {
       'rubrique' : 'Entrée de l’index des personnes',
-      'title' : $entry/tei:persName[1] => dispatch(map{}),
-      'forename' : $entry/tei:persName/tei:forename => dispatch(map{}),
-      'surname' : $entry/tei:persName/tei:surname => dispatch(map{}),
-      'birthDate' : $entry/tei:birth/tei:date => dispatch(map{}),
-      'birthPlace' : $entry/tei:birth/tei:placeName => dispatch(map{}),
-      'deathDate' : $entry/tei:death/tei:date => dispatch(map{}),
-      'deathPlace' : $entry/tei:death/tei:placeName => dispatch(map{}),
-      'sex' : $entry/tei:sex => dispatch(map{}),
-      'occupation' : $entry/tei:occupation => dispatch(map{}),
-      'note' : $entry/tei:note => dispatch(map{}),
-      'autBnf' : $entry/tei:idno[@type="dataBnf"] => dispatch(map{}),
-      'isni' : $entry/tei:idno[@type="isni"] => dispatch(map{}),
-      'ulan' : $entry/tei:idno[@type="ulan"] => dispatch(map{}),
-      'wikidata' : $entry/tei:idno[@type="wikidata"] => dispatch(map{}),
+      'title' : $entry/tei:persName[1],
+      'forename' : $entry/tei:persName/tei:forename,
+      'surname' : $entry/tei:persName/tei:surname,
+      'birthDate' : $entry/tei:birth/tei:date,
+      'birthPlace' : $entry/tei:birth/tei:placeName,
+      'deathDate' : $entry/tei:death/tei:date,
+      'deathPlace' : $entry/tei:death/tei:placeName,
+      'sex' : $entry/tei:sex,
+      'occupation' : $entry/tei:occupation,
+      'note' : $entry/tei:note,
+      'autBnf' : $entry/tei:idno[@type="dataBnf"],
+      'isni' : $entry/tei:idno[@type="isni"],
+      'ulan' : $entry/tei:idno[@type="ulan"],
+      'wikidata' : $entry/tei:idno[@type="wikidata"],
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid,
@@ -1134,9 +1133,9 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
     for $entry in $data
     let $uuid := $entry/@xml:id
     return map {
-      'title' : dispatch($entry/tei:objectName, map{}),
-      'type' : $entry/tei:label => dispatch(map{}),
-      'date' : $entry/tei:date => dispatch(map{}),
+      'title' : $entry/tei:objectName,
+      'type' : $entry/tei:label,
+      'date' : $entry/tei:date,
       'uuid' : fn:string($uuid),
       'path' : '/indexOperum/',
       'url' : $gdp.globals:root || '/indexOperum/' || $uuid
@@ -1163,18 +1162,18 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
   let $meta := map{
     'rubrique' : 'Entrée de l’index des œuvres',
     'author' : 'Guides de Paris',
-    'title' : $entry/tei:objectName[1] => dispatch(map{}),
-    'type' : $entry/tei:label => dispatch(map{}),
-    'date' : $entry/tei:date => dispatch(map{}),
-    'desc' : $entry/tei:desc => dispatch(map{}),
+    'title' : $entry/tei:objectName[1],
+    'type' : $entry/tei:label,
+    'date' : $entry/tei:date,
+    'desc' : $entry/tei:desc,
     'quantity' : getQuantity($occurences, 'occurence', 'occurences')
     }
   let $uuid := $entry/@xml:id
   let $content := 
     map {
       'rubrique' : 'Entrée d’index des œuvres',
-      'title' : $entry/tei:objectName[1] => dispatch(map{}),
-      'ref' : getRef($entry/ancestor::tei:TEI) => dispatch(map{}),
+      'title' : $entry/tei:objectName[1],
+      'ref' : getRef($entry/ancestor::tei:TEI),
       'author' : getAuthors($entry, $lang),
       'uuid' : fn:string($uuid),
       'path' : '/items/',

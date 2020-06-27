@@ -38,7 +38,7 @@ declare default function namespace 'gdp.models.tei' ;
  : @param $lang iso langcode starts
  : @return a tei abstract
  :)
-declare function getAbstract($content as element()*, $lang as xs:string) {
+declare function getAbstract($content as element()*, $lang as xs:string) as element()? {
   $content//tei:div[@type='abstract']
 };
 
@@ -48,6 +48,7 @@ declare function getAbstract($content as element()*, $lang as xs:string) {
  : @param $content texts to process
  : @param $lang iso langcode starts
  : @return a distinct-values comma separated list
+ : @todo change to a sequence of string (2020-06)
  :)
 declare function getAuthors($content as element()*, $lang as xs:string) as xs:string {
   fn:string-join(
@@ -80,7 +81,7 @@ declare function getName($named as element()*, $lang as xs:string) as xs:string 
  : @return the @target url of licence
  :
  : @rmq if a sequence get the first one
- : @todo make it better !
+ : @todo make it better ! distinct various licences with a map ? (2020-06)
  :)
 declare function getCopyright($content as element()*, $lang as xs:string) as xs:string {  
   fn:distinct-values($content//tei:licence[1]/@target) => fn:string-join(', ')
@@ -93,7 +94,7 @@ declare function getCopyright($content as element()*, $lang as xs:string) as xs:
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getBlogDate($content as element()*, $dateFormat as xs:string) {
+declare function getBlogDate($content as element()*, $dateFormat as xs:string) as xs:string {
   fn:normalize-space(
     ($content//tei:publicationStmt/tei:date)[1]
   )
@@ -106,7 +107,7 @@ declare function getBlogDate($content as element()*, $dateFormat as xs:string) {
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getDate($content as element()*, $dateFormat as xs:string) {
+declare function getDate($content as element()*, $dateFormat as xs:string) as xs:string {
   fn:normalize-space($content//tei:imprint/tei:date)
 };
 
@@ -117,7 +118,7 @@ declare function getDate($content as element()*, $dateFormat as xs:string) {
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getEditionDates($content as element()*, $dateFormat as xs:string) {
+declare function getEditionDates($content as element()*, $dateFormat as xs:string) as xs:string? {
   let $dates :=
     for $date in (
       $content//tei:date/fn:substring(@when, 1, 4),
@@ -219,7 +220,7 @@ declare function getBiblTitles($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a comma separated list of 90 first caracters of div[@type='abstract']
  :)
-declare function getDescription($content as element()*, $lang as xs:string) {
+declare function getDescription($content as element()*, $lang as xs:string) as xs:string {
   fn:string-join(
     for $abstract in $content//tei:div[parent::tei:div[fn:starts-with(@xml:lang, $lang)]][@type='abstract']/tei:p 
       return fn:substring(fn:normalize-space($abstract), 0, 90),
@@ -249,7 +250,7 @@ declare function getOtherEditions($ref as node()? ) as element()* {
  : @param $lang iso langcode starts
  : @return a sequence of keywords
  :)
-declare function getKeywords($content as element()*, $lang as xs:string) {
+declare function getKeywords($content as element()*, $lang as xs:string) as xs:string* {
     for $terms in fn:distinct-values($content//tei:keywords[fn:starts-with(@xml:lang, $lang)]/tei:term) 
     return fn:normalize-space($terms)
 };
@@ -308,7 +309,7 @@ declare function getBlogItemAfter($queryParams as map(*), $text as element(), $l
  : @bug why does the request brings back two results ?
  : @todo suppress the explicit DB selection
  :)
-declare function getRef($content as element()) {
+declare function getRef($content as element()) as element()? {
   let $refId := fn:substring-after($content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/@copyOf, '#')
   let $db := db:open('gdp')
   return ($db//tei:biblStruct[@xml:id = $refId] | $db//tei:bibl[@xml:id = $refId])[1]
@@ -321,7 +322,7 @@ declare function getRef($content as element()) {
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
  :)
-declare function getTitles($content as element()*, $lang as xs:string){
+declare function getTitles($content as element()*, $lang as xs:string) as xs:string {
   fn:string-join(
     for $title in $content/tei:teiHeader/tei:fileDesc/tei:titleStmt//tei:title
       return fn:normalize-space($title[fn:starts-with(@xml:lang, $lang)]),
@@ -335,7 +336,7 @@ declare function getTitles($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
  :)
-declare function getMainTitle($content as element()*, $lang as xs:string){
+declare function getMainTitle($content as element()*, $lang as xs:string) as element() {
   ($content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type = 'main'])[1]
 };
 
@@ -346,7 +347,7 @@ declare function getMainTitle($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
  :)
-declare function getSubtitle($content as element()*, $lang as xs:string){
+declare function getSubtitle($content as element()*, $lang as xs:string) as element()? {
   ($content/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type = 'sub'])[1]
 };
 
@@ -383,7 +384,7 @@ declare function getItemBefore($item as element()*, $lang as xs:string) as eleme
  : @return concatenate quantity and a message
  : @todo to internationalize
  :)
-declare function getQuantity($content as item()*, $unit as xs:string, $units as xs:string){
+declare function getQuantity($content as item()*, $unit as xs:string, $units as xs:string) as xs:string {
   let $nb := fn:count($content)
   return switch ($nb)
     case ($nb = 0) return fn:normalize-space('pas de ' ||  $units)
@@ -409,7 +410,7 @@ declare function getXmlTeiById($queryParams){
  : @return a string of comma separated titles
  : @todo print the real uri
  :)
-declare function getUrl($content, $path as xs:string, $lang as xs:string){
+declare function getUrl($content, $path as xs:string, $lang as xs:string) as xs:string {
   $gdp.globals:root || $path || $content
 };
 
@@ -419,6 +420,7 @@ declare function getUrl($content, $path as xs:string, $lang as xs:string){
  :
  : @param $content texts to process
  : @return string length
+ : @todo to replace by a fixed value from teiHeader (2020-06) for documents, but a more generic metrics in other cases
  :)
 declare function getStringLength($content as element()*){
   fn:sum(
@@ -536,18 +538,18 @@ declare function getNextDiv($nodes, $options) {
  : @param $node node to process
  : @param $options options
  :)
-declare function getSectionTitle($nodes) {
+declare function getSectionTitle($nodes) as element()* {
   for $node in $nodes 
   return if ($node/tei:head) 
-    then dispatch($node/tei:head, map{})
-    else dispatch($node/*/tei:label, map{})
+    then $node/tei:head
+    else $node/*/tei:label
 };
 
 (:~
  : this function dispatches the treatment of the XML document
  :)
 declare 
-  %output:indent('no') 
+  %output:indent('no')
 function dispatch($node as node()*, $options as map(*)) as item()* {
   typeswitch($node)
     case text() return $node[fn:normalize-space(.)!='']

@@ -91,7 +91,8 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
               case xs:integer return fn:data($b)
               case xs:double return fn:format-number($b, "0.00")
               case attribute() return fn:string($b)
-              default return render($queryParams, $outputParams, $b)
+              default return render($queryParams, $outputParams, $b)/node()
+                => fn:serialize(map {'method' : 'html'})
             }
           else typeswitch($b)
               case empty-sequence() return ()
@@ -103,7 +104,8 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
               case xs:integer return fn:data($b)
               case xs:double return fn:format-number($b, "0.00")
               case attribute() return fn:string($b)
-              default return render($queryParams, $outputParams, $b)
+              default return render($queryParams, $outputParams, $b)/node()
+                => fn:serialize(map {'method' : 'html'})
         )
       }
     )
