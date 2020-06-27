@@ -374,6 +374,8 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'keywords' : getKeywords($text, $lang)
     }
   let $uuid := $item/@xml:id
+  let $itemBefore := getItemBefore($item, $lang)
+  let $itemAfter := getItemAfter($item, $lang)
   let $content := 
   map {
     'title' : getSectionTitle($item),
@@ -385,10 +387,12 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'path' : '/items/',
     'uuid' : $uuid,
     'url' : $gdp.globals:root || '/items/' || $uuid,
-    'itemBeforeTitle' : getItemBefore($item, $lang) => getSectionTitle(),
-    'itemBeforeUrl' : getItemBefore($item, $lang)/@xml:id => getUrl('/items/', $lang),
-    'itemAfterTitle' : getItemAfter($item, $lang) => getSectionTitle(),
-    'itemAfterUrl' : getItemAfter($item, $lang)/@xml:id => getUrl('/items/', $lang)
+    'itemBeforeTitle' : getSectionTitle($itemBefore),
+    'itemBeforeUrl' : getUrl($itemBefore/@xml:id, '/items/', $lang),
+    'itemBeforeUuid' : $itemBefore/@xml:id,
+    'itemAfterTitle' : getSectionTitle($itemAfter),
+    'itemAfterUrl' : getUrl($itemAfter/@xml:id, '/items/', $lang),
+    'itemAfterUuid' : $itemAfter/@xml:id
     }
   return  map{
     'meta'    : $meta,
