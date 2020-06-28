@@ -90,6 +90,8 @@ declare function getBlogItem($queryParams as map(*)) {
     'keywords' : getKeywords($article, $lang) (: is a sequence :)
     }
   let $uuid := $article//tei:sourceDesc/@xml:id
+  let $getBlogItemBefore := getBlogItemBefore($queryParams, $article, $lang)
+  let $getBlogItemAfter := getBlogItemAfter($queryParams, $article, $lang)
   let $content := map {
     'rubrique' : 'Article de blog',
     'title' : getMainTitle($article, $lang),
@@ -101,10 +103,12 @@ declare function getBlogItem($queryParams as map(*)) {
     'uuid' : $uuid,
     'path' : '/blog/posts/',
     'url' : $gdp.globals:root || '/blog/posts/' || $uuid,
-    'itemBeforeTitle' : getTitles(getBlogItemBefore($queryParams, $article, $lang), $lang),
-    'itemBeforeUrl' : getUrl(getBlogItemBefore($queryParams, $article, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
-    'itemAfterTitle' : getTitles(getBlogItemAfter($queryParams, $article, $lang), $lang),
-    'itemAfterUrl' : getUrl(getBlogItemAfter($queryParams, $article, $lang)//tei:sourceDesc/@xml:id, '/blog/posts/', $lang)
+    'itemBeforeTitle' : getTitles($getBlogItemBefore, $lang),
+    'itemBeforeUrl' : getUrl($getBlogItemBefore//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
+    'itemBeforeUuid' : $getBlogItemBefore//tei:sourceDesc/@xml:id,
+    'itemAfterTitle' : getTitles($getBlogItemAfter, $lang),
+    'itemAfterUrl' : getUrl($getBlogItemAfter//tei:sourceDesc/@xml:id, '/blog/posts/', $lang),
+    'itemAfterUuid' : $getBlogItemAfter//tei:sourceDesc/@xml:id
     }
   return  map{
     'meta'    : $meta,
