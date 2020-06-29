@@ -177,7 +177,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'author' : getAuthors($corpora, $lang),
     'copyright'  : getCopyright($corpora, $lang),
     'description' : getDescription($corpora, $lang),
-    'keywords' : getKeywords($corpora, $lang) (: is a sequence :)
+    'keywords' : array{getKeywords($corpora, $lang)} (: is a sequence :)
     }
   let $content := 
     for $corpus at $count in $corpora/tei:teiCorpus 

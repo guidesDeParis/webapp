@@ -80,36 +80,30 @@ declare function sequence2ArrayInMap($queryParams, $map as map(*), $outputParams
         map:entry(
           $a ,
           if (fn:count($b) > 1)
-          then array{
-            typeswitch($b)
-              case empty-sequence() return ()
-              case map(*)+ return $b ! sequence2ArrayInMap($queryParams, ., $outputParams)
-              case xs:string return $b
-              case xs:string+ return $b
-              (: case xs:anyAtomicType return fn:data($b)
-              case xs:anyAtomicType+ return $b ! fn:data(.) :)
-              case xs:integer return fn:data($b)
-              case xs:double return fn:format-number($b, "0.00")
-              case attribute() return fn:string($b)
-              default return render($queryParams, $outputParams, $b)/node()
-                => fn:serialize(map {'method' : 'html'})
-            }
-          else typeswitch($b)
-              case empty-sequence() return ()
-              case map(*)+ return $b ! sequence2ArrayInMap($queryParams, ., $outputParams)
-              case xs:string return $b
-              case xs:string+ return $b
-              (: case xs:anyAtomicType return fn:data($b)
-              case xs:anyAtomicType+ return $b ! fn:data(.) :)
-              case xs:integer return fn:data($b)
-              case xs:double return fn:format-number($b, "0.00")
-              case attribute() return fn:string($b)
-              default return render($queryParams, $outputParams, $b)/node()
-                => fn:serialize(map {'method' : 'html'})
+          then array{ dispatch($b, $queryParams, $outputParams) }
+          else dispatch($b, $queryParams, $outputParams)
         )
       }
     )
   )) 
+};
+
+declare function dispatch($b as item()*, $queryParams, $outputParams) {
+  typeswitch($b)
+    case empty-sequence() return ()
+    case map(*)+ return $b ! sequence2ArrayInMap($queryParams, ., $outputParams)
+    case xs:string return $b
+    case xs:string+ return $b
+    (: case xs:anyAtomicType return fn:data($b)
+    case xs:anyAtomicType+ return $b ! fn:data(.) :)
+    case xs:integer return fn:data($b)
+    case xs:double return fn:format-number($b, "0.00")
+    case array(*) return array:for-each($b, function($i){
+      dispatch($i, $queryParams, $outputParams)
+    })
+    case attribute() return fn:string($b)
+    default return render($queryParams, $outputParams, $b)/node()
+      => fn:serialize(map {'method' : 'html'})
 };
 
 declare function recurse($queryParams, $map as map(*), $outputParams) {
