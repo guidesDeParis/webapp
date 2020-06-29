@@ -541,8 +541,8 @@ declare function getNextDiv($nodes, $options) {
 declare function getSectionTitle($nodes) as element()* {
   for $node in $nodes 
   return if ($node/tei:head) 
-    then $node/tei:head
-    else $node/*/tei:label
+    then $node/tei:head ! element tei:head {dispatch(., map{})}
+    else $node/*/tei:label ! element tei:label {dispatch(., map{})}
 };
 
 (:~
