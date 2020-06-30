@@ -458,20 +458,46 @@ declare function getTextIdWithRegex($extract as element()) as xs:string {
  : this function get occurences of index entry
  :
  : @param $occurences refs
- : @return 
- :)
+ : @return
+ :)(:
 declare function getOccurences($entry as element()) as map(*)* {
   let $ids := $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')
-  return for $id in $ids 
+  return for $id in $ids
   let $entry := getDivFromId($id)
   let $uuid := $entry/@xml:id
-  return map { 
+  return map {
     'id' : $id,
     'title' : getSectionTitle($entry),
     'uuid' : $uuid,
     'path' : '/item/',
     'url' : $gdp.globals:root || '/items/' || $uuid
   }
+};:)
+
+(:~
+ : this function get occurences of index entry
+ :
+ : @param $occurences refs
+ : @return
+ :)
+declare function getOccurences($entry as element()) as map(*)* {
+  for $item in $entry/tei:listRelation/tei:relation
+  group by $type := $item/@type
+  return map{
+    'item' : fn:normalize-space($type),
+    'occurences' :
+      let $ids := $item/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')
+      for $id in $ids
+          let $entry := getDivFromId($id)
+          let $uuid := $entry/@xml:id
+        return map {
+          'id' : $id,
+          'title' : getSectionTitle($entry),
+          'uuid' : $uuid,
+          'path' : '/item/',
+          'url' : $gdp.globals:root || '/items/' || $uuid
+        }
+    }
 };
 
 (:~
