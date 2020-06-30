@@ -553,7 +553,7 @@ declare function getTitleMap($nodes, $options) {
       'uuid' : $uuid,
       'path' : '/items/',
       'url' : $gdp.globals:root || '/items/' || $uuid,
-      'children' : getNextDiv($node, $options)
+      'children' : array{getNextDiv($node, $options)}
     }
 };
 
