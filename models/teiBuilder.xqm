@@ -461,13 +461,16 @@ declare function getTextIdWithRegex($extract as element()) as xs:string {
  : @return 
  :)
 declare function getOccurences($entry as element()) as map(*)* {
-  let $ids := $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(.) ! fn:substring-after(., '#')
+  let $ids := $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')
   return for $id in $ids 
-  let $entry := getDivFromId($id) 
+  let $entry := getDivFromId($id)
+  let $uuid := $entry/@xml:id
   return map { 
     'id' : $id,
     'title' : getSectionTitle($entry),
-    'uuid' : $entry/@xml:id
+    'uuid' : $uuid,
+    'path' : '/item/',
+    'url' : $gdp.globals:root || '/items/' || $uuid
   }
 };
 
