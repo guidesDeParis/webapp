@@ -102,6 +102,7 @@ declare function dispatch($b as item()*, $queryParams, $outputParams) {
       dispatch($i, $queryParams, $outputParams)
     })
     case attribute() return fn:string($b)
+    case text() return fn:string($b)
     default return render($queryParams, $outputParams, $b)/node()
       => fn:serialize(map {'method' : 'html'})
 };

@@ -1092,15 +1092,15 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
     map {
       'rubrique' : 'Entrée de l’index des personnes',
       'title' : $entry/tei:persName[1],
-      'forename' : $entry/tei:persName/tei:forename,
-      'surname' : $entry/tei:persName/tei:surname,
-      'birthDate' : $entry/tei:birth/tei:date,
+      'forename' : ($entry/tei:persName/tei:forename)[1]/node(),
+      'surname' : ($entry/tei:persName/tei:surname)[1]/node(),
+      'birthDate' : $entry/tei:birth/tei:date/node(),
       'birthPlace' : $entry/tei:birth/tei:placeName,
-      'deathDate' : $entry/tei:death/tei:date,
+      'deathDate' : $entry/tei:death/tei:date/node(),
       'deathPlace' : $entry/tei:death/tei:placeName,
-      'sex' : $entry/tei:sex,
-      'occupation' : $entry/tei:occupation,
-      'note' : $entry/tei:note,
+      'sex' : $entry/tei:sex/@value => xs:integer(),
+      'occupation' : $entry/tei:occupation/node(),
+      'note' : array{$entry/tei:note},
       'autBnf' : $entry/tei:idno[@type="dataBnf"],
       'isni' : $entry/tei:idno[@type="isni"],
       'ulan' : $entry/tei:idno[@type="ulan"],
@@ -1108,7 +1108,9 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid,
-      'attestedForms' : fn:string(fn:distinct-values(db:open('gdp')//tei:persName[@xml:id=$entry/tei:listRelation/relation/@passive])),
+      'attestedForms' : for $name in db:open('gdp')//tei:persName
+        where $name[@xml:id = $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')]
+        return fn:string-join($name, ', '),
       'occurences' : getOccurences($entry)
       }
   return  map{
