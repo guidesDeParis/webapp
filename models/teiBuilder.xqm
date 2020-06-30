@@ -384,12 +384,19 @@ declare function getItemBefore($item as element()*, $lang as xs:string) as eleme
  : @return concatenate quantity and a message
  : @todo to internationalize
  :)
-declare function getQuantity($content as item()*, $unit as xs:string, $units as xs:string) as xs:string {
+(:declare function getQuantity($content as item()*, $unit as xs:string, $units as xs:string) as xs:string {
   let $nb := fn:count($content)
   return switch ($nb)
     case ($nb = 0) return fn:normalize-space('pas de ' ||  $units)
     case ($nb = 1) return fn:normalize-space($nb || ' ' || $unit)
     default return fn:normalize-space($nb || ' ' || $units)
+};:)
+declare function getQuantity($content as item()*, $unit as xs:string, $units as xs:string) as map(*) {
+  let $nb := fn:count($content)
+  return switch ($nb)
+    case ($nb = 0) return map{'quantity' : 0, 'units' : fn:normalize-space('pas de ' ||  $unit)}
+    case ($nb = 1) return map{'quantity' : $nb, 'unit' : $unit}
+    default return map{'quantity' : $nb, 'unit' : $units}
 };
 
 (:~
