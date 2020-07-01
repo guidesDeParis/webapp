@@ -321,6 +321,7 @@ declare function getRef($content as element()) as element()? {
  : @param $content tei content to treat
  : @param $lang iso langcode starts
  : @return a string of comma separated titles
+ : @todo deal with labels
  :)
 declare function getTitles($content as element()*, $lang as xs:string) as xs:string {
   fn:string-join(
@@ -549,7 +550,7 @@ declare function getTitleMap($nodes, $options) {
   let $uuid := fn:string($node/@xml:id)
   return map {
       'type' : if ($node/@type) then fn:string($node/@type) else $node/fn:name(),
-      'title' : getSectionTitle($node),
+      'title' : array{getSectionTitle($node)},
       'uuid' : $uuid,
       'path' : '/items/',
       'url' : $gdp.globals:root || '/items/' || $uuid,

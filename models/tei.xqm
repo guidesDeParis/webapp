@@ -274,7 +274,7 @@ declare function getTextItemsById($queryParams as map(*)) as map(*) {
     for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
     let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
     return map {
-    'title' : getSectionTitle($item), (: is a sequence :)
+    'title' : array{getSectionTitle($item)},
     'date' : getDate($ref, $dateFormat),
     'author' : getAuthors($text, $lang),
     'abstract' : getAbstract($text, $lang),
@@ -314,7 +314,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
     let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
     return map {
-    'title' : getSectionTitle($item), (: is a sequence :)
+    'title' : array{getSectionTitle($item)},
     'date' : getDate($text, $dateFormat),
     'author' : getAuthors($text, $lang),
     'abstract' : getAbstract($text, $lang),
@@ -360,6 +360,7 @@ declare function getTocByTextId($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
+ : @todo get next / before from toc
  :)
 declare function getItemById($queryParams as map(*)) as map(*) {
   let $itemId := map:get($queryParams, 'itemId')
@@ -369,7 +370,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
   let $item := $text//tei:div[@xml:id = $itemId]
   let $meta := map{
-    'title' : getSectionTitle($item), (: is a sequence :)
+    'title' : fn:string-join(getSectionTitle($item), ', '),
     'quantity' : getQuantity($item, 'item disponible', 'items disponibles'), (: @todo internationalize :)
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
@@ -381,7 +382,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $itemAfter := getItemAfter($item, $lang)
   let $content := 
   map {
-    'title' : getSectionTitle($item),
+    'title' : array{getSectionTitle($item)},
     'rubrique' : 'Item',
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
@@ -715,6 +716,7 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map for meta and content
+ : @todo everywhere in biblio arrays for titles and authors ?
  :)
 declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
   let $bibliographicalItemId := map:get($queryParams, 'itemId')
@@ -801,7 +803,7 @@ declare function getSearchExact($queryParams) {
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
-    'title' : getSectionTitle($segment), (: is a sequence :)
+    'title' : array{getSectionTitle($segment)}, (: is a sequence :)
     'extract' : ft:extract($result[text() contains text {$queryParams?search}]),
     'textId' : $textId,
     'score' : $s,
@@ -829,7 +831,7 @@ declare function getSearchAny($queryParams) {
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : array{getSectionTitle($segment)},
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
@@ -857,7 +859,7 @@ declare function getSearchAllWord($queryParams) {
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
-    'title' : getSectionTitle($segment), (: is a sequence :)
+    'title' : array{getSectionTitle($segment)}, (: is a sequence :)
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
@@ -884,7 +886,7 @@ declare function getSearchPhrase($queryParams) {
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
-    'title' : getSectionTitle($segment), (: is a sequence :)
+    'title' : array{getSectionTitle($segment)}, (: is a sequence :)
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
@@ -911,7 +913,7 @@ declare function getSearchAll($queryParams) {
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
-    'title' : getSectionTitle($segment), (: is a sequence :)
+    'title' : array{getSectionTitle($segment)}, (: is a sequence :)
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
