@@ -509,6 +509,59 @@ declare function getOccurences($entry as element()) as map(*)* {
 };
 
 (:~
+ : this function get index values of an item
+ :
+ : @param $occurences refs
+ : @return
+ : @todo restreindre les fichiers parcourus
+ : @todo tokenize ref if multiple values
+ : @todo add objects
+ :)
+declare function getIndexEntries($item as element()) as map(*)* {
+  let $db := db:open('gdp')
+  let $personsRefs := $item//tei:persName union $item//tei:orgName
+(:  let $objectsRefs := $item//tei:objectName:)
+  let $placesRefs := $item//tei:placeName union $item//tei:geogName
+  let $persons :=
+    for $personsRef in $personsRefs[@ref]
+    return fn:substring-after($personsRef/@ref, '#') => fn:distinct-values()
+  let $personsMap :=
+    for $person in $db//*[@xml:id = $persons]
+    let $uuid := $person/@xml:id
+    return map {
+      'title' : $person/tei:persName[@full='yes'][1],
+      'uuid' : $uuid,
+      'path' : '/indexNominum/',
+      'url' : $gdp.globals:root || '/indexNominum/' || $uuid
+    }
+  let $places :=
+      for $placesRef in $placesRefs[@ref]
+      return fn:substring-after($placesRef/@ref, '#') => fn:distinct-values()
+    let $placesMap :=
+      for $place in $db//*[@xml:id = $places]
+      let $uuid := $place/@xml:id
+      return map {
+        'title' : $place/tei:placeName[1],
+        'uuid' : $uuid,
+        'path' : '/indexLocorum/',
+        'url' : $gdp.globals:root || '/indexLocorum/' || $uuid
+      }
+  (:let $objects :=
+      for $objectsRef in $objectsRefs[@ref]
+      return fn:substring-after($objectsRef/@ref, '#') => fn:distinct-values()
+    let $objectsMap :=
+      for $object in $db//*[@xml:id = $objects]
+      return map {
+        'title' : $object/tei:objectName[1],
+        'uuid' : $object/@xml:id
+      }:)
+  return map {
+    'persons' : $personsMap,
+    'places' : $placesMap
+  }
+};
+
+(:~
  : this function get the ancestor div of an element by id
  :
  : @param $id
@@ -526,9 +579,8 @@ declare function getDivFromId($id as xs:string) as element() {
  : @param $options options
  : @return a sequence of map
  :)
-declare function getToc($node, $options) {
-  let $options := ''
-  return typeswitch($node)
+declare function getToc($node, $options as map(*)) {
+  typeswitch($node)
     case element(tei:front) return getTitleMap($node, $options)
     case element(tei:body) return getTitleMap($node, $options)
     case element(tei:back) return getTitleMap($node, $options)
@@ -544,7 +596,7 @@ declare function getToc($node, $options) {
  : @param $options options
  : @return a map for each title in the corpora
  :)
-declare function getTitleMap($nodes, $options) {
+declare function getTitleMap($nodes, $options as map(*)) {
   let $options := $options
   for $node in $nodes
   let $uuid := fn:string($node/@xml:id)
@@ -565,7 +617,7 @@ declare function getTitleMap($nodes, $options) {
  : @param $options options
  : @return a kind of apply-templates
  :)
-declare function getNextDiv($nodes, $options) {
+declare function getNextDiv($nodes, $options as map(*)) {
   for $node in $nodes/node()
   return getToc($node, $options)
 };

@@ -348,7 +348,7 @@ declare function getTocByTextId($queryParams as map(*)) as map(*) {
     'description' : getDescription($text, $lang),
     'keywords' : array{getKeywords($text, $lang)}
     }
-  let $content := getToc($text, '')
+  let $content := getToc($text, map{})
   return map{
     'meta'    : $meta,
     'content' : $content
@@ -396,7 +396,8 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'itemBeforeUuid' : $itemBefore/@xml:id,
     'itemAfterTitle' : getSectionTitle($itemAfter), (: is a sequence :)
     'itemAfterUrl' : getUrl($itemAfter/@xml:id, '/items/', $lang),
-    'itemAfterUuid' : $itemAfter/@xml:id
+    'itemAfterUuid' : $itemAfter/@xml:id,
+    'indexes' : getIndexEntries($item)
     }
   return  map{
     'meta'    : $meta,
@@ -755,6 +756,7 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
  : @todo deal with sections levels
  : @todo add a synopsx getIndexDb function
  : @todo search on head
+ : @todo distinct values for indexes in meta and count
  :)
 declare function getSearch($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -776,7 +778,10 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     'start' : $queryParams?start,
     'count' : $queryParams?count,
     'combining' : $queryParams?combining,
-    'quantity' : getQuantity($results, 'résultat', 'résultats')
+    'quantity' : getQuantity($results, 'résultat', 'résultats'),
+    'persons' : $results?indexes?persons,
+    'places' : $results?indexes?places,
+    'objects' : $results?indexes?objects
     }
   let $content := fn:subsequence($results, $queryParams?start, $queryParams?count)
   return  map{
@@ -807,6 +812,7 @@ declare function getSearchExact($queryParams) {
     'extract' : ft:extract($result[text() contains text {$queryParams?search}]),
     'textId' : $textId,
     'score' : $s,
+    'indexes' : getIndexEntries($segment),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -835,6 +841,7 @@ declare function getSearchAny($queryParams) {
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
+    'indexes' : getIndexEntries($segment),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -863,6 +870,7 @@ declare function getSearchAllWord($queryParams) {
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
+    'indexes' : getIndexEntries($segment),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid
@@ -891,6 +899,7 @@ declare function getSearchPhrase($queryParams) {
     'textId' : $textId,
     'score' : $s,
     'uuid' : $uuid,
+    'indexes' : getIndexEntries($segment),
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
     'combining' : 'phrase'
@@ -917,6 +926,7 @@ declare function getSearchAll($queryParams) {
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
+    'indexes' : getIndexEntries($segment),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -1191,4 +1201,22 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
     'meta'    : $meta,
     'content' : $content
     }
+};
+
+(:~
+ : this function create a ref for each named-entity in the corpus
+ :)
+declare
+  %updating
+function addId2IndexedEntities($indexId) {
+  let $db := db:open('gdp')
+  let $index := $db//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $indexId]]
+  for $occurence in fn:distinct-values($index//tei:listRelation/tei:relation/@passive ! fn:tokenize(., '\s+'))
+  let $entries := $index//*[tei:listRelation/tei:relation[fn:contains(@passive, $occurence)]]
+  let $element := $db//*[@xml:id = fn:substring-after($occurence, '#')]
+  let $values := for $entry in $entries/@xml:id return fn:concat('#', $entry)
+  return
+    if ($element[fn:not(@ref)])
+    then insert node attribute ref { $values } into $element
+    else replace value of node $element/@ref with $values
 };

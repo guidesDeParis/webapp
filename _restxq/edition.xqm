@@ -861,4 +861,18 @@ function indexNominumItemRdf($itemId) {
 (:~
  : cartes et accès complexes 
  :)
- 
+
+(:~
+ : resource function for indexing
+ :
+ : @param $itemId the item ID
+ : @return a jsonLD representation of an indexNominum item
+ : @todo add operum
+ :)
+declare
+  %rest:path('/indexing')
+  %updating
+function indexing() {
+  let $indexId := ('gdpIndexNominum', 'gdpIndexLocorum')
+  for $index in $indexId return gdp.models.tei:addId2IndexedEntities($index)
+};
