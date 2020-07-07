@@ -758,11 +758,9 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
  : @todo search on head
  : @todo distinct values for indexes in meta and count
  :)
-declare function getSearch($queryParams as map(*)) as map(*) {
+declare function getSearchOld($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $gdpFtIndex := db:open('gdpFtIndex')
-  let $gdp := db:open('gdp')
   let $combining := $queryParams?combining
   let $results := if ($queryParams?search = '') then ''
     else if ($queryParams?exact) then getSearchExact($queryParams)
@@ -790,11 +788,52 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     }
 };
 
+(:~
+ : this function get the advanced search results
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map of two map for meta and content
+ : @todo deal with sections levels
+ : @todo add a synopsx getIndexDb function
+ : @todo search on head
+ :)
+declare function getSearch($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $combining := $queryParams?combining
+  let $results := if ($queryParams?search = '') then ''
+    else if ($queryParams?exact) then getSearchExact($queryParams)
+    else if ($combining = "any") then getSearchAny($queryParams)
+    else if ($combining = "all words") then getSearchAllWord($queryParams)
+    else if ($combining = "phrase") then getSearchPhrase($queryParams)
+    else getSearchAll($queryParams)
+  let $meta := map{
+    'title' : 'Résultats de la recherche',
+    'author' : 'Guides de Paris',
+    'referer' : $queryParams?referer,
+    'search' : $queryParams?search,
+    'start' : $queryParams?start,
+    'count' : $queryParams?count,
+    'combining' : $queryParams?combining,
+    'type' : $queryParams?type,
+    'text' : $queryParams?text,
+    'quantity' : getQuantity($results, 'résultat', 'résultats')
+    }
+  let $content := fn:subsequence($results, $queryParams?start, $queryParams?count)
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
 declare function getSearchExact($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
   let $gdp := db:open('gdp')
   (: for $result score $s in $gdpFtIndex//tei:div[@type="section" or @type="item"]/tei:p :)
-  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+  let $texts := if ($queryParams?text = 'all')
+    then db:open('gdpFtIndex')
+    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+  for $result score $s in $texts//*:p[@xml:id][
     text() contains text {$queryParams?search}
     all
     using case insensitive
@@ -823,7 +862,10 @@ declare function getSearchExact($queryParams) {
 declare function getSearchAny($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
   let $gdp := db:open('gdp')
-  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+  let $texts := if ($queryParams?text = 'all')
+    then db:open('gdpFtIndex')
+    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+  for $result score $s in $texts//*:p[@xml:id][
     text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
     any
     using case insensitive
@@ -852,7 +894,10 @@ declare function getSearchAny($queryParams) {
 declare function getSearchAllWord($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
   let $gdp := db:open('gdp')
-  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+  let $texts := if ($queryParams?text = 'all')
+    then db:open('gdpFtIndex')
+    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+  for $result score $s in $texts//*:p[@xml:id][
     text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
     all words
     using case insensitive
@@ -880,7 +925,10 @@ declare function getSearchAllWord($queryParams) {
 declare function getSearchPhrase($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
   let $gdp := db:open('gdp')
-  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+  let $texts := if ($queryParams?text = 'all')
+    then db:open('gdpFtIndex')
+    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+  for $result score $s in $texts//*:p[@xml:id][
     text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
     phrase
     using case insensitive
@@ -909,7 +957,10 @@ declare function getSearchPhrase($queryParams) {
 declare function getSearchAll($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
   let $gdp := db:open('gdp')
-  for $result score $s in db:open('gdpFtIndex')//*:p[@xml:id][
+  let $texts := if ($queryParams?text = 'all')
+    then db:open('gdpFtIndex')
+    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+  for $result score $s in $texts//*:p[@xml:id][
     text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}
     all
     using case insensitive
