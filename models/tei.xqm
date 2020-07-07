@@ -826,14 +826,34 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     }
 };
 
+(:
+ : todo suppress @xml:id on search content
+ :)
 declare function getSearchExact($queryParams) {
   let $gdpFtIndex := db:open('gdpFtIndex')
   let $gdp := db:open('gdp')
   (: for $result score $s in $gdpFtIndex//tei:div[@type="section" or @type="item"]/tei:p :)
-  let $texts := if ($queryParams?text = 'all')
+  let $db :=
+    if ($queryParams?type = 'none')
     then db:open('gdpFtIndex')
-    else db:open('gdpFtIndex')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
-  for $result score $s in $texts//*:p[@xml:id][
+    else db:open('gdp')
+  let $content := if ($queryParams?text = 'all' and $queryParams?type = 'none') then $db//*:p[@xml:id]
+    else if ($queryParams?text != 'all' and $queryParams?type = 'none') then $db//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]//*:p[@xml:id]
+    else if ($queryParams?text = 'all' and $queryParams?type = 'persons') then $db//*:p[@xml:id]//*:persName
+    else if ($queryParams?text = 'all' and $queryParams?type = 'places') then $db//*:p[@xml:id]//*:placeName
+    else if ($queryParams?text = 'all' and $queryParams?type = 'objects') then $db//*:p[@xml:id]//*:objectName
+    else if ($queryParams?text != 'all' and $queryParams?type = 'persons') then $db//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]//*:p[@xml:id]//*:persName
+    else if ($queryParams?text != 'all' and $queryParams?type = 'places') then $db//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]//*:p[@xml:id]//*:placeName
+    else if ($queryParams?text != 'all' and $queryParams?type = 'objects') then $db//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]//*:p[@xml:id]//*:objectName
+  (:let $content :=
+    let $texts :=
+      if ($queryParams?text = 'none') then db:open('gdp')
+      else db:open('gdp')//*[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $queryParams?text]]
+    return if ($queryParams?type = 'all') then $texts//*:p[@xml:id]
+    else if ($queryParams?type = 'persons') then $texts//*:p[@xml:id]//*:persName
+    else if ($queryParams?type = 'places') then $texts//*:p[@xml:id]//*:placeName
+    else if ($queryParams?type = 'objects') then $texts//*:p[@xml:id]//*:objectName:)
+  for $result score $s in $content[
     text() contains text {$queryParams?search}
     all
     using case insensitive
@@ -843,7 +863,8 @@ declare function getSearchExact($queryParams) {
     ]
   order by $s descending
   (:let $textId := getTextId($result):)
-  let $uuid := $result/parent::*/@xml:id
+  (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id:)
+  let $uuid := $result/ancestor::tei:div[1]/@xml:id
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
   return map {
