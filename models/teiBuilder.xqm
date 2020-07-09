@@ -70,7 +70,7 @@ declare function getName($named as element()*, $lang as xs:string) as xs:string 
     let $name := $named/tei:persName[1] 
       return ($name/tei:forename || ' ' || $name/tei:surname)
     )
-  default return $named/tei:persName[1]
+  default return fn:normalize-space($named/tei:persName[1])
 };
 
 (:~

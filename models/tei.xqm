@@ -1101,12 +1101,18 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
   let $content :=
     map {
       'rubrique' : 'Entrée d’index de lieux',
-      'title' : $entry/tei:placeName,
+      'title' : $entry/tei:placeName[1],
       'type' : $entry/tei:trait/tei:label,
       'country' : $entry/tei:country,
       'ville' : $entry/tei:district,
       'geo' : $entry/tei:location/tei:geo,
       'note' : $entry/tei:note,
+      'autorities' : array{
+        for $idno in $entry/tei:idno
+        return map{
+          'autority' : $idno/@type,
+          'identifier' : $idno/node()}
+        },
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
       'url' : $gdp.globals:root || '/indexLocorum/' || $uuid,
@@ -1222,8 +1228,8 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
     for $entry in $data
     let $uuid := $entry/@xml:id
     return map {
-      'title' : $entry/tei:objectName,
-      'type' : $entry/tei:label,
+      'title' : $entry/tei:objectName[1],
+      'type' : $entry//tei:type/tei:label,
       'date' : $entry/tei:date,
       'uuid' : fn:string($uuid),
       'path' : '/indexOperum/',
@@ -1252,8 +1258,8 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
     'rubrique' : 'Entrée de l’index des œuvres',
     'author' : 'Guides de Paris',
     'title' : $entry/tei:objectName[1],
-    'type' : $entry/tei:label,
-    'date' : $entry/tei:date,
+    'type' : $entry//tei:type/tei:label,
+    'date' : $entry/tei:creation/tei:date,
     'desc' : $entry/tei:desc,
     'quantity' : getQuantity($occurences, 'occurence', 'occurences')
     }
@@ -1262,8 +1268,27 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
     map {
       'rubrique' : 'Entrée d’index des œuvres',
       'title' : $entry/tei:objectName[1],
-      'ref' : getRef($entry/ancestor::tei:TEI),
-      'author' : getAuthors($entry, $lang),
+      'type' : $entry//tei:type/tei:label,
+      'author' : array{
+        for $author in $entry/tei:creation/tei:author
+        let $refUuid := fn:substring-after($author/@ref, '#')
+        return map{
+          'name' : <tei:persName>{getName($author, $lang)}</tei:persName>,
+          'uuid' : $refUuid,
+          'path' : '/indexNominum/',
+          'url' : $gdp.globals:root || '/indexNominum/' || $refUuid
+          }
+        },
+      'dates' : $entry/tei:creation/tei:date,
+      'location' : $entry/tei:location/tei:address/tei:addrLine,
+      'desc' : $entry/tei:desc,
+      'note' : $entry/tei:note,
+      'autorities' : array{
+        for $idno in $entry/tei:idno
+        return map{
+          'autority' : $idno/@type,
+          'identifier' : $idno/node()}
+        },
       'uuid' : fn:string($uuid),
       'path' : '/items/',
       'url' : $gdp.globals:root || '/items/' || $uuid,
