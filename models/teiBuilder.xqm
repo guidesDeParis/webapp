@@ -493,7 +493,7 @@ declare function getOccurences($entry as element()) as map(*)* {
   group by $type := $item/@type
   return map{
     'item' : fn:normalize-space($type),
-    'occurences' :
+    'occurences' : array{
       let $ids := $item/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')
       for $id in $ids
           let $entry := getDivFromId($id)
@@ -505,6 +505,7 @@ declare function getOccurences($entry as element()) as map(*)* {
           'path' : '/item/',
           'url' : $gdp.globals:root || '/items/' || $uuid
         }
+      }
     }
 };
 
