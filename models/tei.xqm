@@ -397,7 +397,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'itemAfterTitle' : getSectionTitle($itemAfter), (: is a sequence :)
     'itemAfterUrl' : getUrl($itemAfter/@xml:id, '/items/', $lang),
     'itemAfterUuid' : $itemAfter/@xml:id,
-    'indexes' : getIndexEntries($item)
+    'indexes' : array{getIndexEntries($item)}
     }
   return  map{
     'meta'    : $meta,
@@ -872,7 +872,7 @@ declare function getSearchExact($queryParams) {
     'extract' : ft:extract($result[text() contains text {$queryParams?search}]),
     'textId' : $textId,
     'score' : $s,
-    'indexes' : getIndexEntries($segment),
+    'indexes' : array{getIndexEntries($segment)},
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -904,7 +904,7 @@ declare function getSearchAny($queryParams) {
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
-    'indexes' : getIndexEntries($segment),
+    'indexes' : array{getIndexEntries($segment)},
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -936,7 +936,7 @@ declare function getSearchAllWord($queryParams) {
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
-    'indexes' : getIndexEntries($segment),
+    'indexes' : array{getIndexEntries($segment)},
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid
@@ -968,7 +968,7 @@ declare function getSearchPhrase($queryParams) {
     'textId' : $textId,
     'score' : $s,
     'uuid' : $uuid,
-    'indexes' : getIndexEntries($segment),
+    'indexes' : array{getIndexEntries($segment)},
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
     'combining' : 'phrase'
@@ -998,7 +998,7 @@ declare function getSearchAll($queryParams) {
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
-    'indexes' : getIndexEntries($segment),
+    'indexes' : array{getIndexEntries($segment)},
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -1116,7 +1116,7 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
       'url' : $gdp.globals:root || '/indexLocorum/' || $uuid,
-      'occurences' : getOccurences($entry)
+      'occurences' : array{getOccurences($entry)}
       }
   return  map{
     'meta'    : $meta,
@@ -1171,7 +1171,7 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $itemId := map:get($queryParams, 'itemId')
-  let $entry := synopsx.models.synopsx:getDb($queryParams)//tei:person[@xml:id = $itemId]
+  let $entry := synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person[@xml:id = $itemId]
   let $meta := map{
     'rubrique' : 'Entrée d’index des personnes',
     'author' : 'Guides de Paris',
@@ -1200,7 +1200,7 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid,
       'attestedForms' : for $name in db:open('gdp')//tei:persName[@xml:id = $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')]
         return $name,
-      'occurences' : getOccurences($entry)
+      'occurences' : array{getOccurences($entry)}
       }
   return  map{
     'meta'    : $meta,
@@ -1292,7 +1292,7 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
       'uuid' : fn:string($uuid),
       'path' : '/items/',
       'url' : $gdp.globals:root || '/items/' || $uuid,
-      'occurences' : getOccurences($entry)
+      'occurences' : array{getOccurences($entry)}
       }
   return  map{
     'meta'    : $meta,
