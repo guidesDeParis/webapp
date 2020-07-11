@@ -486,7 +486,7 @@ declare function getOccurences($entry as element()) as map(*)* {
  : this function get occurences of index entry
  :
  : @param $occurences refs
- : @return
+ : @return a sequence of maps containing all the index entries for each text
  :)
 declare function getOccurences($entry as element()) as map(*)* {
   for $item in $entry/tei:listRelation/tei:relation
@@ -495,9 +495,10 @@ declare function getOccurences($entry as element()) as map(*)* {
     'item' : fn:normalize-space($type),
     'occurences' : array{
       let $ids := $item/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')
-      for $id in $ids
-          let $entry := getDivFromId($id)
-          let $uuid := $entry/@xml:id
+      let $occurences :=
+        for $id in $ids
+        let $entry := getDivFromId($id)
+        let $uuid := $entry/@xml:id
         return map {
           'id' : $id,
           'title' : getSectionTitle($entry),
@@ -505,8 +506,27 @@ declare function getOccurences($entry as element()) as map(*)* {
           'path' : '/item/',
           'url' : $gdp.globals:root || '/items/' || $uuid
         }
+      return getDistinctMaps($occurences, map{})
       }
     }
+};
+
+(:~
+ : this function filters distinct maps in a sequence
+
+ : @param $maps a sequence of maps to filter
+ : @options $options
+ : @return a filtered list of maps
+ :)
+declare function getDistinctMaps($maps as map(*)*, $options) as map(*)* {
+  fn:fold-left(
+    $maps,
+    (),
+    function($distinct-maps, $new-map) {
+      if (some $map in $distinct-maps satisfies fn:deep-equal($map, $new-map))
+      then $distinct-maps else ($distinct-maps, $new-map)
+    }
+  )
 };
 
 (:~
