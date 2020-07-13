@@ -361,7 +361,7 @@ declare function getSubtitle($content as element()*, $lang as xs:string) as elem
  : @todo retirer * et utiliser toc
  :)
 declare function getItemAfter($item as element()*, $lang as xs:string) as element()? {
-  $item/following-sibling::tei:div[@type = 'section' or @type = 'item' or @type = 'chapter' or @type = 'part' ][1]
+  $item/following::tei:div[@type = 'section' or @type = 'item' or @type = 'chapter' or @type = 'part' ][1]
 };
 
 (:~
@@ -373,7 +373,7 @@ declare function getItemAfter($item as element()*, $lang as xs:string) as elemen
  : @todo retirer * et utiliser toc
  :)
 declare function getItemBefore($item as element()*, $lang as xs:string) as element()? {
-  $item/preceding-sibling::tei:div[@type = 'section' or @type = 'item' or @type = 'chapter' or @type = 'part' ][1]
+  $item/preceding::tei:div[@type = 'section' or @type = 'item' or @type = 'chapter' or @type = 'part' ][1]
 };
 
 (:~
