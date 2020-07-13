@@ -496,20 +496,22 @@ declare function getOccurences($entry as element()) as map(*)* {
     'item' : fn:normalize-space($type),
     'occurences' : array{
       let $ids := $item/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')
-      let $occurences :=
+      let $lookup :=
         for $id in $ids
-        let $entry := getDivFromId($id)
-        let $uuid := $entry/@xml:id
-        return map {
+        return map{
           'id' : $id,
-          'title' : getSectionTitle($entry),
-          'uuid' : $uuid,
-          'path' : '/item/',
-          'url' : $gdp.globals:root || '/items/' || $uuid
-        }
-      return getDistinctMaps($occurences, map{})
-      }
+          'entry' : getDivFromId($id)/@xml:id
+          }
+      for $item in fn:distinct-values($lookup?entry)
+      return map{
+        'title' : getSectionTitle(db:open('gdp')//tei:div[@xml:id=$item]),
+        'uuid' : xs:string($item),
+        'path' : '/item/',
+        'url' : $gdp.globals:root || '/items/' || $item,
+        'ids' : array{ $lookup[?entry = $item]?id }
+       }
     }
+  }
 };
 
 (:~
