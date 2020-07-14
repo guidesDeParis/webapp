@@ -1191,10 +1191,12 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
       'sex' : $entry/tei:sex/@value => xs:integer(),
       'occupation' : $entry/tei:occupation/node(),
       'note' : array{$entry/tei:note},
-      'autBnf' : $entry/tei:idno[@type="dataBnf"],
-      'isni' : $entry/tei:idno[@type="isni"],
-      'ulan' : $entry/tei:idno[@type="ulan"],
-      'wikidata' : $entry/tei:idno[@type="wikidata"],
+      'autorities' : array{
+              for $idno in $entry/tei:idno
+              return map{
+                'autority' : $idno/@type,
+                'identifier' : $idno/node()}
+              },
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid,
