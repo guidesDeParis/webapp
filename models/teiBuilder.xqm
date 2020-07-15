@@ -484,6 +484,22 @@ declare function getOccurences($entry as element()) as map(*)* {
 };:)
 
 (:~
+ : this function get all attested forms of an index entry
+ : @param $entry index entry
+ : @return maps for each attested form with its occurences
+ :)
+ declare function getAttestedForms($entry as element()) {
+   for $name in db:open('gdp')//tei:persName[@xml:id = $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')]
+   group by $distinctNames := fn:distinct-values($name)
+   return map{
+     'title' : $name[1] ! <tei:persName>{ dispatch(.,map{}) }</tei:persName>,
+     'quantity' : fn:count($name),
+     'id' : array{ $name/@xml:id ! xs:string(.) },
+     'uuid' : array{ $name/@xml:id ! getDivFromId(.)/@xml:id ! xs:string(.)}
+   }
+};
+
+(:~
  : this function get occurences of index entry
  :
  : @param $occurences refs
@@ -491,9 +507,9 @@ declare function getOccurences($entry as element()) as map(*)* {
  :)
 declare function getOccurences($entry as element()) as map(*)* {
   for $item in $entry/tei:listRelation/tei:relation
-  group by $type := $item/@type
+  group by $texts := $item/@type
   return map{
-    'item' : fn:normalize-space($type),
+    'item' : fn:normalize-space($texts),
     'occurences' : array{
       let $ids := $item/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')
       let $lookup :=
@@ -626,11 +642,11 @@ declare function getTitleMap($nodes, $options as map(*)) {
   let $uuid := fn:string($node/@xml:id)
   return map {
       'type' : if ($node/@type) then fn:string($node/@type) else $node/fn:name(),
-      'title' : array{getSectionTitle($node)},
+      'title' : array{ getSectionTitle($node) },
       'uuid' : $uuid,
       'path' : '/items/',
       'url' : $gdp.globals:root || '/items/' || $uuid,
-      'children' : array{getNextDiv($node, $options)}
+      'children' : array{ getNextDiv($node, $options) }
     }
 };
 

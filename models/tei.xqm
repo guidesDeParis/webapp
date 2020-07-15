@@ -1116,7 +1116,7 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
       'url' : $gdp.globals:root || '/indexLocorum/' || $uuid,
-      'occurences' : array{getOccurences($entry)}
+      'occurences' : array{ getOccurences($entry) }
       }
   return  map{
     'meta'    : $meta,
@@ -1200,9 +1200,8 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid,
-      'attestedForms' : for $name in db:open('gdp')//tei:persName[@xml:id = $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')]
-        return $name,
-      'occurences' : array{getOccurences($entry)}
+      'attestedForms' : array{ getAttestedForms($entry) },
+      'occurences' : array{ getOccurences($entry) }
       }
   return  map{
     'meta'    : $meta,
@@ -1294,7 +1293,7 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
       'uuid' : fn:string($uuid),
       'path' : '/items/',
       'url' : $gdp.globals:root || '/items/' || $uuid,
-      'occurences' : array{getOccurences($entry)}
+      'occurences' : array{ getOccurences($entry) }
       }
   return  map{
     'meta'    : $meta,
