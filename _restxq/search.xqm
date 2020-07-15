@@ -134,6 +134,8 @@ function getSearch($referer, $search as xs:string, $start as xs:int?, $count as 
  : @param $exact exact search as boolean
  : @param $start start for pagination
  : @param $count count for pagination
+ : @param $type searched entities
+ : @param $text id of the searched text (corpus or item)
  :)
 declare
   %rest:path('/search')
