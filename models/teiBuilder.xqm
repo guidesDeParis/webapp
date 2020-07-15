@@ -488,7 +488,7 @@ declare function getOccurences($entry as element()) as map(*)* {
  : @param $entry index entry
  : @return maps for each attested form with its occurences
  :)
- declare function getAttestedForms($entry as element()) {
+ declare function getAttestedForms($entry as element(), $options as map(*)) {
    for $name in db:open('gdp')//tei:persName[@xml:id = $entry/tei:listRelation/tei:relation/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')]
    group by $distinctNames := fn:distinct-values($name)
    return map{
@@ -569,7 +569,7 @@ declare function getIndexEntries($item as element()) as map(*)* {
     for $person in $db//*[@xml:id = $persons]
     let $uuid := $person/@xml:id
     return map {
-      'title' : $person/tei:persName[@full='yes'][1],
+      'title' : $person/tei:persName[1],
       'uuid' : $uuid,
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid

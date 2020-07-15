@@ -817,7 +817,12 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     'combining' : $queryParams?combining,
     'type' : $queryParams?type,
     'text' : $queryParams?text,
-    'quantity' : getQuantity($results, 'résultat', 'résultats')
+    'quantity' : getQuantity($results, 'résultat', 'résultats'),
+    'filters' : map{
+      'persons' : getDistinctMaps($results?indexes?persons, map{}),
+      'places' : getDistinctMaps($results?indexes?places, map{}),
+      'objects' : getDistinctMaps($results?indexes?objects, map{})
+      }
     }
   let $content := fn:subsequence($results, $queryParams?start, $queryParams?count)
   return  map{
@@ -872,7 +877,7 @@ declare function getSearchExact($queryParams) {
     'extract' : ft:extract($result[text() contains text {$queryParams?search}]),
     'textId' : $textId,
     'score' : $s,
-    'indexes' : array{getIndexEntries($segment)},
+    'indexes' : getIndexEntries($segment),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -904,7 +909,7 @@ declare function getSearchAny($queryParams) {
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
-    'indexes' : array{getIndexEntries($segment)},
+    'indexes' : getIndexEntries($segment),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -936,7 +941,7 @@ declare function getSearchAllWord($queryParams) {
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
-    'indexes' : array{getIndexEntries($segment)},
+    'indexes' : getIndexEntries($segment),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid
@@ -968,7 +973,7 @@ declare function getSearchPhrase($queryParams) {
     'textId' : $textId,
     'score' : $s,
     'uuid' : $uuid,
-    'indexes' : array{getIndexEntries($segment)},
+    'indexes' : getIndexEntries($segment),
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
     'combining' : 'phrase'
@@ -998,7 +1003,7 @@ declare function getSearchAll($queryParams) {
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
     'score' : $s,
-    'indexes' : array{getIndexEntries($segment)},
+    'indexes' : getIndexEntries($segment),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -1166,6 +1171,7 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
  : @param $queryParams the request params sent by restxq
  : @return a map of two map for meta and content
  : @todo deal with dates according to the serialization
+ : @todo deal with orgs
  :)
 declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -1200,7 +1206,7 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid,
-      'attestedForms' : array{ getAttestedForms($entry) },
+      'attestedForms' : array{ getAttestedForms($entry, map{'element' : 'person'}) },
       'occurences' : array{ getOccurences($entry) }
       }
   return  map{
