@@ -356,6 +356,35 @@ declare function getTocByTextId($queryParams as map(*)) as map(*) {
 };
 
 (:~
+ : this function get text by ID
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map with meta and content
+ :)
+declare function getPagination($queryParams as map(*)) as map(*) {
+  let $textId := map:get($queryParams, 'textId')
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $meta := map{
+    'title' : 'Pages de ' || getTitles($text, $lang),
+    'quantity' : getQuantity($text//tei:fw, 'page', 'pages'),
+    'author' : getAuthors($text, $lang),
+    'copyright'  : getCopyright($text, $lang),
+    'description' : getDescription($text, $lang),
+    'keywords' : array{getKeywords($text, $lang)}
+    }
+  let $content := getPagination($text, map{
+    'page' : $queryParams?page,
+    'text' : $text
+    })
+  return map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
  : this function get item by ID
  :
  : @param $queryParams the request params sent by restxq 

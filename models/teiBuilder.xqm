@@ -611,6 +611,31 @@ declare function getDivFromId($id as xs:string) as element() {
   db:open('gdp')//*[@xml:id=$id]/ancestor::tei:div[1]
 };
 
+(:~
+ :
+ :)
+declare function getPagination($text as element(), $options as map(*)) {
+  let $lang := 'fr'
+  let $item := $options?text//tei:fw[1][@type = 'pageNum'][. = $options?page]/ancestor::tei:div[1]
+  let $uuid := $item/@xml:id
+  let $itemBefore := getItemBefore($item, $lang)
+  let $itemAfter := getItemAfter($item, $lang)
+  return map{
+    'type' : if ($item/@type) then fn:string($item/@type) else $item/fn:name(),
+    'title' : array{ getSectionTitle($item) },
+    'uuid' : $uuid,
+    'path' : '/items/',
+    'url' : $gdp.globals:root || '/items/' || $uuid,
+    'item' : $item,
+    'itemBeforeTitle' : getSectionTitle($itemBefore), (: is a sequence :)
+    'itemBeforeUrl' : getUrl($itemBefore/@xml:id, '/items/', $lang),
+    'itemBeforeUuid' : $itemBefore/@xml:id,
+    'itemAfterTitle' : getSectionTitle($itemAfter), (: is a sequence :)
+    'itemAfterUrl' : getUrl($itemAfter/@xml:id, '/items/', $lang),
+    'itemAfterUuid' : $itemAfter/@xml:id,
+    'indexes' : array{getIndexEntries($item)}
+    }
+};
 
 (:~
  : this function get the toc

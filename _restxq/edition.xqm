@@ -238,10 +238,10 @@ function textItemsJson($textId as xs:string) {
 };
 
 (:~
- : resource function for a text by ID
+ : resource function for text toc by ID
  :
  : @param $textId the text ID
- : @return a json representation of the text resource
+ : @return a json toc of the text
  :)
 declare 
   %rest:path('/texts/{$textId}/toc')
@@ -263,7 +263,6 @@ function textItemsTocJson($textId as xs:string) {
     }
   return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
-
 
 (:~
  : resource function for a text item by ID
@@ -314,6 +313,35 @@ function itemsJson($itemId as xs:string) {
     'dbName' : 'gdp',
     'model' : 'tei',
     'function' : 'getItemById'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
+ : resource function for pagination
+ :
+ : @param $textId the text ID
+ : @param $page
+ : @return a json pagination of the text
+ :)
+declare
+  %rest:path('/pagination/{$textId}/{$page}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function getPagination($textId, $page as xs:integer) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getPagination',
+    'textId' : $textId,
+    'page' : $page
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
