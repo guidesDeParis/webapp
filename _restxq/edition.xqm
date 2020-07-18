@@ -330,7 +330,7 @@ function itemsJson($itemId as xs:string) {
  : @return a json pagination of the text
  :)
 declare
-  %rest:path('/pagination/{$textId}/{$page}')
+  %rest:path('/texts/{$textId}/page/{$page}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')

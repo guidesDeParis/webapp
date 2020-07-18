@@ -612,9 +612,9 @@ declare function getDivFromId($id as xs:string) as element() {
 };
 
 (:~
- :
+ : this function get item from pages
  :)
-declare function getPagination($text as element(), $options as map(*)) {
+declare function getItemFromPage($text as element(), $options as map(*)) {
   let $lang := 'fr'
   let $item := $options?text//tei:fw[1][@type = 'pageNum'][. = $options?page]/ancestor::tei:div[1]
   let $uuid := $item/@xml:id
@@ -623,6 +623,7 @@ declare function getPagination($text as element(), $options as map(*)) {
   return map{
     'type' : if ($item/@type) then fn:string($item/@type) else $item/fn:name(),
     'title' : array{ getSectionTitle($item) },
+    'pages' : getPagination($item, $options),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -635,6 +636,17 @@ declare function getPagination($text as element(), $options as map(*)) {
     'itemAfterUuid' : $itemAfter/@xml:id,
     'indexes' : array{getIndexEntries($item)}
     }
+};
+
+(:~
+ : this function get pages for an item
+ :)
+declare function getPagination($item as element(), $options as map(*)) {
+  let $uuid := $item/@xml:id
+  let $pageBefore := (getItemBefore($item, 'fr')//tei:fw[@type = 'pageNum'])[fn:last()]
+  let $fw := $item//tei:fw[@type = 'pageNum']
+  let $pages := ($pageBefore, $fw)
+  return array { $pages ! xs:string(.) }
 };
 
 (:~

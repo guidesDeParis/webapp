@@ -375,7 +375,7 @@ declare function getPagination($queryParams as map(*)) as map(*) {
     'description' : getDescription($text, $lang),
     'keywords' : array{getKeywords($text, $lang)}
     }
-  let $content := getPagination($text, map{
+  let $content := getItemFromPage($text, map{
     'page' : $queryParams?page,
     'text' : $text
     })
@@ -417,6 +417,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'date' : getDate($item, $dateFormat),
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
+    'pages' : getPagination($item, map{}),
     'tei' : $item,
     'path' : '/items/',
     'uuid' : $uuid,
