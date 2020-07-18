@@ -626,7 +626,7 @@ declare function getPagination($text as element(), $options as map(*)) {
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
-    'item' : $item,
+    'tei' : $item,
     'itemBeforeTitle' : getSectionTitle($itemBefore), (: is a sequence :)
     'itemBeforeUrl' : getUrl($itemBefore/@xml:id, '/items/', $lang),
     'itemBeforeUuid' : $itemBefore/@xml:id,

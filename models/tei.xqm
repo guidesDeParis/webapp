@@ -368,6 +368,7 @@ declare function getPagination($queryParams as map(*)) as map(*) {
   let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
     'title' : 'Pages de ' || getTitles($text, $lang),
+    'page' : $queryParams?page,
     'quantity' : getQuantity($text//tei:fw, 'page', 'pages'),
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
