@@ -839,7 +839,7 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     else if ($combining = "phrase") then getSearchPhrase($queryParams)
     else getSearchAll($queryParams)
   let $results :=
-    if ($queryParams?filterPersons or $queryParams?filterPlaces or $queryParams?filterObjects)
+    if (fn:count($queryParams?filterPersons) or fn:count($queryParams?filterPlaces) or fn:count($queryParams?filterObjects))
     then getFilteredResults($primaryResults, $queryParams)
     else $primaryResults
   let $meta := map{
