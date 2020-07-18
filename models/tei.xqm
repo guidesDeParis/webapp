@@ -801,12 +801,16 @@ declare function getSearch($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $combining := $queryParams?combining
-  let $results := if ($queryParams?search = '') then ''
+  let $primaryResults := if ($queryParams?search = '') then ''
     else if ($queryParams?exact) then getSearchExact($queryParams)
     else if ($combining = "any") then getSearchAny($queryParams)
     else if ($combining = "all words") then getSearchAllWord($queryParams)
     else if ($combining = "phrase") then getSearchPhrase($queryParams)
     else getSearchAll($queryParams)
+  let $results :=
+    if ($queryParams?filterPersons or $queryParams?filterPlaces or $queryParams?filterObjects)
+    then getFilteredResults($primaryResults, $queryParams)
+    else $primaryResults
   let $meta := map{
     'title' : 'Résultats de la recherche',
     'author' : 'Guides de Paris',
@@ -868,7 +872,7 @@ declare function getSearchExact($queryParams) {
     ]
   order by $s descending
   (:let $textId := getTextId($result):)
-  (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id:)
+  (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
   let $uuid := $result/ancestor::tei:div[1]/@xml:id
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
@@ -1323,4 +1327,24 @@ function addId2IndexedEntities($indexId) {
     if ($element[fn:not(@ref)])
     then insert node attribute ref { $values } into $element
     else replace value of node $element/@ref with $values
+};
+
+(:~
+ : this function filtered results
+ :)
+declare function getFilteredResults($primaryResults as map(*)*, $queryParams as map(*)) {
+  for $result in $primaryResults
+  where
+    if ($queryParams?filterPersons != 'all')
+    then $result?indexes?persons?uuid = $queryParams?filterPersons
+    else fn:true()
+  where
+    if ($queryParams?filterPlaces != 'all')
+    then $result?indexes?places?uuid = $queryParams?filterPlaces
+    else fn:true()
+  where
+    if ($queryParams?filterObjects != 'all')
+    then $result?indexes?objects?uuid = $queryParams?filterobjects
+    else fn:true()
+  return $result
 };

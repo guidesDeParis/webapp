@@ -150,6 +150,9 @@ declare
   %rest:query-param("count", "{$count}", 10)
   %rest:query-param("type", "{$type}", 'none')
   %rest:query-param("text", "{$text}", 'all')
+  %rest:query-param("filterPersons", "{$filterPersons}", 'all')
+  %rest:query-param("filterPlaces", "{$filterPlaces}", 'all')
+  %rest:query-param("filterObjects", "{$filterObjects}", 'all')
 function getSearchJson(
     $referer,
     $search as xs:string,
@@ -157,8 +160,11 @@ function getSearchJson(
     $exact,
     $start as xs:int,
     $count as xs:int,
-    $type as xs:string,
-    $text as xs:string
+    $type as xs:string*,
+    $text as xs:string*,
+    $filterPersons as xs:string*,
+    $filterPlaces as xs:string*,
+    $filterObjects as xs:string*
     ) {
   let $function := 'getSearch'
   let $queryParams := map {
@@ -172,7 +178,10 @@ function getSearchJson(
     'start' : $start,
     'count' : $count,
     'type' : $type,
-    'text' : $text
+    'text' : $text,
+    'filterPersons' : $filterPersons,
+    'filterPlaces' : $filterPlaces,
+    'filterObjects' : $filterObjects
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
