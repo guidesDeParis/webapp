@@ -823,9 +823,9 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     'text' : $queryParams?text,
     'quantity' : getQuantity($results, 'résultat', 'résultats'),
     'filters' : map{
-      'persons' : getDistinctMaps($results?indexes?persons, map{}),
-      'places' : getDistinctMaps($results?indexes?places, map{}),
-      'objects' : getDistinctMaps($results?indexes?objects, map{})
+      'persons' : array{ getDistinctMaps($results?indexes?persons, map{}) },
+      'places' : array{ getDistinctMaps($results?indexes?places, map{}) },
+      'objects' : array{ getDistinctMaps($results?indexes?objects, map{}) }
       }
     }
   let $content := fn:subsequence($results, $queryParams?start, $queryParams?count)
@@ -1202,11 +1202,11 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
       'occupation' : $entry/tei:occupation/node(),
       'note' : array{$entry/tei:note},
       'autorities' : array{
-              for $idno in $entry/tei:idno
-              return map{
-                'autority' : $idno/@type,
-                'identifier' : $idno/node()}
-              },
+        for $idno in $entry/tei:idno
+        return map{
+        'autority' : $idno/@type,
+        'identifier' : $idno/node()}
+        },
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid,
