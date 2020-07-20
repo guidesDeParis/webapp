@@ -622,7 +622,7 @@ declare function getItemFromPage($text as element(), $options as map(*)) {
   let $itemAfter := getItemAfter($item, $lang)
   return map{
     'type' : if ($item/@type) then fn:string($item/@type) else $item/fn:name(),
-    'title' : array{ getSectionTitle($item) },
+    'title' : getSectionTitle($item),
     'pages' : getPagination($item, $options),
     'uuid' : $uuid,
     'path' : '/items/',
@@ -679,7 +679,7 @@ declare function getTitleMap($nodes, $options as map(*)) {
   let $uuid := fn:string($node/@xml:id)
   return map {
       'type' : if ($node/@type) then fn:string($node/@type) else $node/fn:name(),
-      'title' : array{ getSectionTitle($node) },
+      'title' : getSectionTitle($node),
       'uuid' : $uuid,
       'path' : '/items/',
       'url' : $gdp.globals:root || '/items/' || $uuid,
