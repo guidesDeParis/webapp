@@ -651,8 +651,8 @@ declare function getItemFromPage($text as element(), $options as map(*)) {
   let $itemAfter := getItemAfter($item, $lang)
   return map{
     'type' : if ($item/@type) then fn:string($item/@type) else $item/fn:name(),
-    'title' : getSectionTitle($item),
-    'pages' : getPagination($item, $options),
+    'title' : array{ getSectionTitle($item) },
+    'pages' : getPages($item, $options),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -670,7 +670,7 @@ declare function getItemFromPage($text as element(), $options as map(*)) {
 (:~
  : this function get pages for an item
  :)
-declare function getPagination($item as element(), $options as map(*)) {
+declare function getPages($item as element(), $options as map(*)) {
   let $uuid := $item/@xml:id
   let $pageBefore := (getItemBefore($item, 'fr')//tei:fw[@type = 'pageNum'])[fn:last()]
   let $fw := $item//tei:fw[@type = 'pageNum']
@@ -684,6 +684,7 @@ declare function getPagination($item as element(), $options as map(*)) {
  : @param $node text to process
  : @param $options options
  : @return a sequence of map
+ : @todo add group
  :)
 declare function getToc($node, $options as map(*)) {
   typeswitch($node)
@@ -734,12 +735,38 @@ declare function getNextDiv($nodes, $options as map(*)) {
  : @param $options options
  :)
 declare function getSectionTitle($nodes) as element()* {
-  for $node in $nodes 
+  for $node in $nodes
   return if ($node/tei:head) 
     then $node/tei:head ! element tei:head {dispatch(., map{})}
     else $node/*/tei:label ! element tei:label {dispatch(., map{})}
 };
 
+(:~
+ : this function get the pagination
+ :
+ : @param $text text to process
+ : @param $options options
+ : @return a sequence of map
+ :)
+declare function getPagination($node, $options as map(*)) {
+  for $text in $node//tei:text
+  return map{
+    'text' : xs:string($text/@xml:id),
+    'pages' : getPagesByBook($text//tei:pb, map{})
+  }
+};
+
+(: @todo deal with sic in fw :)
+declare function getPagesByBook($nodes, $options as map(*)) {
+  for $page in $nodes
+  return map{
+    'page' :
+      if (fn:not($page/tei:sic))
+      then $page/following-sibling::tei:fw[@type='pageNum'][1] => fn:normalize-space()
+      else '[' || ($page/following-sibling::tei:fw[@type='pageNum'][1] => fn:normalize-space()) || ']',
+    'uuid' : ''
+  }
+};
 (:~
  : this function dispatches the treatment of the XML document
  :)

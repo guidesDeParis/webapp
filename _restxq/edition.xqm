@@ -265,6 +265,33 @@ function textItemsTocJson($textId as xs:string) {
 };
 
 (:~
+ : resource function for text pagination
+ :
+ : @param $textId the text ID
+ : @return a json toc of the text
+ :)
+declare
+  %rest:path('/texts/{$textId}/pagination')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function textItemsPaginationJson($textId as xs:string) {
+  let $queryParams := map {
+    'textId' : $textId,
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getPaginationByTextId'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
  : resource function for a text item by ID
  :
  : @param $corpusId the text item ID
