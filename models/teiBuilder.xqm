@@ -651,7 +651,7 @@ declare function getItemFromPage($text as element(), $options as map(*)) {
   let $itemAfter := getItemAfter($item, $lang)
   return map{
     'type' : if ($item/@type) then fn:string($item/@type) else $item/fn:name(),
-    'title' : array{ getSectionTitle($item) },
+    'title' : getSectionTitle($item),
     'pages' : getPages($item, $options),
     'uuid' : $uuid,
     'path' : '/items/',
