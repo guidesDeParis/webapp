@@ -410,6 +410,10 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $uuid := $item/@xml:id
   let $itemBefore := getItemBefore($item, $lang)
   let $itemAfter := getItemAfter($item, $lang)
+  let $tei :=
+    if ($queryParams?depth)
+    then $item
+    else remove-elements-deep($item, 'div')
   let $content := 
   map {
     'title' : getSectionTitle($item),
@@ -418,7 +422,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($item, $lang),
     'abstract' : getAbstract($item, $lang),
     'pages' : getPagination($item, map{}),
-    'tei' : $item,
+    'tei' : $tei,
     'path' : '/items/',
     'uuid' : $uuid,
     'url' : $gdp.globals:root || '/items/' || $uuid,

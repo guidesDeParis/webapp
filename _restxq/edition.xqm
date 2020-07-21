@@ -298,6 +298,7 @@ function items($itemId as xs:string) {
  : resource function for a text item by ID
  :
  : @param $corpusId the text item ID
+ : @param $depth render the content in depth true of false
  : @return a json representation of the text item
  :)
 declare 
@@ -305,13 +306,15 @@ declare
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
-function itemsJson($itemId as xs:string) {
+  %rest:query-param("depth", "{$depth}", 1)
+function itemsJson($itemId as xs:string, $depth as xs:boolean) {
   let $queryParams := map {
     
     'itemId' : $itemId,
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
+    'depth' : $depth,
     'function' : 'getItemById'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)

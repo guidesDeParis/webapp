@@ -463,6 +463,35 @@ declare function getTextIdWithRegex($extract as element()) as xs:string {
   return fn:string($parse/fn:match)
 };
 
+(:
+ : this function get the upperPart of a div
+ :)
+declare function remove-elements-deep($nodes as node()*, $names as xs:string*) {
+  for $node at $i in $nodes
+  return if ($node instance of element())
+    then if (fn:name($node) = $names and $i != 1)
+      then ()
+      else element { fn:node-name($node)} {
+        $node/@*, remove-elements-deep($node/node(),
+        $names)
+        }
+      else if ($node instance of document-node())
+        then remove-elements-deep($node/node(), $names)
+        else $node
+};
+
+declare function deepCopy($node, $options) {
+  switch($node)
+  case ($node/fn:local-name() = 'div' ) return ()
+  case ($node instance of element())
+    return
+      element {fn:name($node)} {
+        $node/@*,
+        for $i in $node/(* | text())
+        return deepCopy($i, $options)
+      }
+      default return $node
+};
 (:~
  : this function get occurences of index entry
  :
