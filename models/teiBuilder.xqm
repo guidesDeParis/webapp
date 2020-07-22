@@ -682,6 +682,20 @@ declare function getPages($item as element(), $options as map(*)) {
 };
 
 (:~
+ : this function get the words count
+ :
+ : @param $item text item to count
+ : @param $options options
+ : @return a quantity and a unit
+ :)
+declare function getWordsCount($item as element(), $options as map(*)) {
+  map{ 'unit' : 'mots',
+    'quantity' : 'xxxx'
+   }
+  (: fn:count(fn:tokenize($item, '\W+')[. != '']) :)
+};
+
+(:~
  : this function get the toc
  :
  : @param $node text to process
