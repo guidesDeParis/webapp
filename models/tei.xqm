@@ -386,7 +386,7 @@ declare function getPaginationByTextId($queryParams as map(*)) as map(*) {
  :
  : @param $queryParams the request params sent by restxq
  : @return a map with meta and content
- :)
+ :)(:
 declare function getPagination($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
   let $lang := 'fr'
@@ -402,14 +402,13 @@ declare function getPagination($queryParams as map(*)) as map(*) {
     'keywords' : array{getKeywords($text, $lang)}
     }
   let $content := getItemFromPage($text, map{
-    'page' : $queryParams?page,
-    'text' : $text
+    'page' : $queryParams?page
     })
   return map{
     'meta'    : $meta,
     'content' : $content
     }
-};
+};:)
 
 (:~
  : this function get item by ID

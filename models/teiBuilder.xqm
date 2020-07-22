@@ -645,7 +645,7 @@ declare function getDivFromId($id as xs:string) as element() {
  :)
 declare function getItemFromPage($text as element(), $options as map(*)) {
   let $lang := 'fr'
-  let $item := $options?text//tei:fw[1][@type = 'pageNum'][. = $options?page]/ancestor::tei:div[1]
+  let $item := $text//tei:fw[1][@type = 'pageNum'][. = $options?page]/ancestor::tei:div[1]
   let $uuid := $item/@xml:id
   let $itemBefore := getItemBefore($item, $lang)
   let $itemAfter := getItemAfter($item, $lang)
@@ -777,11 +777,13 @@ declare function getPagination($node, $options as map(*)) {
 declare function getPagesByBook($nodes, $options as map(*)) {
   for $page in $nodes
   return map{
-    'page' :
-      if (fn:not($page/tei:sic))
-      then $page/following-sibling::tei:fw[@type='pageNum'][1] => fn:normalize-space()
-      else '[' || ($page/following-sibling::tei:fw[@type='pageNum'][1] => fn:normalize-space()) || ']',
-    'uuid' : ''
+    'pageNum' :
+      if ($page/following-sibling::tei:fw[@type='pageNum'][1]/tei:sic)
+      then '[' || ($page/following-sibling::tei:fw[@type='pageNum'][1] => fn:normalize-space()) || ']'
+      else if ($page/following-sibling::tei:fw[@type='pageNum'][1] => fn:normalize-space() = '') then '[s.p.]'
+      else $page/following-sibling::tei:fw[@type='pageNum'][1] => fn:normalize-space(),
+    'pageBreak' : $page/@xml:id,
+    'uuid' : $page/ancestor::tei:div[1]/@xml:id
   }
 };
 (:~
