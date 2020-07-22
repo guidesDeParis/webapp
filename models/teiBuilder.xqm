@@ -675,7 +675,10 @@ declare function getPages($item as element(), $options as map(*)) {
   let $pageBefore := (getItemBefore($item, 'fr')//tei:fw[@type = 'pageNum'])[fn:last()]
   let $fw := $item//tei:fw[@type = 'pageNum']
   let $pages := ($pageBefore, $fw)
-  return array { $pages ! xs:string(.) }
+  return map{
+    'prefix' : if ($fw) then 'pp.' else 'p.',
+    'range' : fn:string-join(($pageBefore, $fw[fn:last()]), '–')
+  }
 };
 
 (:~
