@@ -809,46 +809,6 @@ declare function getBibliographicalItem($queryParams as map(*)) as map(*) {
 };
 
 (:~
- : this function get the search results
- :
- : @param $queryParams the request params sent by restxq
- : @return a map of two map for meta and content
- : @todo deal with sections levels
- : @todo add a synopsx getIndexDb function
- : @todo search on head
- : @todo distinct values for indexes in meta and count
- :)
-declare function getSearchOld($queryParams as map(*)) as map(*) {
-  let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
-  let $combining := $queryParams?combining
-  let $results := if ($queryParams?search = '') then ''
-    else if ($queryParams?exact) then getSearchExact($queryParams)
-    else if ($combining = "any") then getSearchAny($queryParams)
-    else if ($combining = "all words") then getSearchAllWord($queryParams)
-    else if ($combining = "phrase") then getSearchPhrase($queryParams)
-    else getSearchAll($queryParams)
-  let $meta := map{
-    'title' : 'Résultats de la recherche',
-    'author' : 'Guides de Paris',
-    'referer' : $queryParams?referer,
-    'search' : $queryParams?search,
-    'start' : $queryParams?start,
-    'count' : $queryParams?count,
-    'combining' : $queryParams?combining,
-    'quantity' : getQuantity($results, 'résultat', 'résultats'),
-    'persons' : $results?indexes?persons,
-    'places' : $results?indexes?places,
-    'objects' : $results?indexes?objects
-    }
-  let $content := fn:subsequence($results, $queryParams?start, $queryParams?count)
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
-
-(:~
  : this function get the advanced search results
  :
  : @param $queryParams the request params sent by restxq
@@ -940,6 +900,7 @@ declare function getSearchExact($queryParams) {
     'title' : getSectionTitle($segment),
     'extract' : ft:extract($result[text() contains text {$queryParams?search}]),
     'textId' : $textId,
+    'date' : fn:substring($textId, fn:string-length($textId) - 3),
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
@@ -974,6 +935,7 @@ declare function getSearchAny($queryParams) {
     'title' : getSectionTitle($segment),
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
+    'date' : fn:substring($textId, fn:string-length($textId) - 3),
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
@@ -1008,6 +970,7 @@ declare function getSearchAllWord($queryParams) {
     'title' : getSectionTitle($segment),
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
+    'date' : fn:substring($textId, fn:string-length($textId) - 3),
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
@@ -1041,6 +1004,7 @@ declare function getSearchPhrase($queryParams) {
     'title' : getSectionTitle($segment),
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
+    'date' : fn:substring($textId, fn:string-length($textId) - 3),
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
@@ -1074,6 +1038,7 @@ declare function getSearchAll($queryParams) {
     'title' : getSectionTitle($segment),
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
+    'date' : fn:substring($textId, fn:string-length($textId) - 3),
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
