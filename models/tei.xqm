@@ -890,21 +890,28 @@ declare function getSearchExact($queryParams) {
     using stemming
     using fuzzy
     ]
-  order by $s descending
   (:let $textId := getTextId($result):)
-  (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
+    (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
   let $uuid := $result/ancestor::tei:div[1]/@xml:id
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdWithRegex($segment)
+  let $date := fn:substring($textId, fn:string-length($textId) - 3)
+  let $title := getSectionTitle($segment)
+  let $size := getWordsCount($segment, map{})
+  order by
+    if ($queryParams?sort = 'size') then $size?quantity else () descending,
+    if ($queryParams?sort = 'title') then fn:string-join($title, ' ') else () ascending,
+    if ($queryParams?sort = 'date') then $date else () ascending,
+    if ($queryParams?sort = 'score') then $s else () descending
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : $title,
     'extract' : ft:extract($result[text() contains text {$queryParams?search}]),
     'textId' : $textId,
-    'date' : fn:substring($textId, fn:string-length($textId) - 3),
+    'date' : $date,
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
-    'words' : getWordsCount($segment, map{}),
+    'size' : getWordsCount($segment, map{}),
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -926,20 +933,28 @@ declare function getSearchAny($queryParams) {
     using stemming
     using fuzzy
     ]
-  order by $s descending
   (:let $textId := getTextId($result):)
-  let $uuid := $result/parent::*/@xml:id
-  let $segment := $gdp//*[@xml:id=$uuid]
-  let $textId := getTextIdWithRegex($segment)
+      (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
+    let $uuid := $result/ancestor::tei:div[1]/@xml:id
+    let $segment := $gdp//*[@xml:id=$uuid]
+    let $textId := getTextIdWithRegex($segment)
+    let $date := fn:substring($textId, fn:string-length($textId) - 3)
+    let $title := getSectionTitle($segment)
+    let $size := getWordsCount($segment, map{})
+    order by
+      if ($queryParams?sort = 'size') then $size?quantity else () descending,
+      if ($queryParams?sort = 'title') then fn:string-join($title, ' ') else () ascending,
+      if ($queryParams?sort = 'date') then $date else () ascending,
+      if ($queryParams?sort = 'score') then $s else () descending
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : $title,
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
-    'date' : fn:substring($textId, fn:string-length($textId) - 3),
+    'date' : $date,
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
-    'words' : getWordsCount($segment, map{}),
+    'size' : $size,
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -961,20 +976,28 @@ declare function getSearchAllWord($queryParams) {
     using stemming
     using fuzzy
     ]
-  order by $s descending
   (:let $textId := getTextId($result):)
-  let $uuid := $result/parent::*/@xml:id
-  let $segment := $gdp//*[@xml:id=$uuid]
-  let $textId := getTextIdWithRegex($segment)
+      (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
+    let $uuid := $result/ancestor::tei:div[1]/@xml:id
+    let $segment := $gdp//*[@xml:id=$uuid]
+    let $textId := getTextIdWithRegex($segment)
+    let $date := fn:substring($textId, fn:string-length($textId) - 3)
+    let $title := getSectionTitle($segment)
+    let $size := getWordsCount($segment, map{})
+    order by
+      if ($queryParams?sort = 'size') then $size?quantity else () descending,
+      if ($queryParams?sort = 'title') then fn:string-join($title, ' ') else () ascending,
+      if ($queryParams?sort = 'date') then $date else () ascending,
+      if ($queryParams?sort = 'score') then $s else () descending
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : $title,
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
-    'date' : fn:substring($textId, fn:string-length($textId) - 3),
+    'date' : $date,
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
-    'words' : getWordsCount($segment, map{}),
+    'size' : $size,
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid
@@ -995,20 +1018,28 @@ declare function getSearchPhrase($queryParams) {
     using stemming
     using fuzzy
     ]
-  order by $s descending
   (:let $textId := getTextId($result):)
-  let $uuid := $result/parent::*/@xml:id
-  let $segment := $gdp//*[@xml:id=$uuid]
-  let $textId := getTextIdWithRegex($segment)
+      (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
+    let $uuid := $result/ancestor::tei:div[1]/@xml:id
+    let $segment := $gdp//*[@xml:id=$uuid]
+    let $textId := getTextIdWithRegex($segment)
+    let $date := fn:substring($textId, fn:string-length($textId) - 3)
+    let $title := getSectionTitle($segment)
+    let $size := getWordsCount($segment, map{})
+    order by
+      if ($queryParams?sort = 'size') then $size?quantity else () descending,
+      if ($queryParams?sort = 'title') then fn:string-join($title, ' ') else () ascending,
+      if ($queryParams?sort = 'date') then $date else () ascending,
+      if ($queryParams?sort = 'score') then $s else () descending
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : $title,
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
-    'date' : fn:substring($textId, fn:string-length($textId) - 3),
+    'date' : $date,
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
-    'words' : getWordsCount($segment, map{}),
+    'size' : $size,
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
@@ -1030,19 +1061,28 @@ declare function getSearchAll($queryParams) {
     using stemming
     using fuzzy
     ]
-  order by $s descending
-  let $uuid := $result/parent::*/@xml:id
-  let $segment := $gdp//*[@xml:id=$uuid]
-  let $textId := getTextIdWithRegex($segment)
+  (:let $textId := getTextId($result):)
+      (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
+    let $uuid := $result/ancestor::tei:div[1]/@xml:id
+    let $segment := $gdp//*[@xml:id=$uuid]
+    let $textId := getTextIdWithRegex($segment)
+    let $date := fn:substring($textId, fn:string-length($textId) - 3)
+    let $title := getSectionTitle($segment)
+    let $size := getWordsCount($segment, map{})
+    order by
+      if ($queryParams?sort = 'size') then $size?quantity else () descending,
+      if ($queryParams?sort = 'title') then fn:string-join($title, ' ') else () ascending,
+      if ($queryParams?sort = 'date') then $date else () ascending,
+      if ($queryParams?sort = 'score') then $s else () descending
   return map {
-    'title' : getSectionTitle($segment),
+    'title' : $title,
     'extract' : ft:extract($result[text() contains text {for $w in fn:tokenize($queryParams?search, ' ') return $w}]),
     'textId' : $textId,
-    'date' : fn:substring($textId, fn:string-length($textId) - 3),
+    'date' : $date,
     'score' : $s,
     'indexes' : getIndexEntries($segment),
     'pages' : getPages($segment, map{}),
-    'words' : getWordsCount($segment, map{}),
+    'size' : $size,
     'uuid' : $uuid,
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,

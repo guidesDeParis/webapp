@@ -136,6 +136,10 @@ function getSearch($referer, $search as xs:string, $start as xs:int?, $count as 
  : @param $count count for pagination
  : @param $type searched entities
  : @param $text id of the searched text (corpus or item)
+ : @param $sort sort to apply ('date', 'score', 'size'), default = score
+ : @param $filterPersons filter with persons id
+ : @param $filterPlaces filter with places id
+ : @param $filterObjects filter with objects id
  :)
 declare
   %rest:path('/search')
@@ -150,6 +154,7 @@ declare
   %rest:query-param("count", "{$count}", 10)
   %rest:query-param("type", "{$type}", 'none')
   %rest:query-param("text", "{$text}", 'all')
+  %rest:query-param("sort", "{$sort}", 'score')
   %rest:query-param("filterPersons", "{$filterPersons}", 'all')
   %rest:query-param("filterPlaces", "{$filterPlaces}", 'all')
   %rest:query-param("filterObjects", "{$filterObjects}", 'all')
@@ -162,6 +167,7 @@ function getSearchJson(
     $count as xs:int,
     $type as xs:string*,
     $text as xs:string*,
+    $sort as xs:string,
     $filterPersons as xs:string*,
     $filterPlaces as xs:string*,
     $filterObjects as xs:string*
@@ -179,6 +185,7 @@ function getSearchJson(
     'count' : $count,
     'type' : $type,
     'text' : $text,
+    'sort' : $sort,
     'filterPersons' : $filterPersons,
     'filterPlaces' : $filterPlaces,
     'filterObjects' : $filterObjects
