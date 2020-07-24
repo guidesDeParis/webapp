@@ -786,6 +786,7 @@ declare function getPagesByBook($nodes, $options as map(*)) {
     'uuid' : $page/ancestor::tei:div[1]/@xml:id
   }
 };
+
 (:~
  : this function dispatches the treatment of the XML document
  :)
