@@ -457,7 +457,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'itemAfterTitle' : getSectionTitle($itemAfter), (: is a sequence :)
     'itemAfterUrl' : getUrl($itemAfter/@xml:id, '/items/', $lang),
     'itemAfterUuid' : $itemAfter/@xml:id,
-    'indexes' : array{getIndexEntries($item)}
+    'indexes' : getIndexEntries($item)
     }
   return  map{
     'meta'    : $meta,
