@@ -673,12 +673,25 @@ declare
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
-function indexOperum() {
+  %rest:query-param("start", "{$start}", 1)
+  %rest:query-param("count", "{$count}", 100)
+  %rest:query-param("text", "{$text}", 'all')
+  %rest:query-param("letter", "{$letter}", 'all')
+function indexOperum(
+  $start as xs:integer,
+  $count as xs:integer,
+  $text as xs:string*,
+  $letter as xs:string
+  ) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
-    'function' : 'getIndexOperum'
+    'function' : 'getIndexOperum',
+    'start' : $start,
+    'count' : $count,
+    'text' : $text,
+    'letter' : $letter
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
@@ -700,12 +713,25 @@ declare
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
-function indexOperumJson() {
+  %rest:query-param("start", "{$start}", 1)
+  %rest:query-param("count", "{$count}", 100)
+  %rest:query-param("text", "{$text}", 'all')
+  %rest:query-param("letter", "{$letter}", 'all')
+function indexOperumJson(
+  $start as xs:integer,
+  $count as xs:integer,
+  $text as xs:string*,
+  $letter as xs:string
+  ) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
-    'function' : 'getIndexOperum'
+    'function' : 'getIndexOperum',
+    'start' : $start,
+    'count' : $count,
+    'text' : $text,
+    'letter' : $letter
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
@@ -781,12 +807,25 @@ declare
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
-function indexNominum() {
+  %rest:query-param("start", "{$start}", 1)
+  %rest:query-param("count", "{$count}", 100)
+  %rest:query-param("text", "{$text}", 'all')
+  %rest:query-param("letter", "{$letter}", 'all')
+function indexNominum(
+  $start as xs:integer,
+  $count as xs:integer,
+  $text as xs:string*,
+  $letter as xs:string
+  ) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
-    'function' : 'getIndexNominum'
+    'function' : 'getIndexNominum',
+    'start' : $start,
+    'count' : $count,
+    'text' : $text,
+    'letter' : $letter
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
@@ -808,12 +847,25 @@ declare
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
-function indexNominumJson() {
+  %rest:query-param("start", "{$start}", 1)
+  %rest:query-param("count", "{$count}", 100)
+  %rest:query-param("text", "{$text}", 'all')
+  %rest:query-param("letter", "{$letter}", 'all')
+function indexNominumJson(
+  $start as xs:integer,
+  $count as xs:integer,
+  $text as xs:string*,
+  $letter as xs:string
+  ) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
-    'function' : 'getIndexNominum'
+    'function' : 'getIndexNominum',
+    'start' : $start,
+    'count' : $count,
+    'text' : $text,
+    'letter' : $letter
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)

@@ -1156,7 +1156,7 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
       else synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
   (: let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id] :)
   let $results := if ($queryParams?letter != 'all') then
-    for $entry in $data where $entry/tei:placeName[1][fn:starts-with(., $queryParams?letter)] return $entry
+    for $entry in $data where $entry/tei:placeName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
     else $data
   let $meta := map{
     'title' : 'Index des lieux',
@@ -1176,7 +1176,7 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
       'country' : $entry/tei:country,
       'ville' : $entry/tei:district,
       'geo' : $entry/tei:location/tei:geo,
-      'letter' : fn:substring($entry/tei:placeName[1], 1, 1),
+      'letter' : fn:substring($entry/tei:placeName[1], 1, 1) => fn:lower-case(),
       'texts' : array{ $entry/tei:listRelation/tei:relation/@type ! fn:string(.) },
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
@@ -1241,14 +1241,24 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $search := map:get($queryParams, 'search')
-  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person[@xml:id]
+  let $data := if ($queryParams?text = 'all')
+    then synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person[@xml:id]
+    else synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
+  (:let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person[@xml:id]:)
+  let $results := if ($queryParams?letter != 'all') then
+    for $entry in $data where $entry/tei:persName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
+    else $data
   let $meta := map{
     'title' : 'Index des personnes',
     'author' : 'Guides de Paris',
-    'quantity' : getQuantity($data, 'entrée', 'entrées')
+    'quantity' : getQuantity($results, 'entrée', 'entrées'),
+    'text' : $queryParams?text,
+    'start' : $queryParams?start,
+    'count' : $queryParams?count,
+    'letter' : $queryParams?letter
     }
   let $content := 
-    for $entry in $data
+    for $entry in $results
     let $uuid := $entry/@xml:id
     return map {
       'title' : $entry/tei:persName[1],
@@ -1257,13 +1267,15 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
       'birth' : $entry/tei:birth/tei:date,
       'death' : $entry/tei:death/tei:placeName,
       'occupation' : $entry/tei:occupation,
+      'letter' : fn:substring($entry/tei:persName[1], 1, 1) => fn:lower-case(),
+      'texts' : array{ $entry/tei:listRelation/tei:relation/@type ! fn:string(.) },
       'uuid' : fn:string($uuid),
       'path' : '/indexNominum/',
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid
       }
   return  map{
     'meta'    : $meta,
-    'content' : $content
+    'content' : fn:subsequence($content, $queryParams?start, $queryParams?count)
     }
 };
 
@@ -1327,26 +1339,38 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
 declare function getIndexOperum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object[@xml:id]
+  let $data := if ($queryParams?text = 'all')
+    then synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object[@xml:id]
+    else synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
+  (:let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object[@xml:id]:)
+  let $results := if ($queryParams?letter != 'all') then
+    for $entry in $data where $entry/tei:objectName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
+    else $data
   let $meta := map{
     'title' : 'Index des œuvres',
     'author' : 'Guides de Paris',
-    'quantity' : getQuantity($data, 'entrée', 'entrées')
+    'quantity' : getQuantity($results, 'entrée', 'entrées'),
+    'text' : $queryParams?text,
+    'start' : $queryParams?start,
+    'count' : $queryParams?count,
+    'letter' : $queryParams?letter
     }
   let $content := 
-    for $entry in $data
+    for $entry in $results
     let $uuid := $entry/@xml:id
     return map {
       'title' : $entry/tei:objectName[1],
       'type' : $entry//tei:type/tei:label,
       'date' : $entry/tei:date,
+      'letter' : fn:substring($entry/tei:objectName[1], 1, 1) => fn:lower-case(),
+      'texts' : array{ $entry/tei:listRelation/tei:relation/@type ! fn:string(.) },
       'uuid' : fn:string($uuid),
       'path' : '/indexOperum/',
       'url' : $gdp.globals:root || '/indexOperum/' || $uuid
       }
   return  map{
     'meta'    : $meta,
-    'content' : $content
+    'content' : fn:subsequence($content, $queryParams?start, $queryParams?count)
     }
 };
 
