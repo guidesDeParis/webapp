@@ -1408,20 +1408,24 @@ function addId2IndexedEntities($indexId) {
 
 (:~
  : this function filtered results
+ :
+ : @param $primaryResults the results to sort
+ : @param $queryParams
  :)
 declare function getFilteredResults($primaryResults as map(*)*, $queryParams as map(*)) {
   for $result in $primaryResults
   where
     if ($queryParams?filterPersons != 'all')
-    then $result?indexes?persons?uuid = $queryParams?filterPersons
+    then every $item in $queryParams?filterPersons satisfies $item = $result?indexes?persons?uuid
     else fn:true()
   where
     if ($queryParams?filterPlaces != 'all')
-    then $result?indexes?places?uuid = $queryParams?filterPlaces
+    then every $item in $queryParams?filterPlaces satisfies $item = $result?indexes?places?uuid
     else fn:true()
   where
     if ($queryParams?filterObjects != 'all')
-    then $result?indexes?objects?uuid = $queryParams?filterobjects
+    then every $item in $queryParams?filterObjects satisfies $item = $result?indexes?objects?uuid
+    (: then $result?indexes?objects?uuid = $queryParams?filterobjects :)
     else fn:true()
   return $result
 };
