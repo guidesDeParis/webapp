@@ -843,9 +843,11 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     'text' : $queryParams?text,
     'quantity' : getQuantity($results, 'résultat', 'résultats'),
     'filters' : map{
-      'persons' : array{ getDistinctMaps($results?indexes?persons, map{}) },
-      'places' : array{ getDistinctMaps($results?indexes?places, map{}) },
-      'objects' : array{ getDistinctMaps($results?indexes?objects, map{}) }
+      'persons' : array{ getDistinctFilters($results?indexes?persons?uuid, map{ 'filter' : 'persons' }) },
+      'places' : array{ getDistinctFilters($results?indexes?places?uuid, map{ 'filter' : 'places' }) },
+      'objects' : array{ getDistinctFilters($results?indexes?objects?uuid, map{ 'filter' : 'objets' }) }
+      (:'places' : array{ getDistinctMaps($results?indexes?places, map{}) },
+      'objects' : array{ getDistinctMaps($results?indexes?objects, map{}) }:)
       }
     }
   let $content := fn:subsequence($results, $queryParams?start, $queryParams?count)

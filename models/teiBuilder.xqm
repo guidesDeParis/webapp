@@ -578,6 +578,33 @@ declare function getDistinctMaps($maps as map(*)*, $options) as map(*)* {
 };
 
 (:~
+ : this function get distinct filters
+
+ : @param $maps a sequence of maps to filter
+ : @options $options
+ : @return a filtered list of maps
+ :)
+declare function getDistinctFilters($ids as xs:string*, $options) as map(*)* {
+  let $db := db:open('gdp')
+  for $id in $ids
+  group by $distinctId := $id
+  let $path := if ($options?filter = 'persons') then '/indexNominum/'
+      else if ($options?filter = 'places') then '/indexLocorum/'
+      else if ($options?filter = 'objects') then '/indexObjects/'
+      else ()
+  let $title := if ($options?filter = 'persons') then $db//*[@xml:id = $id]/tei:persName[1]
+    else if ($options?filter = 'places') then $db//*[@xml:id = $id]/tei:placeName[1]
+    else if ($options?filter = 'objects') then $db//*[@xml:id = $id]/tei:objectName[1]
+  return map{
+      'title' : $title,
+      'uuid' : $distinctId,
+      'quantity' : fn:count($id),
+      'path' : $path,
+      'url' : $gdp.globals:root || $path || $distinctId
+  }
+};
+
+(:~
  : this function get index values of an item
  :
  : @param $occurences refs
@@ -585,6 +612,7 @@ declare function getDistinctMaps($maps as map(*)*, $options) as map(*)* {
  : @todo restreindre les fichiers parcourus
  : @todo tokenize ref if multiple values
  : @todo add objects
+ : @todo add orgName for titles in persons
  :)
 declare function getIndexEntries($item as element()) as map(*)* {
   let $db := db:open('gdp')
