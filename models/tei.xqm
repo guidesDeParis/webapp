@@ -1,4 +1,4 @@
-xquery version "3.0" ;
+xquery version "3.1" ;
 module namespace gdp.models.tei = 'gdp.models.tei' ;
 
 (:~
@@ -1151,14 +1151,24 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
 declare function getIndexLocorum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id]
+  let $data := if ($queryParams?text = 'all')
+      then synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id]
+      else synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
+  (: let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id] :)
+  let $results := if ($queryParams?letter != 'all') then
+    for $entry in $data where $entry/tei:placeName[1][fn:starts-with(., $queryParams?letter)] return $entry
+    else $data
   let $meta := map{
     'title' : 'Index des lieux',
     'author' : 'Guides de Paris',
-    'quantity' : getQuantity($data, 'entrée', 'entrées')
+    'quantity' : getQuantity($results, 'entrée', 'entrées'),
+    'text' : $queryParams?text,
+    'start' : $queryParams?start,
+    'count' : $queryParams?count,
+    'letter' : $queryParams?letter
     }
-  let $content := 
-    for $entry in $data
+  let $content :=
+    for $entry in $results
     let $uuid := $entry/@xml:id
     return map {
       'title' : $entry/tei:placeName[1],
@@ -1166,13 +1176,15 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
       'country' : $entry/tei:country,
       'ville' : $entry/tei:district,
       'geo' : $entry/tei:location/tei:geo,
+      'letter' : fn:substring($entry/tei:placeName[1], 1, 1),
+      'texts' : array{ $entry/tei:listRelation/tei:relation/@type ! fn:string(.) },
       'uuid' : fn:string($uuid),
       'path' : '/indexLocorum/',
       'url' : $gdp.globals:root || '/indexLocorum/' || $uuid
       }
   return  map{
     'meta'    : $meta,
-    'content' : $content
+    'content' : fn:subsequence($content, $queryParams?start, $queryParams?count)
     }
 };
 

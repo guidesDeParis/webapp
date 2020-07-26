@@ -542,12 +542,22 @@ declare
   %rest:produces('text/html')
   %output:method('html')
   %output:html-version('5.0')
-function indexLocorum() {
+  %rest:query-param("start", "{$start}", 1)
+  %rest:query-param("count", "{$count}", 100)
+  %rest:query-param("text", "{$text}", 'all')
+function indexLocorum(
+  $start as xs:integer,
+  $count as xs:integer,
+  $text as xs:string*
+  ) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
-    'function' : 'getIndexLocorum'
+    'function' : 'getIndexLocorum',
+    'start' : $start,
+    'count' : $count,
+    'text' : $text
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
@@ -569,12 +579,25 @@ declare
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
-function indexLocorumJson() {
+  %rest:query-param("start", "{$start}", 1)
+  %rest:query-param("count", "{$count}", 100)
+  %rest:query-param("text", "{$text}", 'all')
+  %rest:query-param("letter", "{$letter}", 'all')
+function indexLocorumJson(
+  $start as xs:integer,
+  $count as xs:integer,
+  $text as xs:string*,
+  $letter as xs:string
+  ) {
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
     'model' : 'tei', 
-    'function' : 'getIndexLocorum'
+    'function' : 'getIndexLocorum',
+    'start' : $start,
+    'count' : $count,
+    'text' : $text,
+    'letter' : $letter
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
