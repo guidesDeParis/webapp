@@ -45,7 +45,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $meta := map{
     'title' : 'Page d’accueil du blog', 
-    'quantity' : getQuantity($posts, 'expression', 'expressions'),
+    'quantity' : getQuantity($posts, 'billet', 'billets'),
     'author' : getAuthors($posts, $lang),
     'copyright' : getCopyright($posts, $lang),
     'description' : getDescription($posts, $lang),
