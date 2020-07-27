@@ -183,9 +183,17 @@ declare function getBiblExpressions($content as element(), $dateFormat as xs:str
  : @return a date string in the specified format
  : @todo formats
  :)
-declare function getBiblManifestations($content as element(), $dateFormat as xs:string) {
-  for $refId in db:open('gdp')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'work'][@corresp = '#' || $content/@xml:id]]/@xml:id
-  return fn:distinct-values(db:open('gdp')//tei:biblStruct[tei:listRelation/tei:relation[@type = 'expression'][@corresp = '#' || $refId]])
+declare function getBiblManifestations($content as element(), $dateFormat as xs:string) as map(*)* {
+  for $ref in db:open('gdp')//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]//tei:biblStruct
+  [tei:listRelation/tei:relation[@type = 'expression'][@corresp = '#' || $content/@xml:id]]
+  group by $manifestation := $ref/@xml:id
+  let $path := '/bibliography/manifestation/'
+  return map{
+    'uuid' : $manifestation => xs:string(),
+    'path' : $path,
+    'url' : $gdp.globals:root || $path || $manifestation,
+    'tei' : $ref
+  }
 };
 
 (:~

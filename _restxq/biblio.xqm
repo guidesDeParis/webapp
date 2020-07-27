@@ -269,7 +269,6 @@ declare
   %output:media-type('application/json')
   %output:method('json')
 function expressionJson($expressionId) {
-  let $expressionId := fn:substring-before($expressionId, '.json')
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',
@@ -382,7 +381,6 @@ declare
   %output:media-type('application/json')
   %output:method('json')
 function manifestationJson($manifestationId) {
-  let $manifestationId := fn:substring-before($manifestationId, '.json')
   let $queryParams := map {
     'project' : 'gdp',
     'dbName' : 'gdp',

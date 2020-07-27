@@ -524,7 +524,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     for $bibliographicalWork in $bibliographicalWorks 
     let $uuid := $bibliographicalWork/@xml:id
     return map {
-    'header' : 'Œuvre',
+    'type' : 'Œuvre',
     'authors' : getBiblAuthors($bibliographicalWork, $lang),
     'titles' : getBiblTitles($bibliographicalWork, $lang),
     'tei' : $bibliographicalWork,
@@ -563,7 +563,7 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
     }
   let $uuid := $bibliographicalWork/@xml:id
   let $content := map {
-    'header' : 'Œuvre',
+    'type' : 'Œuvre',
     'authors' : getBiblAuthors($bibliographicalWork, $lang),
     'titles' : getBiblTitles($bibliographicalWork, $lang),
     'expressions' : getBiblExpressions($bibliographicalWork, $lang),
@@ -604,11 +604,10 @@ declare function getBibliographicalExpressionsList($queryParams) {
     for $bibliographicalExpression in $bibliographicalExpressions 
     let $uuid := $bibliographicalExpression/@xml:id
     return map {
-    'header' : 'Expression',
+    'type' : 'Expression',
     'authors' : getBiblAuthors($bibliographicalExpression, $lang),
     'titles' : getBiblTitles($bibliographicalExpression, $lang),
     'dates' : getBiblDates($bibliographicalExpression, $dateFormat),
-    'manifestations' : getBiblManifestations($bibliographicalExpression, $lang),
     'tei' : $bibliographicalExpression,
     'uuid' : $uuid,
     'path' : '/bibliography/expressions/',
@@ -627,11 +626,10 @@ declare function getBibliographicalExpressionsList($queryParams) {
  : @return a map of two map for meta and content
  :)
 declare function getBibliographicalExpression($queryParams) {
-  let $bibliographicalExpressionId := map:get($queryParams, 'expressionId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
-  let $bibliographicalExpression := $bibliography//tei:biblStruct[@xml:id = $bibliographicalExpressionId]
+  let $bibliographicalExpression := $bibliography//tei:biblStruct[@type='expression'][@xml:id = $queryParams?expressionId]
   let $meta := map{
     'title' : 'Expression',
     'author' : getAuthors($bibliography, $lang),
@@ -642,10 +640,13 @@ declare function getBibliographicalExpression($queryParams) {
     }
   let $uuid := $bibliographicalExpression/@xml:id
   let $content := map {
-    'header' : 'Expression',
+    'type' : 'Expression',
     'authors' : getBiblAuthors($bibliographicalExpression, $lang),
     'titles' : getBiblTitles($bibliographicalExpression, $lang),
     'dates' : getDate($bibliographicalExpression, $dateFormat),
+    'manifestations' : array{
+      getBiblManifestations($bibliographicalExpression, $lang)
+      },
     'tei' : $bibliographicalExpression,
     'uuid' : $uuid,
     'path' : '/bibliography/expressions/',
@@ -681,7 +682,7 @@ declare function getBibliographicalManifestationsList($queryParams) {
     for $bibliographicalManifestation in $bibliographicalManifestations 
     let $uuid := $bibliographicalManifestation/@xml:id
     return map {
-    'header' : 'Manifestation',
+    'type' : 'Manifestation',
     'authors' : getBiblAuthors($bibliographicalManifestation, $lang),
     'titles' : getBiblTitles($bibliographicalManifestation, $lang),
     'dates' : getBiblDates($bibliographicalManifestation, $dateFormat),
@@ -704,11 +705,10 @@ declare function getBibliographicalManifestationsList($queryParams) {
  : @bug doesnt always bring authors, url properly
  :)
 declare function getBibliographicalManifestation($queryParams) {
-  let $bibliographicalManifestationId := map:get($queryParams, 'manifestationId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $bibliography := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id='gdpBibliography']]
-  let $bibliographicalManifestation := $bibliography//tei:biblStruct[@type='manifestation'][@xml:id = $bibliographicalManifestationId]
+  let $bibliographicalManifestation := $bibliography//tei:biblStruct[@type='manifestation'][@xml:id = $queryParams?manifestationId]
   let $meta := map{
     'title' : 'Manifestation',
     'author' : getAuthors($bibliography, $lang),
@@ -722,7 +722,18 @@ declare function getBibliographicalManifestation($queryParams) {
     'authors' : getBiblAuthors($bibliographicalManifestation, $lang),
     'titles' : getBiblTitles($bibliographicalManifestation, $lang),
     'dates' : getBiblDates($bibliographicalManifestation, $dateFormat),
+    (:'items' : array{
+          getBiblItems($bibliographicalManifestation, $lang)
+          },:)
     'tei' : $bibliographicalManifestation,
+    'editeur' : $bibliographicalManifestation/tei:monogr/tei:imprint/tei:publisher,
+    'lieu' : $bibliographicalManifestation/tei:monogr/tei:imprint/tei:pubPlace,
+    'extent' : fn:normalize-space($bibliographicalManifestation/tei:monogr/tei:extent),
+    'idno' : array{
+      for $idno in $bibliographicalManifestation/tei:idno[@type='catBnf']
+      return map { 'type' : 'catBnf', 'url' : $idno}
+      },
+    'note' : array{$bibliographicalManifestation/tei:note},
     'uuid' : $uuid,
     'path' : '/bibliography/manifestations/',
     'url' : $gdp.globals:root || '/bibliography/manifestations/' || $uuid
@@ -757,7 +768,7 @@ declare function getBibliographicalItemsList($queryParams as map(*)) as map(*) {
     for $bibliographicalItem in $bibliographicalItems 
     let $uuid := $bibliographicalItem/@xml:id
     return map {
-    'header' : 'Item bibliographique',
+    'type' : 'Item bibliographique',
     'authors' : getBiblAuthors($bibliographicalItem, $lang),
     'titles' : getBiblTitles($bibliographicalItem, $lang),
     'dates' : getBiblDates($bibliographicalItem, $dateFormat),
@@ -1213,7 +1224,7 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
       'country' : $entry/tei:country,
       'ville' : $entry/tei:district,
       'geo' : $entry/tei:location/tei:geo,
-      'note' : $entry/tei:note,
+      'note' : array{$entry/tei:note},
       'autorities' : array{
         for $idno in $entry/tei:idno
         return map{
@@ -1415,7 +1426,7 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
       'dates' : $entry/tei:creation/tei:date,
       'location' : $entry/tei:location/tei:address/tei:addrLine,
       'desc' : $entry/tei:desc,
-      'note' : $entry/tei:note,
+      'note' : array{$entry/tei:note},
       'autorities' : array{
         for $idno in $entry/tei:idno
         return map{
