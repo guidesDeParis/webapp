@@ -541,12 +541,14 @@ declare function getOccurences($entry as element()) as map(*)* {
  :
  : @param $occurences refs
  : @return a sequence of maps containing all the index entries for each text
+ : @todo optimize by supressing getRef
  :)
-declare function getOccurences($entry as element()) as map(*)* {
+declare function getOccurences($entry as element(), $options as map(*)) as map(*)* {
   for $item in $entry/tei:listRelation/tei:relation
   group by $texts := $item/@type
   return map{
     'item' : fn:normalize-space($texts),
+    'biblio' : getRef($options?db//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $texts]]),
     'occurences' : array{
       let $ids := $item/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')
       let $lookup :=
