@@ -856,7 +856,8 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     'filters' : map{
       'persons' : array{ getDistinctFilters($results?indexes?persons?uuid, map{ 'filter' : 'persons' }) },
       'places' : array{ getDistinctFilters($results?indexes?places?uuid, map{ 'filter' : 'places' }) },
-      'objects' : array{ getDistinctFilters($results?indexes?objects?uuid, map{ 'filter' : 'objets' }) }
+      'objects' : array{ getDistinctFilters($results?indexes?objects?uuid, map{ 'filter' : 'objets' }) },
+      'texts' : array{ getDistinctFilters($results?textId, map{'filter' : 'texts'}) }
       (:'places' : array{ getDistinctMaps($results?indexes?places, map{}) },
       'objects' : array{ getDistinctMaps($results?indexes?objects, map{}) }:)
       }

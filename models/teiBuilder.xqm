@@ -601,10 +601,12 @@ declare function getDistinctFilters($ids as xs:string*, $options) as map(*)* {
   let $path := if ($options?filter = 'persons') then '/indexNominum/'
       else if ($options?filter = 'places') then '/indexLocorum/'
       else if ($options?filter = 'objects') then '/indexObjects/'
+      else if ($options?filter = 'texts') then '/items/'
       else ()
   let $title := if ($options?filter = 'persons') then $db//*[@xml:id = $id]/tei:persName[1]
     else if ($options?filter = 'places') then $db//*[@xml:id = $id]/tei:placeName[1]
     else if ($options?filter = 'objects') then $db//*[@xml:id = $id]/tei:objectName[1]
+    else if ($options?filter = 'texts') then getShortRef($distinctId, map{})
   return map{
       'title' : $title,
       'uuid' : $distinctId,
@@ -612,6 +614,18 @@ declare function getDistinctFilters($ids as xs:string*, $options) as map(*)* {
       'path' : $path,
       'url' : $gdp.globals:root || $path || $distinctId
   }
+};
+
+(:~
+ : this function generate a short ref from text id
+ :)
+declare function getShortRef($ids as xs:string*, $options as map(*)) {
+  for $id in $ids
+  return if ($id = 'gdpBrice1684') then 'Brice 1684'
+    else if ($id = 'gdpSauval1724') then 'Sauval 1724'
+    else if ($id = 'gdpLeMaire1685') then 'Le Maire 1685'
+    else if ($id = 'gdpPiganiol1742') then 'Piganiol 1742'
+
 };
 
 (:~
@@ -788,6 +802,7 @@ declare function getNextDiv($nodes, $options as map(*)) {
  : this function get the section title
  : @param $node node to process
  : @param $options options
+ : @todo deals with suplied
  :)
 declare function getSectionTitle($nodes) as element()* {
   for $node in $nodes
