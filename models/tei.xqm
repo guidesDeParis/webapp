@@ -608,6 +608,7 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'authors' : getBiblAuthors($bibliographicalExpression, $lang),
     'titles' : getBiblTitles($bibliographicalExpression, $lang),
     'dates' : getBiblDates($bibliographicalExpression, $dateFormat),
+    'notes' : array{},
     'tei' : $bibliographicalExpression,
     'uuid' : $uuid,
     'path' : '/bibliography/expressions/',
@@ -733,7 +734,7 @@ declare function getBibliographicalManifestation($queryParams) {
       for $idno in $bibliographicalManifestation/tei:idno[@type='catBnf']
       return map { 'type' : 'catBnf', 'url' : $idno}
       },
-    'note' : array{$bibliographicalManifestation/tei:note},
+    'notes' : array{$bibliographicalManifestation/tei:note},
     'uuid' : $uuid,
     'path' : '/bibliography/manifestations/',
     'url' : $gdp.globals:root || '/bibliography/manifestations/' || $uuid
