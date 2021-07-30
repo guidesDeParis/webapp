@@ -1,0 +1,111 @@
+xquery version '3.0' ;
+module namespace gdp.mappings.tei2rdf = 'gdp.mappings.tei2rdf' ;
+
+(:~
+ : This module is an RDF mapping for templating
+ :
+ : @version 3.0
+ : @date 2019-09
+ : @since 2019-09
+ : @author synopsx’s team
+ :
+ : This file is part of SynopsX.
+ : created by AHN team (http://ahn.ens-lyon.fr)
+ :
+ : SynopsX is free software: you can redistribute it and/or modify
+ : it under the terms of the GNU General Public License as published by
+ : the Free Software Foundation, either version 3 of the License, or
+ : (at your option) any later version.
+ :
+ : SynopsX is distributed in the hope that it will be useful,
+ : but WITHOUT ANY WARRANTY; without even the implied warranty of
+ : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ : See the GNU General Public License for more details.
+ : You should have received a copy of the GNU General Public License along 
+ : with SynopsX. If not, see http://www.gnu.org/licenses/
+ :
+ :)
+
+import module namespace G = "synopsx.globals" at '../../../globals.xqm' ;
+import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ; 
+
+declare namespace tei = 'http://www.tei-c.org/ns/1.0';
+
+declare default function namespace 'gdp.mappings.tei2rdf' ;
+
+(:~
+ : this function 
+ :
+ : @param $queryParams the query params defined in restxq
+ : @param $data the result of the query
+ : @param $outputParams the serialization params
+ : @return an 
+ :)
+declare function tei2rdf($queryParams as map(*), $data as map(*), $outputParams as map(*)) {
+  let $contents := map:get($data, 'content')
+  let $meta := map:get($data, 'meta')
+  return ''
+};
+
+(:~
+ : this function 
+ :)
+declare 
+%output:indent('no') 
+function entry($node as node()*, $options as map(*)) as item()* {
+  for $i in $node return dispatch($i, $options)
+};
+
+(:~
+ : this function dispatches the treatment of the XML document
+ :)
+declare function dispatch($node as node()*, $options as map(*)) as item()* {
+  typeswitch($node)
+    case text() return ''
+    case element(tei:biblStruct) return biblStruct($node, $options)
+    case element(tei:header) return header($node, $options)
+    case element(tei:person) return person($node, $options)
+    case element(tei:place) return place($node, $options)
+    case element(tei:object) return object($node, $options)
+    default return passthru($node, $options)
+};
+
+(:~
+ : This function pass through child nodes (xsl:apply-templates)
+ :)
+declare 
+  %output:indent('no') 
+function passthru($nodes as node(), $options as map(*)) as item()* {
+  for $node in $nodes/node()
+  return dispatch($node, $options)
+};
+
+declare function header($node, $options) {
+  ''
+};
+
+declare function person($node, $options) {
+  if ($options) then
+    map {
+      '@context' : 'http://gdp',
+      '@id' : $node/@xml:id,
+      '_ee:e' : ''
+    }
+  else
+    ' @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+      @prefix ex: <http://www.example.org/schemas/vehicles#> .
+      @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . '
+    || $node/@xml:id || 'a  .' 
+};
+
+declare function place($node, $options) {
+  ''
+};
+
+declare function object($node, $options) {
+  ''
+};
+
+declare function biblStruct($node, $options) {
+  ''
+};
