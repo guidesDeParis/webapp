@@ -447,10 +447,11 @@ declare function getTextId($extract as element()) as xs:string {
  :
  : @param $extractId id of the extract to process
  : @return text Id
+ : @quest use instead '(^gdp.*?\d{4})' ?
  :)
 declare function getTextIdWithRegex($extract as element()) as xs:string {
   let $extractId := $extract/ancestor::tei:*[@xml:id][1]/@xml:id
-  let $parse := fn:analyze-string($extractId, '^gdp.*[1-9]{4}')
+  let $parse := fn:analyze-string($extractId, '(^gdp.*?\d{4})')
   return fn:string($parse/fn:match)
 };
 
