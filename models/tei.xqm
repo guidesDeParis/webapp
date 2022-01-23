@@ -213,7 +213,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $corpusId := map:get($queryParams, 'corpusId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $corpus := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader//tei:sourceDesc[@xml:id = $corpusId]]
+  let $corpus := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $corpusId]]
   let $meta := map{
     'title' : 'Liste des textes disponibles', 
     'quantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
@@ -224,7 +224,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     }
   let $content := 
     for $text in $corpus/tei:TEI 
-    let $uuid := $text/tei:teiHeader//tei:sourceDesc/@xml:id
+    let $uuid := $text/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
     return map {
     'title' : getTitles($text, $lang), (: @todo sequence or main and sub :)
     'date' : getEditionDates(getOtherEditions(getRef($text))/tei:biblStruct, $dateFormat),
@@ -258,7 +258,7 @@ declare function getTextItemsById($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
   let $ref := getRef($text)
   let $meta := map{
     'title' : 'Item du corpus',
@@ -301,7 +301,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
     'title' : 'Sommaire de ' || getTitles($text, $lang), 
     'quantity' : getRef($text),
@@ -339,10 +339,10 @@ declare function getTocByTextId($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
     'title' : 'Sommaire de ' || getTitles($text, $lang), 
-    'quantity' : getQuantity($text//(tei:front|tei:back|tei:body|tei:div), 'entrée', 'entrées'),
+    'quantity' : getQuantity($text/tei:text/(tei:front|tei:back|tei:body|tei:div), 'entrée', 'entrées'),
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
@@ -365,7 +365,7 @@ declare function getPaginationByTextId($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
     'title' : 'Sommaire de ' || getTitles($text, $lang),
     'quantity' : getQuantity($text//tei:fw[@type='pageNum'], 'page', 'pages'),
@@ -422,7 +422,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $textId := fn:tokenize($itemId, '(Front|Body|Back|T)')[1] (: map:get($queryParams, 'textId') :)
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $text := synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $textId]]
+  let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
   let $item := $text//tei:div[@xml:id = $itemId] union $text//tei:titlePage[@xml:id = $itemId]
   let $meta := map{
     'title' : fn:string-join(getSectionTitle($item), ', '),
