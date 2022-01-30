@@ -18,7 +18,13 @@ module namespace gdp.edition = 'gdp.edition' ;
  : @qst give webpath by dates and pages ?
  :)
 
-import module namespace rest = 'http://exquery.org/ns/restxq';
+declare namespace db = 'http://basex.org/modules/db';
+declare namespace rest = 'http://exquery.org/ns/restxq';
+declare namespace output = 'http://www.w3.org/2010/xslt-xquery-serialization';
+declare namespace update = 'http://basex.org/modules/update';
+declare namespace web = 'http://basex.org/modules/web';
+declare namespace request = 'http://exquery.org/ns/request';
+declare namespace http = 'http://expath.org/ns/http-client';
 
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
@@ -965,18 +971,3 @@ function indexNominumItemRdf($itemId) {
 (:~
  : cartes et accès complexes 
  :)
-
-(:~
- : resource function for indexing
- :
- : @param $itemId the item ID
- : @return a jsonLD representation of an indexNominum item
- : @todo add operum
- :)
-declare
-  %rest:path('/indexing')
-  %updating
-function indexing() {
-  let $indexId := ('gdpIndexNominum', 'gdpIndexLocorum')
-  for $index in $indexId return gdp.models.tei:addId2IndexedEntities($index)
-};
