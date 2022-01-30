@@ -293,7 +293,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
   let $content := map {
     'title' : getTitles($text, $lang),
     'author' : getAuthors($text, $lang),
-    'date' : getDate($text, $dateFormat),
+    'date' : getDate($ref, $dateFormat),
     'description' : getDescription($text, $lang),
     'biblio' : map{
       'description' : $ref,
