@@ -25,6 +25,19 @@ module namespace gdp.mappings.tei2json = 'gdp.mappings.tei2json' ;
  : with SynopsX. If not, see http://www.gnu.org/licenses/
  :)
 
+declare namespace db = "http://basex.org/modules/db" ;
+declare namespace file = "http://expath.org/ns/file" ;
+declare namespace http = 'http://expath.org/ns/http-client';
+declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization" ;
+declare namespace request = 'http://exquery.org/ns/request';
+declare namespace rest = "http://exquery.org/ns/restxq" ;
+declare namespace update = "http://basex.org/modules/update" ;
+declare namespace web = "http://basex.org/modules/web" ;
+
+declare namespace perm = "http://basex.org/modules/perm" ;
+declare namespace user = "http://basex.org/modules/user" ;
+declare namespace session = 'http://basex.org/modules/session' ;
+
 declare namespace tei = 'http://www.tei-c.org/ns/1.0';
 
 declare default function namespace 'gdp.mappings.tei2json' ;

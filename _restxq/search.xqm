@@ -18,7 +18,18 @@ module namespace gdp.search = 'gdp.search' ;
  : @qst give webpath by dates and pages ?
  :)
 
-import module namespace rest = 'http://exquery.org/ns/restxq';
+declare namespace db = "http://basex.org/modules/db" ;
+declare namespace file = "http://expath.org/ns/file" ;
+declare namespace http = 'http://expath.org/ns/http-client';
+declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization" ;
+declare namespace request = 'http://exquery.org/ns/request';
+declare namespace rest = "http://exquery.org/ns/restxq" ;
+declare namespace update = "http://basex.org/modules/update" ;
+declare namespace web = "http://basex.org/modules/web" ;
+
+declare namespace perm = "http://basex.org/modules/perm" ;
+declare namespace user = "http://basex.org/modules/user" ;
+declare namespace session = 'http://basex.org/modules/session' ;
 
 import module namespace G = 'synopsx.globals' at '../../../globals.xqm' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
