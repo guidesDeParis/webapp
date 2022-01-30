@@ -337,6 +337,17 @@ declare function getRef($content as element()) as element()? {
 };
 
 (:~
+ : this function get the bibliographical reference id of a text or a corpus
+ :
+ : @param $content a tei or teiCorpus document
+ : @return a bibliographical tei element
+ : @bug why does the request brings back two results ?
+ :)
+declare function getRefId($content as element()) as xs:string? {
+  fn:substring-after($content/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/@copyOf, '#')
+};
+
+(:~
  : this function get titles
  :
  : @param $content tei content to treat

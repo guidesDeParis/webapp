@@ -238,19 +238,23 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $content := 
     for $text in $corpus/tei:TEI 
     let $uuid := $text/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
+    let $ref := getRef($text)
     return map {
     'title' : getTitles($text, $lang), (: @todo sequence or main and sub :)
-    'date' : getEditionDates(getOtherEditions(getRef($text))/tei:biblStruct, $dateFormat),
+    'date' : getEditionDates(getOtherEditions($ref)/tei:biblStruct, $dateFormat),
     'author' : getAuthors($text, $lang),
-    'biblio' : getRef($text),
+    'biblio' : map{
+      'description' : $ref,
+      'uuid' : $ref/@xml:id,
+      'path' : '/bibliography/manifestations/'
+    },
     'abstract' : getAbstract($text, $lang),
-    'format' : getRef($text)//tei:dim[@type = 'format'],
     'itemsNb' : fn:count($text//tei:*[@type = 'item' or @type = 'section']), (: todo value and unit :)
     'weight' : getStringLength($text),
     'uuid' : $uuid,
     'path' : '/texts/',
     'url' : $gdp.globals:root || '/texts/' || $uuid,
-    'otherEditions' : fn:count(getOtherEditions(getRef($text))/tei:biblStruct) (: todo value and unit :)
+    'otherEditions' : fn:count(getOtherEditions($ref)/tei:biblStruct) (: todo value and unit :)
     }
   return  map{
     'meta'    : $meta,
