@@ -61,7 +61,7 @@ declare function getBlogPosts($queryParams as map(*)) as map(*) {
     'quantity' : getQuantity($posts, 'billet', 'billets'),
     'author' : getAuthors($posts, $lang),
     'copyright' : getCopyright($posts, $lang),
-    'description' : getDescription($posts, $lang),
+    'description' : getBlogDescription($posts, $lang),
     'keywords' : array{getKeywords($posts, $lang)}
     }
   let $content := for $post in $posts 
@@ -99,7 +99,7 @@ declare function getBlogItem($queryParams as map(*)) {
     'title' : getTitles($article, $lang),
     'author' : getAuthors($article, $lang),
     'copyright' : getCopyright($article, $lang),
-    'description' : getDescription($article, $lang),
+    'description' : getBlogDescription($article, $lang),
     'keywords' : array{getKeywords($article, $lang)}
     }
   let $uuid := $article//tei:sourceDesc/@xml:id
@@ -150,7 +150,7 @@ declare function getAbout($queryParams as map(*)) as map(*) {
     'title' : getTitles($article, $lang),
     'author' : getAuthors($article, $lang),
     'copyright' : getCopyright($article, $lang),
-    'description' : getDescription($article, $lang),
+    'description' : getBlogDescription($article, $lang),
     'keywords' : array{getKeywords($article, $lang)}
     }
   let $content := 
@@ -196,18 +196,23 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     for $corpus at $count in $corpora/tei:teiCorpus 
     let $uuid := $corpus/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
     let $otherEditions := getOtherEditions(getRef($corpus))
+    let $ref := getRef($corpus)
     return map {
     'title' : getTitles($corpus, $lang), (: @todo sequence or main and sub :)
     'date' : getEditionDates($otherEditions/tei:biblStruct, $dateFormat),
     'author' : getAuthors($corpus, $lang),
-    'abstract' : getAbstract($corpus, $lang),
+    'biblio' : map{
+      'description' : $ref,
+      'uuid' : $ref/@xml:id,
+      'path' : '/bibliography/expressions/'
+      },
+    'description' : getDescription($corpus, $lang),
     'editionsQuantity' : getQuantity($otherEditions/tei:biblStruct, 'édition', ' éditions'), (: @todo with or without unit :)
     'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
     'uuid' : $uuid,
     'path' : '/corpus/',
-    'url' : $gdp.globals:root || '/corpus/' || $uuid,
+    'url' : $gdp.globals:root || '/corpus/' || $uuid
     (:'editions' : getOtherEditions(getRef($corpus)),:)
-    'weight' : getStringLength($corpus)
     }
   return  map{
     'meta'    : $meta,
@@ -227,13 +232,15 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $corpus := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $corpusId]]
+  let $otherEditions := getOtherEditions(getRef($corpus))
   let $meta := map{
-    'title' : 'Liste des textes disponibles', 
-    'quantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
+    'title' : 'Liste des textes disponibles',
     'author' : getAuthors($corpus, $lang),
     'copyright'  : getCopyright($corpus, $lang),
     'description' : getDescription($corpus, $lang),
-    'keywords' : array{getKeywords($corpus, $lang)}
+    'keywords' : array{getKeywords($corpus, $lang)},
+    'editionsQuantity' : getQuantity($otherEditions/tei:*, 'édition', ' éditions'),
+    'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles') (: @todo ignore editorial texts:)
     }
   let $content := 
     for $text in $corpus/tei:TEI 
@@ -248,57 +255,12 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
       'uuid' : $ref/@xml:id,
       'path' : '/bibliography/manifestations/'
     },
-    'abstract' : getAbstract($text, $lang),
-    'itemsNb' : fn:count($text//tei:*[@type = 'item' or @type = 'section']), (: todo value and unit :)
-    'weight' : getStringLength($text),
+    'description' : getDescription($text , $lang),
+    'itemsQuantity' : getQuantity(fn:count($text//tei:div), 'item', 'items'), (: @todo bug :)
+    'weight' : getQuantity(getExtent($text), 'mot', 'mots'), (: @todo bug :)
     'uuid' : $uuid,
     'path' : '/texts/',
-    'url' : $gdp.globals:root || '/texts/' || $uuid,
-    'otherEditions' : fn:count(getOtherEditions($ref)/tei:biblStruct) (: todo value and unit :)
-    }
-  return  map{
-    'meta'    : $meta,
-    'content' : $content
-    }
-};
-
-(:~
- : this function get text by ID
- :
- : @param $queryParams the request params sent by restxq 
- : @return a map with meta and content
- : @todo suppress the @xml:id filter on div
- : @todo check the text hierarchy
- : @rmq depreciated, replaced by getTocByTextId()
- :)
-declare function getTextItemsById($queryParams as map(*)) as map(*) {
-  let $textId := map:get($queryParams, 'textId')
-  let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
-  let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
-  let $ref := getRef($text)
-  let $meta := map{
-    'title' : 'Item du corpus',
-    'ref' : $ref, 
-    'quantity' : getQuantity($text, 'texte disponible', 'textes disponibles'),
-    'author' : getAuthors($text, $lang),
-    'copyright'  : getCopyright($text, $lang),
-    'description' : getDescription($text, $lang),
-    'keywords' : array{getKeywords($text, $lang)}
-    }
-  let $content := 
-    (: for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id ) or (@type = 'chapter' and @xml:id )] :)
-    for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
-    let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
-    return map {
-    'title' : getSectionTitle($item),
-    'date' : getDate($ref, $dateFormat),
-    'author' : getAuthors($text, $lang),
-    'abstract' : getAbstract($text, $lang),
-    'tei' : $item,
-    'path' : '/items/',
-    'uuid' : $uuid,
-    'url' : $gdp.globals:root || '/items/' || $uuid
+    'url' : $gdp.globals:root || '/texts/' || $uuid
     }
   return  map{
     'meta'    : $meta,
@@ -320,25 +282,31 @@ declare function getTextById($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
-    'title' : 'Sommaire de ' || getTitles($text, $lang), 
-    'quantity' : getRef($text),
+    'title' : getTitles($text, $lang),
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
     'keywords' : array{getKeywords($text, $lang)}
     }
-  let $content := 
-    for $item in $text//tei:div[(@type = 'item' and @xml:id) or (@type = 'section' and @xml:id )]
-    let $uuid := (if ($item/@xml:id) then $item/@xml:id else 'toto')
-    return map {
-    'title' : getSectionTitle($item),
-    'date' : getDate($text, $dateFormat),
+  let $ref := getRef($text)
+  let $uuid := $text/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
+  let $content := map {
+    'title' : getTitles($text, $lang),
     'author' : getAuthors($text, $lang),
-    'abstract' : getAbstract($text, $lang),
-    'tei' : $item,
-    'path' : '/items/',
+    'date' : getDate($text, $dateFormat),
+    'description' : getDescription($text, $lang),
+    'biblio' : map{
+      'description' : $ref,
+      'uuid' : $ref/@xml:id,
+      'path' : '/bibliography/manifestations/'
+    },
+    (: 'tei' : $text, :)
+    'itemsQuantity' : getQuantity(fn:count($text/tei:text//tei:div), 'item', 'items'),
+    'weight' : getQuantity(getExtent($text), 'mot', 'mots'),
+    'path' : '/texts/',
     'uuid' : $uuid,
-    'url' : $gdp.globals:root || '/items/' || $uuid
+    'url' : $gdp.globals:root || '/texts/' || $uuid,
+    'toc' : $gdp.globals:root || '/texts/' || $uuid || '/toc'
     }
   return  map{
     'meta'    : $meta,

@@ -241,10 +241,24 @@ declare function getBiblTitles($content as element()*, $lang as xs:string){
  : @param $lang iso langcode starts
  : @return a comma separated list of 90 first caracters of div[@type='abstract']
  :)
-declare function getDescription($content as element()*, $lang as xs:string) as xs:string {
+declare function getBlogDescription($content as element()*, $lang as xs:string) as xs:string {
   fn:string-join(
     for $abstract in $content//tei:div[parent::tei:div[fn:starts-with(@xml:lang, $lang)]][@type='abstract']/tei:p 
-      return fn:substring(fn:normalize-space($abstract), 0, 90),
+      return fn:normalize-space($abstract),
+    ', ') => fn:substring( 0, 400)
+};
+
+(:~
+ : this function get description
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a comma separated list of 90 first caracters of div[@type='abstract']
+ :)
+declare function getDescription($content as element()*, $lang as xs:string) as xs:string {
+  fn:string-join(
+    for $abstract in $content/tei:teiHeader/tei:fileDesc/tei:notesStmt/tei:note[@type='abstract'][fn:starts-with(@xml:lang, $lang)]
+      return fn:normalize-space($abstract),
     ', ')
 };
 
@@ -418,6 +432,7 @@ declare function getItemBefore($item as element()*, $lang as xs:string) as eleme
  : @return concatenate quantity and a message
  : @todo to internationalize
  :)
+
 (:declare function getQuantity($content as item()*, $unit as xs:string, $units as xs:string) as xs:string {
   let $nb := fn:count($content)
   return switch ($nb)
@@ -426,7 +441,9 @@ declare function getItemBefore($item as element()*, $lang as xs:string) as eleme
     default return fn:normalize-space($nb || ' ' || $units)
 };:)
 declare function getQuantity($content as item()*, $unit as xs:string, $units as xs:string) as map(*) {
-  let $nb := fn:count($content)
+  let $nb := if ($content instance of xs:integer)
+    then xs:integer($content)
+    else fn:count($content)
   return switch ($nb)
     case ($nb = 0) return map{'quantity' : 0, 'units' : fn:normalize-space('pas de ' ||  $unit)}
     case ($nb = 1) return map{'quantity' : $nb, 'unit' : $unit}
@@ -468,6 +485,17 @@ declare function getStringLength($content as element()*){
     for $text in $content//tei:body
     return fn:string-length($text)
   )
+};
+
+(:~
+ : this function get words
+ :
+ : @param $content texts to process
+ : @return string length
+ : @todo to replace by a fixed value from teiHeader (2020-06) for documents, but a more generic metrics in other cases
+ :)
+declare function getExtent($content as element()) as xs:integer? {
+  $content/tei:teiHeader/tei:fileDesc/tei:extent/tei:measure[@unit="words"]/@quantity
 };
 
 (:~
