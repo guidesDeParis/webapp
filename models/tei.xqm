@@ -714,12 +714,13 @@ declare function getBibliographicalManifestation($queryParams) {
     'tei' : $bibliographicalManifestation,
     'editeur' : $bibliographicalManifestation/tei:monogr/tei:imprint/tei:publisher,
     'lieu' : $bibliographicalManifestation/tei:monogr/tei:imprint/tei:pubPlace,
-    'extent' : fn:normalize-space($bibliographicalManifestation/tei:monogr/tei:extent),
+    'extent' : $bibliographicalManifestation/tei:monogr/tei:extent ! fn:normalize-space(.) => fn:string-join('. '),
     'idno' : array{
       for $idno in $bibliographicalManifestation/tei:idno[@type='catBnf']
       return map { 'type' : 'catBnf', 'url' : $idno}
       },
     'notes' : array{$bibliographicalManifestation/tei:note},
+    'edition' : getEdition($bibliographicalManifestation),
     'uuid' : $uuid,
     'path' : '/bibliography/manifestations/',
     'url' : $gdp.globals:root || '/bibliography/manifestations/' || $uuid

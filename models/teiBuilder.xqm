@@ -235,6 +235,24 @@ declare function getBiblTitles($content as element()*, $lang as xs:string){
 };
 
 (:~
+ : this function get edition from manifestation
+ :
+ : @param $content manifestation
+ : @param $lang iso langcode starts
+ : @return a string
+ :)
+declare function getEdition($content as element()*) as map(*)? {
+  let $text := db:open('gdp')/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:bibl/@copyOf = '#' || $content/@xml:id]
+  let $uuid := $text/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
+  return if ($uuid) then map {
+    'uuid' : $uuid,
+    'title' : getTitles($text, 'fr'),
+    'path' : '/texts/',
+    'url' : $gdp.globals:root || '/texts/' || $uuid
+  }
+};
+
+(:~
  : this function get description
  :
  : @param $content texts to process
