@@ -323,7 +323,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
 declare function getTocByTextId($queryParams as map(*)) as map(*) {
   let $textId := map:get($queryParams, 'textId')
   let $lang := 'fr'
-  let $dateFormat := 'jjmmaaa'
+  let $dateFormat := 'jjmmaaaa'
   let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
     'title' : 'Sommaire de ' || getTitles($text, $lang), 

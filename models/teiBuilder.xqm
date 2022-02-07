@@ -891,9 +891,29 @@ declare function getSectionTitle($nodes) as element()* {
 declare function getPagination($node, $options as map(*)) {
   for $text in $node//tei:text
   return map{
-    'text' : xs:string($text/@xml:id),
+    'uuid' : $text/@xml:id,
+    'vol' : getVolume($text, map{ 'label' : $text/@n }),
     'pages' : getPagesByBook($text//tei:pb, map{})
   }
+};
+
+declare function getVolume($text, $options as map(*)) as map(*) {
+  if ($options?label = 1) then map {
+     'label' : <p>Tome 1<hi rend="superscript">er</hi></p>,
+     'n' : $options?label,
+     'unit' : 'T.'
+     }
+  else map {
+     'label' :  element p {
+        ('Tome ' || $options?label),
+        element hi {
+          attribute rend {'superscript'},
+          'e'
+        }
+     },
+     'n' : $options?label,
+     'unit' : 'T.'
+   }
 };
 
 (: @todo deal with sic in fw :)
