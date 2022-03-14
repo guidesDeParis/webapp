@@ -364,6 +364,37 @@ function itemsJson($itemId as xs:string, $depth as xs:boolean) {
 };
 
 (:~
+ : resource function for a text item by ID
+ :
+ : @param $corpusId the text item ID
+ : @param $depth render the content in depth true of false
+ : @return a json representation of the text item
+ :)
+declare
+  %rest:path('/texts/{$textId}/{$itemId}')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+  %rest:query-param("depth", "{$depth}", 1)
+function textItemsJson($textId as xs:string, $itemId as xs:string, $depth as xs:boolean) {
+  let $queryParams := map {
+
+    'itemId' : $itemId,
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'depth' : $depth,
+    'function' : 'getItemById'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+    'xquery' : 'tei2html'
+    }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
  : this resource function is a bibliographical list for testing
  : @return an html representation of the bibliographical list
  : @param $pattern a GET param giving the name of the calling HTML tag
