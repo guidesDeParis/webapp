@@ -121,3 +121,42 @@ declare
 function makeFtindex() {
   gdp.models.index:getIndex()
 };
+
+(:~
+ : resource function for indexing
+ :
+ : @param $itemId the item ID
+ : @return a jsonLD representation of an indexNominum item
+ : @todo add operum
+ :)
+declare
+  %rest:path('/toc')
+  %updating
+function toc() {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei'
+  }
+  let $outputParams := map {
+      'xquery' : 'tei2html'
+      }
+  return (
+    gdp.models.index:createTocs($queryParams, $outputParams),
+    update:output(
+      (
+        <rest:response>
+          <http:response status="302">
+            <http:header name="Location" value="install"/>
+            <http:header name="Content-Language" value="fr"/>
+            <http:header name="Content-Type" value="text/plain; charset=utf-8"/>
+          </http:response>
+        </rest:response>,
+        <body>
+          <message>Les tables des matières ont été créées.</message>
+          <url></url>
+        </body>
+        )
+      )
+    )
+};

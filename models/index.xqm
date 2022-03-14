@@ -26,6 +26,7 @@ declare namespace request = 'http://exquery.org/ns/request';
 declare namespace rest = "http://exquery.org/ns/restxq" ;
 declare namespace update = "http://basex.org/modules/update" ;
 declare namespace web = "http://basex.org/modules/web" ;
+declare namespace json = "http://basex.org/modules/json" ;
 
 declare namespace perm = "http://basex.org/modules/perm" ;
 declare namespace user = "http://basex.org/modules/user" ;
@@ -34,8 +35,11 @@ declare namespace session = 'http://basex.org/modules/session' ;
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
 
 import module namespace gdp.globals = 'gdp.globals' at '../globals.xqm' ;
+import module namespace gdp.models.tei = "gdp.models.tei" at './tei.xqm' ;
 
 declare default function namespace 'gdp.models.index' ;
+
+import module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' at '../mappings/jsoner.xqm' ;
 
 (:~
  : this function create a ref for each named-entity in the corpus
@@ -252,5 +256,44 @@ declare function indexEntries($item as element()) as element()* {
   return (
     $personsMap,
     $placesMap
+  )
+};
+
+(:~
+ : this function create a toc db
+ : @bug, can’t work because it’s not possible to create a db from maps
+ :)
+declare
+  %updating
+function createTocs($queryParams, $outputParams) {
+  let $db := db:open('gdp')
+  let $ids := $db/tei:teiCorpus/tei:teiCorpus/tei:TEI/tei:teiHeader/tei:fileDesc/tei:sourceDesc[tei:bibl]/@xml:id
+  let $tocs :=
+    for $id in $ids
+    let $queryParams := map:merge(($queryParams, map { 'textId' : $id }))
+    return gdp.models.tei:getTocByTextId( $queryParams )
+  return db:create(
+    'gdpTocs',
+    for $toc in $tocs
+      return fn:serialize(
+      gdp.mappings.jsoner:jsoner($queryParams, $toc, $outputParams), map{"method" : "json"}) => json:parse(),
+    for $id in $ids return $id,
+    map {
+      'ftindex': fn:true(),
+      'stemming': fn:true(),
+      'casesens': fn:true(),
+      'diacritics': fn:true(),
+      'language': 'fr',
+      'updindex': fn:true(),
+      'autooptimize': fn:true(),
+      'maxlen': 96,
+      'maxcats': 100,
+      'splitsize': 0,
+      'chop': fn:false(),
+      'textindex': fn:true(),
+      'attrindex': fn:true(),
+      'tokenindex': fn:true(),
+      'xinclude': fn:true()
+    }
   )
 };

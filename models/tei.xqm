@@ -326,7 +326,8 @@ declare function getTocByTextId($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaaa'
   let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
   let $meta := map{
-    'title' : 'Sommaire de ' || getTitles($text, $lang), 
+    'title' : 'Sommaire de ' || getTitles($text, $lang),
+    'textId' : $textId,
     'quantity' : getQuantity($text/tei:text/(tei:front|tei:back|tei:body|tei:div), 'entrée', 'entrées'),
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
@@ -338,6 +339,18 @@ declare function getTocByTextId($queryParams as map(*)) as map(*) {
     'meta'    : $meta,
     'content' : $content
     }
+};
+
+(:~
+ : this function get text toc by ID
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map with meta and content
+ :)
+declare function getTocById($queryParams as map(*)) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaaa'
+  return db:open('gdpTocs', $queryParams?textId) => fn:serialize(map{ "method" : "json"})
 };
 
 (:~
