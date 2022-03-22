@@ -1133,7 +1133,7 @@ for $result score $s in $data[text() contains text {$search}
 declare function getIndexList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $data := (synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexNominum'], synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexLocorum'], synopsx.models.synopsx:getDb($queryParams)//tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexOperum'])
+  let $data := (synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexNominum'], synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexLocorum'], synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexOperum'])
   let $meta := map{
     'title' : 'Liste des index',
     'author' : 'Guides de Paris',
@@ -1141,9 +1141,9 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
     }
   let $content := 
     for $entry in $data
-    let $uuid := fn:replace($entry//tei:fileDesc/tei:sourceDesc/@xml:id, 'gdpI', 'i')
+    let $uuid := fn:replace($entry/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id, 'gdpI', 'i')
     return map {
-      'title' : $entry//tei:fileDesc/tei:titleStmt/tei:title,
+      'title' : $entry/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title,
       'uuid' : fn:string($uuid),
       'path' : '/',
       'url' : $gdp.globals:root || '/' || $uuid

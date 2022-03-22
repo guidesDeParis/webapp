@@ -50,11 +50,10 @@ function addId2IndexedEntities($indexId) {
   let $db := db:open('gdp')
   let $index := $db//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $indexId]]
   for $occurence in fn:distinct-values($index//tei:listRelation/tei:relation/@passive ! fn:tokenize(., '\s+'))
-  let $entries := $index//*[tei:listRelation/tei:relation[fn:contains(@passive, $occurence)]]
-  let $element := $db//*[@xml:id = fn:substring-after($occurence, '#')]
-  let $values := for $entry in $entries/@xml:id return fn:concat('#', $entry)
-  return
-    if ($element[fn:not(@ref)])
+    let $entries := $index//*[tei:listRelation/tei:relation[fn:contains(@passive, $occurence)]]
+    let $element := $db//*[@xml:id = fn:substring-after($occurence, '#')]
+    let $values := for $entry in $entries/@xml:id return fn:concat('#', $entry)
+  return if ($element[fn:not(@ref)])
     then insert node attribute ref { $values } into $element
     else replace value of node $element/@ref with $values
 };
