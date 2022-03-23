@@ -464,6 +464,44 @@ declare function getItemById($queryParams as map(*)) as map(*) {
 };
 
 (:~
+ : this function get item by ID
+ :
+ : @param $queryParams the request params sent by restxq
+ : @return a map with meta and content
+ : @todo get next / before from toc
+ :)
+declare function getItemIndexesById($queryParams as map(*)) as map(*) {
+  let $itemId := map:get($queryParams, 'itemId')
+  let $textId := fn:tokenize($itemId, '(Front|Body|Back|T)')[1] (: map:get($queryParams, 'textId') :)
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
+  let $item := $text//tei:div[@xml:id = $itemId] union $text//tei:titlePage[@xml:id = $itemId]
+  let $meta := map{
+    'title' : fn:string-join(getSectionTitle($item), ', '),
+    'quantity' : getQuantity($item, 'item disponible', 'items disponibles'), (: @todo internationalize :)
+    'author' : getAuthors($text, $lang),
+    'copyright'  : getCopyright($text, $lang),
+    'description' : getDescription($text, $lang),
+    'keywords' : array{getKeywords($text, $lang)}
+    }
+  let $uuid := $item/@xml:id
+  let $content :=
+  map {
+    'title' : getSectionTitle($item),
+    'rubrique' : 'Item',
+    'path' : '/items/',
+    'uuid' : $uuid,
+    'url' : $gdp.globals:root || '/items/' || $uuid,
+    'indexes' : getIndexEntries($item)
+    }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
  : this function get the model
  :
  : @param $queryParams the request params sent by restxq
