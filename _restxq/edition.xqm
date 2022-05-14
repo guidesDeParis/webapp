@@ -290,25 +290,23 @@ function textItemsJson($textId as xs:string, $itemId as xs:string, $depth as xs:
  :)
 declare 
   %rest:path('/about')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
 function about() {
   let $queryParams := map {
     'project' :'gdp',
-    'dbName' : 'blog',
+    'dbName' : 'gdp',
     'model' : 'tei',
-    'function' : 'getBlogItem',
-    'entryId' : 'gdpPresentation2014'
+    'function' : 'getAbout',
+    'itemId' : 'gdpAbout'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incBlogArticle.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
+      'xquery' : 'tei2html'
+      }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~

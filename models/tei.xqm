@@ -142,30 +142,24 @@ declare function getBlogItem($queryParams as map(*)) {
  : @return a map with meta and content
  :)
 declare function getAbout($queryParams as map(*)) as map(*) {
-  let $entryId := map:get($queryParams, 'entryId')
+  let $itemId := $queryParams?itemId
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $article := synopsx.models.synopsx:getDb($queryParams)/tei:TEI[//tei:sourceDesc[@xml:id=$entryId]]
+  let $article := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id=$itemId]]
   let $meta := map{
     'title' : getTitles($article, $lang),
     'author' : getAuthors($article, $lang),
     'copyright' : getCopyright($article, $lang),
-    'description' : getBlogDescription($article, $lang),
+    'description' : getDescription($article, $lang),
     'keywords' : array{getKeywords($article, $lang)}
     }
-  let $content := 
-    for $item in $article
-    let $uuid := $article//tei:sourceDesc/@xml:id
-    return map {
-    'title' : getMainTitle($item, $lang),
-    'subtitle' : getSubtitle($item, $lang),
-    'date' : getDate($item, $dateFormat),
-    'author' : getAuthors($item, $lang),
-    'abstract' : getAbstract($item, $lang),
+  let $uuid := "about"
+  let $content := map {
+    'title' : getTitles($article, $lang),
     'uuid' : $uuid,
-    'path' : '/about/',
+    'path' : '',
     'url' : $gdp.globals:root || '/' || $uuid,
-    'tei' : $item
+    'tei' : $article/tei:text/tei:body/tei:div
     }
   return  map{
     'meta'    : $meta,
