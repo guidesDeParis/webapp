@@ -50,64 +50,9 @@ declare
 function index() {
   <rest:response>
     <http:response status="303" message="See Other">
-      <http:header name="location" value="/home"/>
+      <http:header name="location" value="/corpus"/>
     </http:response>
   </rest:response>
-};
-
-(:~
- : resource function for the home
- :
- : @return an html home page for the edition
- :)
-declare 
-  %rest:path('/home')
-  %rest:produces('text/html')
-  %output:method("html")
-  %output:html-version("5.0")
-function editionHome() {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei', 
-    'function' : 'getCorpusList'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'home.xhtml',
-    'pattern' : 'incBullet.xhtml',
-    'xquery' : 'tei2html'
-    }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
-};
-
-
-(:~
- : resource function for corpus list
- :
- : @return an html representation of the corpus resource
- :)
-declare 
-  %rest:path('/corpus')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function corpus() {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei',
-    'function' : 'getCorpusList'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incCorpus.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -140,35 +85,6 @@ function corpusJson() {
  : resource function for a corpus ID
  :
  : @param $corpusId the corpus ID
- : @return an html representation of the corpus resource
- :)
-declare 
-  %rest:path('/corpus/{$corpusId}')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function corpusItem($corpusId as xs:string) {
-  let $queryParams := map {
-    'corpusId' : $corpusId,
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei',
-    'function' : 'getCorpusById'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incText.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapperNew($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for a corpus ID
- :
- : @param $corpusId the corpus ID
  : @return a json representation of the corpus resource
  :)
 declare 
@@ -190,35 +106,6 @@ function corpusItemJson($corpusId as xs:string) {
     'xquery' : 'tei2html'
     }
   return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for a text by ID
- :
- : @param $textId the text ID
- : @return an html representation of the text resource
- :)
-declare 
-  %rest:path('/texts/{$textId}')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function textItems($textId as xs:string) {
-  let $queryParams := map {
-    'textId' : $textId,
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei',
-    'function' : 'getTextById'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incTextItem.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -300,36 +187,6 @@ function textItemsPaginationJson($textId as xs:string) {
     'xquery' : 'tei2html'
     }
   return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for a text item by ID
- :
- : @param $corpusId the text item ID
- : @return an html representation of the text item
- :)
-declare 
-  %rest:path('/items/{$itemId}')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function items($itemId as xs:string) {
-  let $queryParams := map {
-    
-    'itemId' : $itemId,
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei',
-    'function' : 'getItemById'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incItem.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -424,63 +281,6 @@ function textItemsJson($textId as xs:string, $itemId as xs:string, $depth as xs:
   return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
-(:~
- : this resource function is a bibliographical list for testing
- : @return an html representation of the bibliographical list
- : @param $pattern a GET param giving the name of the calling HTML tag
- : @todo use this tag !
- :)
-declare 
-  %rest:path('/resp/list/html')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-  %rest:query-param('pattern', '{$pattern}')
-function biblioListHtml($pattern as xs:string?) {
-  let $queryParams := map {
-    'project' :'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei',
-    'function' : 'getRespList'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'incBlogList.xhtml',
-    'pattern' : 'incBlogArticle.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
-};
-
-(:~
- : this resource function is a documentation
- : @return an html representation of the bibliographical list
- : @param $pattern a GET param giving the name of the calling HTML tag
- : @todo use this tag !
- :)
-declare 
-  %rest:path('/model')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function model() {
-  let $queryParams := map {
-    'project' :'gdp',
-    'dbName' : 'gdp',
-    'path' : '/schema/gdpSchemaTEI.odd.xml',
-    'model' : 'tei',
-    'function' : 'getModel'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'about.xhtml',
-    'xquery' : 'tei2html'
-    }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
-};
 
 (:~
  : this resource function is a about page
@@ -540,45 +340,6 @@ function documentation() {
   return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
-declare 
-  %rest:path('/html/header')
-function getHtmlHeader() {
-  fn:doc($G:WORKSPACE||'gdp/templates/header.xhtml')
-};
-
-declare 
-  %rest:path('/html/footer')
-function getHtmlFooter() {
-  fn:doc($G:WORKSPACE||'gdp/templates/footer.xhtml')
-};
-
-(:~
- : resource function for the index list
- :
- : @return an html list of indexes
- :)
-declare 
-  %rest:path('/index')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function indexes() {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei', 
-    'function' : 'getIndexList'
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incIndex.xhtml',
-    'xquery' : 'tei2html'
-    }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
-};
-
 (:~
  : resource function for the indexLocorum
  :
@@ -602,43 +363,6 @@ function indexesJson() {
     'xquery' : 'tei2html'
     }
     return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for the indexLocorum
- :
- : @return an html list of indexLocorum entries
- :)
-declare 
-  %rest:path('/indexLocorum')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-  %rest:query-param("start", "{$start}", 1)
-  %rest:query-param("count", "{$count}", 100)
-  %rest:query-param("text", "{$text}", 'all')
-function indexLocorum(
-  $start as xs:integer,
-  $count as xs:integer,
-  $text as xs:string*
-  ) {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei', 
-    'function' : 'getIndexLocorum',
-    'start' : $start,
-    'count' : $count,
-    'text' : $text
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incIndexLocorum.xhtml',
-    'xquery' : 'tei2html'
-    }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -683,35 +407,6 @@ function indexLocorumJson(
  : resource function for the indexLocorum item
  :
  : @param $itemId the item ID
- : @return an html representation of an indexLocorum item
- :)
-declare 
-  %rest:path('/indexLocorum/{$itemId}')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function indexLocorumItem($itemId) {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei', 
-    'function' : 'getIndexLocorumItem',
-    'itemId' : $itemId
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incIndexLocorum.xhtml',
-    'xquery' : 'tei2html'
-    }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for the indexLocorum item
- :
- : @param $itemId the item ID
  : @return a json representation of an indexLocorum item
  :)
 declare 
@@ -733,46 +428,6 @@ function indexLocorumItemJson($itemId) {
     'xquery' : 'tei2html'
     }
     return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for the indexOperum
- :
- : @return an html list of indexOperum entries
- :)
-declare 
-  %rest:path('/indexOperum')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-  %rest:query-param("start", "{$start}", 1)
-  %rest:query-param("count", "{$count}", 100)
-  %rest:query-param("text", "{$text}", 'all')
-  %rest:query-param("letter", "{$letter}", 'all')
-function indexOperum(
-  $start as xs:integer,
-  $count as xs:integer,
-  $text as xs:string*,
-  $letter as xs:string
-  ) {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei', 
-    'function' : 'getIndexOperum',
-    'start' : $start,
-    'count' : $count,
-    'text' : $text,
-    'letter' : $letter
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incIndex.xhtml',
-    'xquery' : 'tei2html'
-    }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -817,35 +472,6 @@ function indexOperumJson(
  : resource function for an indexOperum item
  :
  : @param $itemId the item ID
- : @return an html reprenstation of an indexOperum item
- :)
-declare 
-  %rest:path('/indexOperum/{$itemId}')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function indexOperumItem($itemId) {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei', 
-    'function' : 'getIndexOperumItem',
-    'itemId' : $itemId
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incIndexOperum.xhtml',
-    'xquery' : 'tei2html'
-    }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for an indexOperum item
- :
- : @param $itemId the item ID
  : @return a json reprenstation of an indexOperum item
  :)
 declare 
@@ -867,46 +493,6 @@ function indexOperumItemJson($itemId) {
     'xquery' : 'tei2html'
     }
     return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for the indexNominum
- :
- : @return a html list of indexNominum entries
- :)
-declare 
-  %rest:path('/indexNominum')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-  %rest:query-param("start", "{$start}", 1)
-  %rest:query-param("count", "{$count}", 100)
-  %rest:query-param("text", "{$text}", 'all')
-  %rest:query-param("letter", "{$letter}", 'all')
-function indexNominum(
-  $start as xs:integer,
-  $count as xs:integer,
-  $text as xs:string*,
-  $letter as xs:string
-  ) {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei', 
-    'function' : 'getIndexNominum',
-    'start' : $start,
-    'count' : $count,
-    'text' : $text,
-    'letter' : $letter
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incIndex.xhtml',
-    'xquery' : 'tei2html'
-    }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
@@ -945,35 +531,6 @@ function indexNominumJson(
     'xquery' : 'tei2html'
     }
     return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
-};
-
-(:~
- : resource function for the indexNominum item
- :
- : @param $itemId the item ID
- : @return an html representation of an indexNominum item
- :)
-declare 
-  %rest:path('/indexNominum/{$itemId}')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function indexNominumItem($itemId) {
-  let $queryParams := map {
-    'project' : 'gdp',
-    'dbName' : 'gdp',
-    'model' : 'tei', 
-    'function' : 'getIndexNominumItem',
-    'itemId' : $itemId
-    }
-  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
-  let $result := fn:function-lookup($function, 1)($queryParams)
-  let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'incIndexNominum.xhtml',
-    'xquery' : 'tei2html'
-    }
-    return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
 };
 
 (:~
