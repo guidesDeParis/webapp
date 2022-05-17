@@ -710,14 +710,14 @@ declare function getShortRef($ids as xs:string*, $options as map(*)) {
  :)
 declare function getIndexEntries($item as element()) as map(*)* {
   let $db := db:open('gdp')
-  let $personsRefs := $item//tei:persName union $item//tei:orgName
-(:  let $objectsRefs := $item//tei:objectName:)
-  let $placesRefs := $item//tei:placeName union $item//tei:geogName
+  let $personsRefs := $item//tei:persName/@xml:id union $item//tei:orgName/@xml:id
+  let $placesRefs := $item//tei:placeName/@xml:id union $item//tei:geogName/@xml:id
+  let $objectsRefs := $item//tei:objectName/@xml:id
   let $persons :=
-    for $personsRef in $personsRefs[@ref]
-    return fn:substring-after($personsRef/@ref, '#') => fn:distinct-values()
+    for $personRef in $personsRefs
+    return $db//tei:person[tei:listRelation/tei:relation[fn:contains(@passive, '#' || $personRef)]]
   let $personsMap :=
-    for $person in $db//*[@xml:id = $persons]
+    for $person in $persons
     let $uuid := $person/@xml:id
     return map {
       'title' : $person/tei:persName[1],
@@ -726,17 +726,29 @@ declare function getIndexEntries($item as element()) as map(*)* {
       'url' : $gdp.globals:root || '/indexNominum/' || $uuid
     }
   let $places :=
-      for $placesRef in $placesRefs[@ref]
-      return fn:substring-after($placesRef/@ref, '#') => fn:distinct-values()
-    let $placesMap :=
-      for $place in $db//*[@xml:id = $places]
-      let $uuid := $place/@xml:id
-      return map {
-        'title' : $place/tei:placeName[1],
-        'uuid' : $uuid,
-        'path' : '/indexLocorum/',
-        'url' : $gdp.globals:root || '/indexLocorum/' || $uuid
-      }
+     for $placeRef in $placesRefs
+     return $db//tei:place[tei:listRelation/tei:relation[fn:contains(@passive, '#' || $placeRef)]]
+  let $placesMap :=
+     for $place in $places
+     let $uuid := $place/@xml:id
+     return map {
+       'title' : $place/tei:placeName[1],
+       'uuid' : $uuid,
+       'path' : '/indexLocorum/',
+       'url' : $gdp.globals:root || '/indexLocorum/' || $uuid
+     }
+  let $objects :=
+     for $objectRef in $objectsRefs
+     return $db//tei:object[tei:listRelation/tei:relation[fn:contains(@passive, '#' || $objectRef)]]
+  let $objectsMap :=
+     for $object in $objects
+       let $uuid := $object/@xml:id
+       return map {
+         'title' : $object/tei:objectName[1],
+         'uuid' : $uuid,
+         'path' : '/indexOperum/',
+         'url' : $gdp.globals:root || '/indexOperum/' || $uuid
+       }
   (:let $objects :=
       for $objectsRef in $objectsRefs[@ref]
       return fn:substring-after($objectsRef/@ref, '#') => fn:distinct-values()
@@ -748,7 +760,8 @@ declare function getIndexEntries($item as element()) as map(*)* {
       }:)
   return map {
     'persons' : $personsMap,
-    'places' : $placesMap
+    'places' : $placesMap,
+    'objects' : $objectsMap
   }
 };
 
