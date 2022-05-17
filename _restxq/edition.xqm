@@ -287,7 +287,7 @@ function textItemsJson($textId as xs:string, $itemId as xs:string, $depth as xs:
  : @return a json representation of the about content
  :)
 declare 
-  %rest:path('/about')
+  %rest:path('/credits')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -297,7 +297,7 @@ function getAbout() {
     'dbName' : 'gdp',
     'model' : 'tei',
     'function' : 'getContent',
-    'itemId' : 'gdpAbout'
+    'itemId' : 'gdpCredits'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)

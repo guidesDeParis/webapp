@@ -153,11 +153,11 @@ declare function getContent($queryParams as map(*)) as map(*) {
     'description' : getDescription($article, $lang),
     'keywords' : array{getKeywords($article, $lang)}
     }
-  let $uuid := "about"
+  let $uuid := fn:substring-after($itemId, 'gdp') => fn:lower-case()
   let $content := map {
     'title' : getTitles($article, $lang),
     'uuid' : $uuid,
-    'path' : '',
+    'path' : '/',
     'url' : $gdp.globals:root || '/' || $uuid,
     'tei' : $article/tei:text/tei:body/tei:div
     }
