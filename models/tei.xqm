@@ -290,6 +290,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
   let $content := 
     for $text in $corpus/tei:TEI 
     let $uuid := $text/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
+    let $introduction := fn:contains($uuid, 'ntroduction')
     let $ref := getRef($text)
     return map {
     'title' : getTitles($text, $lang), (: @todo sequence or main and sub :)
@@ -303,6 +304,7 @@ declare function getCorpusById($queryParams as map(*)) as map(*) {
     'description' : getDescription($text , $lang),
     'itemsQuantity' : getQuantity(fn:count($text//tei:div), 'item', 'items'), (: @todo bug :)
     'weight' : getQuantity(getExtent($text), 'mot', 'mots'), (: @todo bug :)
+    'type' : if ($introduction) then 'text' else 'introduction',
     'uuid' : $uuid,
     'path' : '/texts/',
     'url' : $gdp.globals:root || '/texts/' || $uuid
