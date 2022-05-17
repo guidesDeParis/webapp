@@ -281,23 +281,46 @@ function textItemsJson($textId as xs:string, $itemId as xs:string, $depth as xs:
   return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
+(:~
+ : this resource function is a about page
+ : @return a json representation of the about content
+ :)
+declare
+  %rest:path('/colophon')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function getEditorial() {
+  let $queryParams := map {
+    'project' :'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getEditorial'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+      'xquery' : 'tei2html'
+      }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
 
 (:~
  : this resource function is a about page
  : @return a json representation of the about content
  :)
 declare 
-  %rest:path('/credits')
+  %rest:path('/colophon/{$id}')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
-function getAbout() {
+function getEditorialContent($id) {
   let $queryParams := map {
     'project' :'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
     'function' : 'getContent',
-    'itemId' : 'gdpCredits'
+    'itemId' : 'gdp' || fn:substring($id, 1, 1) => fn:upper-case() || fn:substring($id, 2)
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
@@ -312,7 +335,7 @@ function getAbout() {
  : @return a json representation of the model documentation
  :)
 declare
-  %rest:path('/model')
+  %rest:path('/colophon/model')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -337,7 +360,7 @@ function getModel() {
  : @return a json representation of the guide content
  :)
 declare
-  %rest:path('/guide')
+  %rest:path('/colophon/guide')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -362,7 +385,7 @@ function getGuide() {
  : @return a json representation of the guide content
  :)
 declare
-  %rest:path('/documentation')
+  %rest:path('/colophon/documentation')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')

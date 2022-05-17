@@ -136,6 +136,57 @@ declare function getBlogItem($queryParams as map(*)) {
  :)
 
 (:~
+ : this function get the editorial content
+ : @return a list of editorial content
+ :)
+declare function getEditorial($queryParams as map(*)) as map(*) {
+  let $lang := 'fr'
+  let $dateFormat := 'jjmmaaa'
+  let $meta := map{
+    'title' : 'Colophon',
+    'description' : 'Pages de présentation du corpus des Guides de Paris',
+    'keywords' : ()
+    }
+  let $uuid := 'colophon'
+  let $content := map {
+    'title' : 'Colophon',
+    'uuid' : $uuid,
+    'path' : '/',
+    'url' : $gdp.globals:root || '/' || $uuid,
+    'pages' : [
+    map {
+      'title' : 'Crédits',
+            'uuid' : 'credits',
+            'path' : '/colophon/',
+            'url' : $gdp.globals:root || '/colophon/' || 'credits'
+            },
+          map {
+            'title' : 'Guide d’utilisation',
+            'uuid' : 'guide',
+            'path' : '/colophon/',
+            'url' : $gdp.globals:root || '/colophon/' || 'guide'
+            },
+          map {
+            'title' : 'Documentation du modèle',
+            'uuid' : 'model',
+            'path' : '/colophon/',
+            'url' : $gdp.globals:root || '/colophon/' || 'model'
+            },
+          map {
+            'title' : 'Documentation de l’API',
+            'uuid' : 'documentation',
+            'path' : '/colophon/',
+            'url' : $gdp.globals:root || '/colophon/' || 'documentation'
+            }
+    ]
+      }
+  return  map{
+    'meta'    : $meta,
+    'content' : $content
+    }
+};
+
+(:~
  : this function get the about page
  :
  : @param $queryParams the request params sent by restxq 
