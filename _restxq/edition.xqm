@@ -284,21 +284,19 @@ function textItemsJson($textId as xs:string, $itemId as xs:string, $depth as xs:
 
 (:~
  : this resource function is a about page
- : @return an html representation of the bibliographical list
- : @param $pattern a GET param giving the name of the calling HTML tag
- : @todo use this tag !
+ : @return a json representation of the about content
  :)
 declare 
   %rest:path('/about')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
-function about() {
+function getAbout() {
   let $queryParams := map {
     'project' :'gdp',
     'dbName' : 'gdp',
     'model' : 'tei',
-    'function' : 'getAbout',
+    'function' : 'getContent',
     'itemId' : 'gdpAbout'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
@@ -310,32 +308,78 @@ function about() {
 };
 
 (:~
- : this resource function is a about page
- : @return an html representation of the bibliographical list
- : @param $pattern a GET param giving the name of the calling HTML tag
- : @todo use this tag !
+ : this resource function is a model documentation page
+ : @return a json representation of the model documentation
  :)
-declare 
-  %rest:path('/documentation')
-  %rest:produces('text/html')
-  %output:method('html')
-  %output:html-version('5.0')
-function documentation() {
+declare
+  %rest:path('/model')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function getModel() {
   let $queryParams := map {
     'project' :'gdp',
     'dbName' : 'gdp',
-    'path' : '/schema/gdpSchemaTEI.odd.xml',
     'model' : 'tei',
-    'function' : 'getModel'
+    'function' : 'getContent',
+    'itemId' : 'gdpSchema'
     }
   let $function := synopsx.models.synopsx:getModelFunction($queryParams)
   let $result := fn:function-lookup($function, 1)($queryParams)
   let $outputParams := map {
-    'layout' : 'page.xhtml',
-    'pattern' : 'about.xhtml',
-    'xquery' : 'tei2html'
+      'xquery' : 'tei2html'
+      }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
+ : this resource function is an application guide
+ : @return a json representation of the guide content
+ :)
+declare
+  %rest:path('/guide')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function getGuide() {
+  let $queryParams := map {
+    'project' :'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getContent',
+    'itemId' : 'gdpGuide'
     }
-  return synopsx.mappings.htmlWrapping:wrapper($queryParams, $result, $outputParams)
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+      'xquery' : 'tei2html'
+      }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
+};
+
+(:~
+ : this resource function is an application guide
+ : @return a json representation of the guide content
+ :)
+declare
+  %rest:path('/documentation')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+function getDocumentation() {
+  let $queryParams := map {
+    'project' :'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'function' : 'getContent',
+    'itemId' : 'gdpAPI'
+    }
+  let $function := synopsx.models.synopsx:getModelFunction($queryParams)
+  let $result := fn:function-lookup($function, 1)($queryParams)
+  let $outputParams := map {
+      'xquery' : 'tei2html'
+      }
+  return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
 (:~

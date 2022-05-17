@@ -141,7 +141,7 @@ declare function getBlogItem($queryParams as map(*)) {
  : @param $queryParams the request params sent by restxq 
  : @return a map with meta and content
  :)
-declare function getAbout($queryParams as map(*)) as map(*) {
+declare function getContent($queryParams as map(*)) as map(*) {
   let $itemId := $queryParams?itemId
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
