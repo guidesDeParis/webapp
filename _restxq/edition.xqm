@@ -162,6 +162,29 @@ function textItemsTocJson($textId as xs:string) {
   return gdp.mappings.jsoner:jsoner($queryParams, $result, $outputParams)
 };
 
+
+(:~
+ : resource function for text toc by ID
+ :
+ : @param $textId the text ID
+ : @return a json toc of the text
+ :)
+declare
+  %rest:path('/texts/{$textId}/toc/new')
+  %rest:produces('application/json')
+  %output:media-type('application/json')
+  %output:method('json')
+  %output:json("indent=no, escape=yes")
+function getTocByDb($textId as xs:string) {
+  let $queryParams := map {
+    'project' : 'gdp',
+    'dbName' : 'gdp',
+    'model' : 'tei',
+    'textId' : $textId
+    }
+  return db:open("gdpTocs", $textId)
+};
+
 (:~
  : resource function for text pagination
  :
