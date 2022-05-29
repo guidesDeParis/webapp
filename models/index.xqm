@@ -210,39 +210,52 @@ declare function wordsCount($item as element()) as xs:integer {
  : @todo restreindre les fichiers parcourus
  : @todo tokenize ref if multiple values
  : @todo add objects
+ : @todo add orgName for titles in persons
  :)
-declare function indexEntries($item as element()) as element()* {
+declare function indexEntries($item as element()) as item()* {
   let $db := db:open('gdp')
-  let $personsRefs := $item//tei:persName union $item//tei:orgName
-(:  let $objectsRefs := $item//tei:objectName:)
-  let $placesRefs := $item//tei:placeName union $item//tei:geogName
+  let $personsRefs := $item//tei:persName/@xml:id union $item//tei:orgName/@xml:id
+  let $placesRefs := $item//tei:placeName/@xml:id union $item//tei:geogName/@xml:id
+  let $objectsRefs := $item//tei:objectName/@xml:id
   let $persons :=
-    for $personsRef in $personsRefs[@ref]
-    return fn:substring-after($personsRef/@ref, '#') => fn:distinct-values()
+    for $personRef in $personsRefs
+    return $db//tei:person[tei:listRelation/tei:relation[fn:contains(@passive, '#' || $personRef)]]
   let $personsMap :=
-    for $person in $db//*[@xml:id = $persons]
+    for $person in $persons
     let $uuid := $person/@xml:id
     return
-    <persons>
-      <title>{getGdpft($person/tei:persName[1])}</title>,
-      <uuid>{$uuid}</uuid>,
-      <path>{'/indexNominum/'}</path>,
-      <url>{$gdp.globals:root || '/indexNominum/' || $uuid}</url>
-    </persons>
+        <persons>
+          <title>{$person/tei:persName[1]}</title>
+          <uuid>{$uuid}</uuid>
+          <path>/indexNominum/</path>
+          <url>{$gdp.globals:root || '/indexNominum/' || $uuid}</url>
+        </persons>
   let $places :=
-      for $placesRef in $placesRefs[@ref]
-      return fn:substring-after($placesRef/@ref, '#') => fn:distinct-values()
-    let $placesMap :=
-      for $place in $db//*[@xml:id = $places]
-      let $uuid := $place/@xml:id
-      return
-      <places>
-        <title>{getGdpft($place/tei:placeName[1])}</title>,
-        <uuid>{$uuid}</uuid>,
-        <path>{'/indexLocorum/'}</path>,
-        <url>{$gdp.globals:root || '/indexLocorum/' || $uuid}</url>
-      </places>
-
+     for $placeRef in $placesRefs
+     return $db//tei:place[tei:listRelation/tei:relation[fn:contains(@passive, '#' || $placeRef)]]
+  let $placesMap :=
+     for $place in $places
+     let $uuid := $place/@xml:id
+     return
+        <places>
+          <title>{$place/tei:placeName[1]}</title>
+          <uuid>{$uuid}</uuid>
+          <path>/indexLocorum/</path>
+          <url>{$gdp.globals:root || '/indexLocorum/' || $uuid}</url>
+        </places>
+  let $objects :=
+     for $objectRef in $objectsRefs
+     return $db//tei:object[tei:listRelation/tei:relation[fn:contains(@passive, '#' || $objectRef)]]
+  let $objectsMap :=
+     for $object in $objects
+       let $uuid := $object/@xml:id
+       return
+        <objects>
+          <title>{$object/tei:objectName[1]}</title>
+          <uuid>{$uuid}</uuid>
+          <path>/indexOperum/</path>
+          <url>{$gdp.globals:root || '/indexOperum/' || $uuid}</url>
+        </objects>
   (:let $objects :=
       for $objectsRef in $objectsRefs[@ref]
       return fn:substring-after($objectsRef/@ref, '#') => fn:distinct-values()
@@ -254,8 +267,9 @@ declare function indexEntries($item as element()) as element()* {
       }:)
   return (
     $personsMap,
-    $placesMap
-  )
+    $placesMap,
+    $objectsMap
+    )
 };
 
 (:~
