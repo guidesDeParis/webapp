@@ -31,12 +31,12 @@ declare namespace perm = "http://basex.org/modules/perm" ;
 declare namespace user = "http://basex.org/modules/user" ;
 declare namespace session = 'http://basex.org/modules/session' ;
 
-import module namespace G = 'synopsx.globals' at '../../../../synopsx/globals.xqm' ;
+import module namespace G = 'synopsx.globals' at '../../../synopsx/globals.xqm' ;
 import module namespace synopsx.models.synopsx = 'synopsx.models.synopsx' at '../../../models/synopsx.xqm' ;
 
 import module namespace gdp.models.tei = "gdp.models.tei" at '../models/tei.xqm' ;
 
-import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../../synopsx/mappings/htmlWrapping.xqm' ;
+import module namespace synopsx.mappings.htmlWrapping = 'synopsx.mappings.htmlWrapping' at '../../../synopsx/mappings/htmlWrapping.xqm' ;
 import module namespace gdp.mappings.jsoner = 'gdp.mappings.jsoner' at '../mappings/jsoner.xqm' ;
 
 declare default function namespace 'gdp.biblio';
