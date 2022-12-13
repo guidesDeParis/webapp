@@ -142,7 +142,7 @@ function textItemsJson($textId as xs:string) {
  : @return a json toc of the text
  :)
 declare 
-  %rest:path('/texts/{$textId}/toc')
+  %rest:path('/texts/{$textId}/toc/old')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
@@ -170,7 +170,7 @@ function textItemsTocJson($textId as xs:string) {
  : @return a json toc of the text
  :)
 declare
-  %rest:path('/texts/{$textId}/toc/new')
+  %rest:path('/texts/{$textId}/toc/')
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
