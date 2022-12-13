@@ -224,7 +224,7 @@ declare
   %rest:produces('application/json')
   %output:media-type('application/json')
   %output:method('json')
-  %rest:query-param("depth", "{$depth}", 1)
+  %rest:query-param("depth", "{$depth}", 0)
 function itemsJson($itemId as xs:string, $depth as xs:boolean) {
   let $queryParams := map {
     
