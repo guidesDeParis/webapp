@@ -888,11 +888,41 @@ declare function getNextDiv($nodes, $options as map(*)) {
  : @todo deals with suplied
  :)
 declare function getSectionTitle($nodes) as element()* {
-  for $node in $nodes
-  return if ($node/tei:head) 
-    then $node/tei:head ! element tei:head {dispatch(., map{})}
-    else $node/*/tei:label ! element tei:label {dispatch(., map{})}
+  for $node in $nodes return
+  switch ($node)
+    case ($node[tei:head]) return for $head in $node/tei:head return dispatch($head, map{})
+    case ($node[tei:label]) return for $label in $node/tei:label return dispatch($label, map{})
+    case ($node[*/tei:label]) return for $label in $node/*/tei:label return dispatch($label, map{})
+    default return ()
 };
+
+
+(:~
+ : this function dispatches the treatment of the XML document
+ : @bug there is no reason to serialize tei from there
+ :)
+declare
+  %output:indent('no')
+function dispatch($nodes as node()*, $options as map(*)) as item()* {
+  for $node in $nodes
+  return typeswitch($node)
+    case text() return $node[fn:normalize-space(.)!='']
+    case element(tei:head) return element tei:head { passthru($node, map{})}
+    case element(tei:label) return element tei:head { passthru($node, map{})}
+    case element(tei:supplied) return element tei:head {"[", passthru($node, $options), "]"}
+    default return $node ! passthru(., $options)
+};
+
+(:~
+ : This function pass through child nodes (xsl:apply-templates)
+ :)
+declare
+  %output:indent('no')
+function passthru($nodes as node(), $options as map(*)) as item()* {
+  for $node in $nodes/node()
+  return dispatch($node, $options)
+};
+
 
 (:~
  : this function get the pagination
@@ -941,31 +971,6 @@ declare function getPagesByBook($nodes, $options as map(*)) {
     'pageBreak' : $page/@xml:id,
     'uuid' : $page/ancestor::tei:div[1]/@xml:id
   }
-};
-
-(:~
- : this function dispatches the treatment of the XML document
- : @bug there is no reason to serialize tei from there
- :)
-declare 
-  %output:indent('no')
-function dispatch($node as node()*, $options as map(*)) as item()* {
-  typeswitch($node)
-    case text() return $node[fn:normalize-space(.)!='']
-    case element(tei:label) return $node ! label(., $options)
-    case element(tei:hi) return $node ! hi(., $options)
-    case element(tei:emph) return $node ! emph(., $options)
-    default return $node ! passthru(., $options)
-};
-
-(:~
- : This function pass through child nodes (xsl:apply-templates)
- :)
-declare 
-  %output:indent('no') 
-function passthru($nodes as node(), $options as map(*)) as item()* {
-  for $node in $nodes/node()
-  return dispatch($node, $options)
 };
 
 (:~
