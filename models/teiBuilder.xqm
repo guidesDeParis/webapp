@@ -45,6 +45,30 @@ declare default function namespace 'gdp.models.tei' ;
  :)
 
 (:~
+ : this function get metadata
+ :
+ : @param $content texts to process
+ : @param $lang iso langcode starts
+ : @return a tei metadata
+ :)
+declare function getMetadata($content as element()*, $lang as xs:string) as map(*)* {
+  map{
+    "name" : "DC.type",
+    "content" : "text"
+  },
+  map{
+    "name" : "DC.title",
+    "scheme" : "URI",
+    "content" : getTitles($content, $lang)
+  },
+  map{
+    "name" : "keywords",
+    "content" : ("architecture", "18e siècle"),
+    "lang" : "fr"
+  }
+};
+
+(:~
  : this function get abstract
  :
  : @param $content texts to process

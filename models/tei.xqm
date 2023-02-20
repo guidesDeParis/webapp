@@ -342,6 +342,7 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($text, $lang),
     'date' : getDate($ref, $dateFormat),
     'description' : getDescription($text, $lang),
+    'metadata' : array{getMetadata($text, $lang)},
     'biblio' : map{
       'description' : $ref,
       'uuid' : $ref/@xml:id,
