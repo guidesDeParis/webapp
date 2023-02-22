@@ -790,6 +790,49 @@ declare function getIndexEntries($item as element()) as map(*)* {
 };
 
 (:~
+ : this function get index values of an item
+ :
+ : @param $occurences refs
+ : @return
+ : @todo tokenize ref if multiple values
+ : @todo add orgName for titles in persons
+ :)
+declare function getIndexEntriesFromIndex($item as element()) as map(*)* {
+  let $personsMap :=
+    for $person in $item/tei:metadata/tei:indexes/tei:persons/*
+    let $uuid := $person/tei:personId
+    return map {
+       'title' : $person/tei:persName,
+       'uuid' : $uuid,
+       'path' : '/indexNominum/',
+       'url' : $gdp.globals:root || '/indexNominum/' || $uuid
+    }
+  let $placesMap :=
+      for $place in $item/tei:metadata/tei:indexes/tei:places/*
+      let $uuid := $place/tei:placeId
+      return map {
+         'title' : $place/tei:placeName,
+         'uuid' : $uuid,
+         'path' : '/indexLocorum/',
+         'url' : $gdp.globals:root || '/indexLocorum/' || $uuid
+      }
+  let $objectsMap :=
+        for $object in $item/tei:metadata/tei:indexes/tei:objects/*
+        let $uuid := $object/tei:objectId
+        return map {
+           'title' : $object/tei:objectName,
+           'uuid' : $uuid,
+           'path' : '/indexOperum/',
+           'url' : $gdp.globals:root || '/indexOperum/' || $uuid
+        }
+  return map {
+    'persons' : $personsMap,
+    'places' : $placesMap,
+    'objects' : $objectsMap
+  }
+ };
+
+(:~
  : this function get the ancestor div of an element by id
  :
  : @param $id
@@ -829,7 +872,7 @@ declare function getItemFromPage($text as element(), $options as map(*)) {
 (:~
  : this function get pages for an item
  :)
-declare function getPages($item as element(), $options as map(*)) {
+declare function getPagesOld($item as element(), $options as map(*)) {
   let $uuid := $item/@xml:id
   let $pageBefore := (getItemBefore($item, 'fr')//tei:fw[@type = 'pageNum'])[fn:last()]
   let $fw := $item//tei:fw[@type = 'pageNum']
@@ -841,6 +884,18 @@ declare function getPages($item as element(), $options as map(*)) {
 };
 
 (:~
+ : this function get pages for an item
+ :)
+declare function getPages($item as element(), $options as map(*)) {
+  let $uuid := $item/@xml:id
+  let $segFt := db:open('gdpFtIndex')//*[@xml:id=$uuid]
+  return map{
+    'prefix' : $segFt/tei:metadata/tei:pages/tei:prefix,
+    'range' : $segFt/tei:metadata/tei:pages/tei:range
+  }
+};
+
+(:~
  : this function get the words count
  :
  : @param $item text item to count
@@ -848,8 +903,10 @@ declare function getPages($item as element(), $options as map(*)) {
  : @return a quantity and a unit
  :)
 declare function getWordsCount($item as element(), $options as map(*)) {
-  map{ 'unit' : 'mots',
-    'quantity' : 'xxxx'
+  let $uuid := $item/@xml:id
+  let $segFt := db:open('gdpFtIndex')//*[@xml:id=$uuid]
+  return map{ 'unit' : $item/tei:metadata/tei:size/tei:unit,
+    'quantity' : $item/tei:metadata/tei:size/tei:quantity
    }
   (: fn:count(fn:tokenize($item, '\W+')[. != '']) :)
 };
@@ -909,7 +966,27 @@ declare function getNextDiv($nodes, $options as map(*)) {
  : this function get the section title
  : @param $node node to process
  : @param $options options
- : @todo deals with suplied
+ : @todo genericise to deal with textitem ?
+ :)
+declare function getTextIdFromIndex($item as element(), $options as map(*)) as element()* {
+  $item/tei:metadata/tei:textId
+};
+
+(:~
+ : this function get the section title
+ : @param $node node to process
+ : @param $options options
+ : @todo genericise to deal with textitem ?
+ :)
+declare function getSectionTitleFromIndex($item as element(), $options as map(*)) as element()* {
+  $item/tei:metadata/tei:title
+};
+
+(:~
+ : this function get the section title
+ : @param $node node to process
+ : @param $options options
+ : @todo deals with suplied or use the ft index (upper)
  :)
 declare function getSectionTitle($nodes) as element()* {
   for $node in $nodes return

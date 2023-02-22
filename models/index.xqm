@@ -33,6 +33,7 @@ declare namespace user = "http://basex.org/modules/user" ;
 declare namespace session = 'http://basex.org/modules/session' ;
 
 declare namespace tei = 'http://www.tei-c.org/ns/1.0' ;
+declare namespace rng = 'http://relaxng.org/ns/structure/1.0' ;
 
 import module namespace gdp.globals = 'gdp.globals' at '../globals.xqm' ;
 import module namespace gdp.models.tei = "gdp.models.tei" at './tei.xqm' ;
@@ -149,6 +150,8 @@ function getGdpft($items as item()*) as item()* {
   case element(tei:surplus) return ()
   case element(tei:gap) return ()
   case element(tei:trailer) return ()
+  case element(tei:orig) return $node ! (' ', getGdpft(./node()))
+  case element(tei:reg) return ()
   (: figure cit orig reg :)
 
   case element() return element {fn:name($node)} {

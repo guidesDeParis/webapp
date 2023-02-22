@@ -939,13 +939,16 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     'type' : $queryParams?type,
     'text' : $queryParams?text,
     'quantity' : getQuantity($results, 'résultat', 'résultats'),
-    'filters' : map{
+      'filters' : map{
+      (:
       'persons' : array{ getDistinctFilters($results?indexes?persons?uuid, map{ 'filter' : 'persons' }) },
       'places' : array{ getDistinctFilters($results?indexes?places?uuid, map{ 'filter' : 'places' }) },
       'objects' : array{ getDistinctFilters($results?indexes?objects?uuid, map{ 'filter' : 'objets' }) },
+      :)
+      'persons' : array{},
+      'places' : array{},
+      'objets' : array{},
       'texts' : array{ getDistinctFilters($results?textId, map{'filter' : 'texts'}) }
-      (:'places' : array{ getDistinctMaps($results?indexes?places, map{}) },
-      'objects' : array{ getDistinctMaps($results?indexes?objects, map{}) }:)
       }
     }
   let $content := fn:subsequence($results, $queryParams?start, $queryParams?count)
@@ -1170,13 +1173,15 @@ declare function getSearchAll($queryParams) {
     ]
   (:let $textId := getTextId($result):)
   (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
-  group by $uuid := $result/ancestor::tei:div[1]/@xml:id
-  let $uuid := $result/ancestor::tei:div[1]/@xml:id
+  let $segFt := $result/parent::tei:div[1]
+  group by $uuid := $segFt/@xml:id
+  let $segFt := $result/parent::tei:div[1]
+  let $uuid := $segFt/@xml:id
   let $segment := $gdp//*[@xml:id=$uuid]
-  let $textId := getTextIdWithRegex($segment)
+  let $textId := getTextIdFromIndex($segFt, map{})
   let $date := fn:substring($textId, fn:string-length($textId) - 3)
-  let $title := getSectionTitle($segment)
-  let $size := getWordsCount($segment, map{})
+  let $title := getSectionTitleFromIndex($segFt/tei:metadata/tei:title, map{})
+  let $size := getWordsCount($segFt, map{})
   let $score := fn:sum($s)
   order by
     if ($queryParams?sort = 'size') then $size?quantity else () descending,
@@ -1189,8 +1194,8 @@ declare function getSearchAll($queryParams) {
     'textId' : $textId,
     'date' : $date,
     'score' : $score,
-    'indexes' : getIndexEntries($segment),
-    'pages' : getPages($segment, map{}),
+    'indexes' : getIndexEntriesFromIndex($segFt),
+    'pages' : getPages($segFt, map{}),
     'size' : $size,
     'uuid' : $uuid => xs:string(),
     'path' : '/items/',
