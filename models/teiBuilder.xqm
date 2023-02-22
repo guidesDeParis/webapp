@@ -798,6 +798,9 @@ declare function getIndexEntries($item as element()) as map(*)* {
  : @todo add orgName for titles in persons
  :)
 declare function getIndexEntriesFromIndex($item as element()) as map(*)* {
+  let $item := if ($item/tei:metadata)
+    then $item
+    else db:open('gdpFtIndex')//*[@xml:id=$item/@xml:id]
   let $personsMap :=
     for $person in $item/tei:metadata/tei:indexes/tei:persons/*
     let $uuid := $person/tei:personId

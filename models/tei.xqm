@@ -541,7 +541,7 @@ declare function getItemIndexesById($queryParams as map(*)) as map(*) {
     'path' : '/items/',
     'uuid' : $uuid,
     'url' : $gdp.globals:root || '/items/' || $uuid,
-    'indexes' : getIndexEntries($item)
+    'indexes' : getIndexEntriesFromIndex($item)
     }
   return  map{
     'meta'    : $meta,
@@ -919,10 +919,12 @@ declare function getSearch($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $combining := $queryParams?combining
   let $primaryResults := if ($queryParams?search = '') then ''
+    (:
     else if ($queryParams?exact) then getSearchExact($queryParams)
     else if ($combining = "any") then getSearchAny($queryParams)
     else if ($combining = "all words") then getSearchAllWord($queryParams)
     else if ($combining = "phrase") then getSearchPhrase($queryParams)
+    :)
     else getSearchAll($queryParams)
   let $results :=
     if (fn:count($queryParams?filterPersons) or fn:count($queryParams?filterPlaces) or fn:count($queryParams?filterObjects))
@@ -940,7 +942,7 @@ declare function getSearch($queryParams as map(*)) as map(*) {
     'text' : $queryParams?text,
     'quantity' : getQuantity($results, 'résultat', 'résultats'),
       'filters' : map{
-      (:
+(: bug
       'persons' : array{ getDistinctFilters($results?indexes?persons?uuid, map{ 'filter' : 'persons' }) },
       'places' : array{ getDistinctFilters($results?indexes?places?uuid, map{ 'filter' : 'places' }) },
       'objects' : array{ getDistinctFilters($results?indexes?objects?uuid, map{ 'filter' : 'objets' }) },
