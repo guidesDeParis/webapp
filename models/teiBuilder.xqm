@@ -711,6 +711,51 @@ declare function getDistinctFilters($ids as xs:string*, $options) as map(*)* {
 };
 
 (:~
+ : this function get distinct filters
+
+ : @param $maps a sequence of maps to filter
+ : @options $options
+ : @return a filtered list of maps
+ :)
+declare function getDistinctFiltersFromIndex($ids as xs:string*, $options) as map(*)* {
+  let $db := db:open('gdpFtIndex')
+  let $segs := $db//*[@xml:id = $ids]
+  return if ($options?filter = 'objects') then
+    let $path := '/indexOperum/'
+    for $object in $segs/tei:metadata/tei:indexes/tei:objects/tei:object
+    group by $id := $object/tei:objectId
+    return map{
+      'title' : fn:distinct-values($object/tei:objectName) => fn:normalize-space(),
+      'uuid' : $id => fn:normalize-space(),
+      'quantity' : fn:count($object),
+      'path' : '/indexOperum/',
+      'url' : $gdp.globals:root || fn:distinct-values($path) || $id
+    }
+  else if ($options?filter = 'persons') then
+      let $path := '/indexNominum/'
+      for $person in $segs/tei:metadata/tei:indexes/tei:persons/tei:person
+      group by $id := $person/tei:personId
+      return map{
+        'title' : fn:distinct-values($person/tei:persName) => fn:normalize-space(),
+        'uuid' : $id => fn:normalize-space(),
+        'quantity' : fn:count($person),
+        'path' : '/indexNominum/',
+        'url' : $gdp.globals:root || fn:distinct-values($path) || $id
+      }
+   else if ($options?filter = 'places') then
+         let $path := '/indexLocorum/'
+         for $place in $segs/tei:metadata/tei:indexes/tei:places/tei:place
+         group by $id := $place/tei:placeId
+         return map{
+           'title' : fn:distinct-values($place/tei:placeName) => fn:normalize-space(),
+           'uuid' : $id => fn:normalize-space(),
+           'quantity' : fn:count($place),
+           'path' : '/indexNominum/',
+           'url' : $gdp.globals:root || fn:distinct-values($path) || $id
+         }
+};
+
+(:~
  : this function generate a short ref from text id
  :)
 declare function getShortRef($ids as xs:string*, $options as map(*)) {
