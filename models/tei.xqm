@@ -1170,10 +1170,8 @@ declare function getSearchAll($queryParams) {
     ]
   (:let $textId := getTextId($result):)
   (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
-  let $segFt := $result/parent::tei:div[1]
-  group by $uuid := $segFt/@xml:id
-  let $segFt := $result/parent::tei:div[1]
-  let $uuid := $segFt/@xml:id
+  group by $uuid := $result/parent::tei:div/@xml:id
+  let $segFt := $result/parent::tei:div
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdFromIndex($segFt, map{})
   let $date := fn:substring($textId, fn:string-length($textId) - 3)
@@ -1194,7 +1192,7 @@ declare function getSearchAll($queryParams) {
     'indexes' : getIndexEntriesFromIndex($segFt),
     'pages' : getPages($segFt, map{}),
     'size' : $size,
-    'uuid' : $uuid => xs:string(),
+    'uuid' : $uuid => fn:normalize-space(),
     'path' : '/items/',
     'url' : $gdp.globals:root || '/items/' || $uuid,
     'combining' : 'all'
