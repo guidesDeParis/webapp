@@ -495,6 +495,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'pages' : getPages($item, map{}),
     'tei' : $tei,
     'path' : '/items/',
+    'textId' : getTextIdWithRegex($item),
     'uuid' : $uuid,
     'url' : $gdp.globals:root || '/items/' || $uuid,
     'itemBeforeTitle' : getSectionTitle($itemBefore), (: is a sequence :)
@@ -1171,11 +1172,11 @@ declare function getSearchAll($queryParams) {
   (:let $textId := getTextId($result):)
   (: todo check the use of ancestor::tei:div/@xml:id instead of parent::*/@xml:id :)
   group by $uuid := $result/parent::tei:div/@xml:id
-  let $segFt := $result/parent::tei:div
+  let $segFt := $result/parent::tei:div[@xml:id=$uuid]
   let $segment := $gdp//*[@xml:id=$uuid]
   let $textId := getTextIdFromIndex($segFt, map{})
   let $date := fn:substring($textId, fn:string-length($textId) - 3)
-  let $title := getSectionTitleFromIndex($segFt/tei:metadata/tei:title, map{})
+  let $title := getSectionTitleFromIndex($segFt, map{})
   let $size := getWordsCount($segFt, map{})
   let $score := fn:sum($s)
   order by

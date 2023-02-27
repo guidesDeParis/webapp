@@ -1027,7 +1027,7 @@ declare function getTextIdFromIndex($item as element(), $options as map(*)) as e
  : @todo genericise to deal with textitem ?
  :)
 declare function getSectionTitleFromIndex($item as element(), $options as map(*)) as element()* {
-  $item/tei:metadata/tei:title
+  getSectionTitle($item/tei:metadata/tei:title)
 };
 
 (:~
