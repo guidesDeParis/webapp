@@ -1006,20 +1006,29 @@ declare function getIndexesWithFt($node as element(), $options as map(*)) as map
     'uuid' : $person/tei:personId,
     'title' : $person/tei:persName,
     'quantity' : $person/tei:quantity,
-    'refs' : array{ for $person in $node//(tei:placeName|tei:persName|tei:orgName|tei:objectName|tei:geogName)[@ref = $person/tei:personId/text()] return $person}
+    'refs' : array{
+      for $item in $node//(tei:placeName|tei:persName|tei:orgName|tei:objectName|tei:geogName)[@ref = '#' || $person/tei:personId ]
+      return $item/@xml:id
+      }
     }
   let $places := for $place in $metadata/tei:indexes/tei:places/tei:place return map{
     'uuid' : $place/tei:placeId,
     'title' : $place/tei:placeName,
     'quantity' : $place/tei:quantity,
-    'refs' : array{ for $place in $node//(tei:placeName|tei:persName|tei:orgName|tei:objectName|tei:geogName)[@ref = $place/tei:placeId/text()] return $place}
+    'refs' : array{
+      for $item in $node//(tei:placeName|tei:persName|tei:orgName|tei:objectName|tei:geogName)[@ref = '#' || $place/tei:placeId ]
+      return $item/@xml:id
+      }
     }
   let $objects := for $object in $metadata/tei:indexes/tei:objects/tei:object return map{
     'uuid' : $object/tei:objectId,
     'title' : $object/tei:objectName,
     'quantity' : $object/tei:quantity,
-    'refs' : array{ for $object in $node//(tei:placeName|tei:persName|tei:orgName|tei:objectName|tei:geogName)[@ref = $object/tei:objectId/text()] return $object}
+    'refs' : array{
+      for $item in $node//(tei:placeName|tei:persName|tei:orgName|tei:objectName|tei:geogName)[@ref = '#' || $object/tei:objectId ]
+      return $item/@xml:id
       }
+    }
   return map{
     'persons' : array{ $persons },
     'places' : array{ $places },
