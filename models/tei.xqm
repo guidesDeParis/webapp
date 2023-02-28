@@ -469,7 +469,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $text := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc[@xml:id = $textId]]
-  let $item := $text//tei:div[@xml:id = $itemId] union $text//tei:titlePage[@xml:id = $itemId]
+  let $item := $text//(tei:div | tei:titlePage | tei:front | tei:body | tei:back)[@xml:id = $itemId]
   let $meta := map{
     'title' : fn:string-join(getSectionTitle($item), ', '),
     'quantity' : getQuantity($item, 'item disponible', 'items disponibles'), (: @todo internationalize :)
@@ -503,8 +503,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'itemBeforeUuid' : $itemBefore/@xml:id,
     'itemAfterTitle' : getSectionTitle($itemAfter), (: is a sequence :)
     'itemAfterUrl' : getUrl($itemAfter/@xml:id, '/items/', $lang),
-    'itemAfterUuid' : $itemAfter/@xml:id,
-    'indexes' : getIndexEntries($item)
+    'itemAfterUuid' : $itemAfter/@xml:id
     }
   return  map{
     'meta'    : $meta,
