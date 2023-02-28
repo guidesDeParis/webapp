@@ -1064,13 +1064,14 @@ declare function getSectionTitleFromIndex($item as element(), $options as map(*)
  : @param $node node to process
  : @param $options options
  : @todo deals with suplied or use the ft index (upper)
+ : @todo gdpPiganiol1742T01BodyFr02.004.013 titres label de p
  :)
 declare function getSectionTitle($nodes) as element()* {
   for $node in $nodes return
   switch ($node)
     case ($node[tei:head]) return for $head in $node/tei:head return dispatch($head, map{})
     case ($node[tei:label]) return for $label in $node/tei:label return dispatch($label, map{})
-    case ($node[*/tei:label]) return for $label in $node/*/tei:label return dispatch($label, map{})
+    case ($node[*/tei:label]) return dispatch(($node/*/tei:label)[1], map{})
     default return ()
 };
 
@@ -1087,7 +1088,7 @@ function dispatch($nodes as node()*, $options as map(*)) as item()* {
     case text() return $node[fn:normalize-space(.)!='']
     case element(tei:head) return element tei:head { passthru($node, map{})}
     case element(tei:label) return element tei:head { passthru($node, map{})}
-    case element(tei:supplied) return element tei:head {"[", passthru($node, $options), "]"}
+    case element(tei:supplied) return ("[", passthru($node, $options), "]")
     default return $node ! passthru(., $options)
 };
 
