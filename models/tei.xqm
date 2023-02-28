@@ -380,7 +380,8 @@ declare function getTocByTextId($queryParams as map(*)) as map(*) {
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
-    'keywords' : array{getKeywords($text, $lang)}
+    'keywords' : array{getKeywords($text, $lang)},
+    'indexes' : getIndexesWithFt($text/tei:text, map{})
     }
   let $content := getToc($text, map{})
   return map{
