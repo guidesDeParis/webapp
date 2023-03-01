@@ -239,14 +239,16 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     'keywords' : array{getKeywords($corpora, $lang)}
     }
   let $content := 
-    for $corpus at $count in $corpora/tei:teiCorpus 
+    for $corpus in $corpora/tei:teiCorpus
     let $uuid := $corpus/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
-    let $otherEditions := getOtherEditions(getRef($corpus))
     let $ref := getRef($corpus)
+    let $otherEditions := getOtherEditions($ref)
+    let $author := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexNominum']//tei:person[@xml:id = fn:substring-after($corpus/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/@ref, '#')]
     return map {
     'title' : getTitles($corpus, $lang), (: @todo sequence or main and sub :)
     'date' : getEditionDates($otherEditions/tei:biblStruct, $dateFormat),
     'author' : getAuthors($corpus, $lang),
+    'note' : $author/tei:note,
     'biblio' : map{
       'description' : $ref,
       'uuid' : $ref/@xml:id,
