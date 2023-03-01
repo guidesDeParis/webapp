@@ -582,9 +582,9 @@ declare function remove-elements-deep($nodes as node()*, $names as xs:string*) {
         $node/@*, remove-elements-deep($node/node(),
         $names)
         }
-      else if ($node instance of document-node())
-        then remove-elements-deep($node/node(), $names)
-        else $node
+    else if ($node instance of document-node())
+      then remove-elements-deep($node/node(), $names)
+      else $node
 };
 
 declare function deepCopy($node, $options) {

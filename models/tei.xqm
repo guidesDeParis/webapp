@@ -496,7 +496,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $tei :=
     if ($queryParams?depth)
     then $item
-    else remove-elements-deep($item, 'div')
+    else remove-elements-deep($item, ('div', 'pb', 'fw'))
   let $content := 
   map {
     'title' : getSectionTitle($item),
