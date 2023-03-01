@@ -202,7 +202,8 @@ declare function getContent($queryParams as map(*)) as map(*) {
     'author' : getAuthors($article, $lang),
     'copyright' : getCopyright($article, $lang),
     'description' : getDescription($article, $lang),
-    'keywords' : array{getKeywords($article, $lang)}
+    'keywords' : array{getKeywords($article, $lang)},
+    'metadata' : array{getMetadata($article, $lang)}
     }
   let $uuid := fn:substring-after($itemId, 'gdp') => fn:lower-case()
   let $content := map {
@@ -333,7 +334,8 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
-    'keywords' : array{getKeywords($text, $lang)}
+    'keywords' : array{getKeywords($text, $lang)},
+    'metadata' : array{getMetadata($text, $lang)}
     }
   let $ref := getRef($text)
   let $uuid := $text/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
@@ -342,7 +344,6 @@ declare function getTextById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($text, $lang),
     'date' : getDate($ref, $dateFormat),
     'description' : getDescription($text, $lang),
-    'metadata' : array{getMetadata($text, $lang)},
     'biblio' : map{
       'description' : $ref,
       'uuid' : $ref/@xml:id,
@@ -477,7 +478,8 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'author' : getAuthors($text, $lang),
     'copyright'  : getCopyright($text, $lang),
     'description' : getDescription($text, $lang),
-    'keywords' : array{getKeywords($text, $lang)}
+    'keywords' : array{getKeywords($text, $lang)},
+    'metadata' : array{getMetadata($text, $lang)}
     }
   let $uuid := $item/@xml:id
   let $itemBefore := getItemBefore($item, $lang)
@@ -591,6 +593,7 @@ declare function getModel($queryParams) {
  :
  : @param $queryParams the request params sent by restxq
  : @return a map of two map for meta and content
+ : @bug
  :)
 declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
@@ -603,6 +606,7 @@ declare function getBibliographicalWorksList($queryParams as map(*)) as map(*) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des œuvres de la bibliographie des Guides de Paris, au sens des FRBR',
     'keywords' : array{getKeywords($bibliography, $lang)},
+    'metadata' : array{getMetadata($bibliography, $lang)},
     'url' : $gdp.globals:root || '/bibliography/works'
     }
   let $content := 
@@ -644,7 +648,8 @@ declare function getBibliographicalWork($queryParams as map(*)) as map(*) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : $bibliographicalWork,
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : getUrl($bibliographicalWork/@xml:id, '/bibliography/works/', $lang) 
+    'url' : getUrl($bibliographicalWork/@xml:id, '/bibliography/works/', $lang),
+    'metadata' : array{getMetadata($bibliography, $lang)}
     }
   let $uuid := $bibliographicalWork/@xml:id
   let $content := map {
@@ -683,7 +688,8 @@ declare function getBibliographicalExpressionsList($queryParams) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des expressions de la bibliographie des Guides de Paris, au sens des FRBR',
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : $gdp.globals:root || '/bibliography/expressions'
+    'url' : $gdp.globals:root || '/bibliography/expressions',
+    'metadata' : array{getMetadata($bibliography, $lang)}
     }
   let $content := 
     for $bibliographicalExpression in $bibliographicalExpressions 
@@ -722,7 +728,8 @@ declare function getBibliographicalExpression($queryParams) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : $bibliographicalExpression,
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : getUrl($bibliographicalExpression/@xml:id, '/bibliography/expressions/', $lang) 
+    'url' : getUrl($bibliographicalExpression/@xml:id, '/bibliography/expressions/', $lang),
+    'metadata' : array{getMetadata($bibliography, $lang)}
     }
   let $uuid := $bibliographicalExpression/@xml:id
   let $content := map {
@@ -762,7 +769,8 @@ declare function getBibliographicalManifestationsList($queryParams) {
     'copyright' : getCopyright($bibliography, $lang),
     'description' : 'Liste des manifestations de la bibliographie des Guides de Paris, au sens des FRBR',
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : $gdp.globals:root || '/bibliography/manifestations'
+    'url' : $gdp.globals:root || '/bibliography/manifestations',
+    'metadata' : array{getMetadata($bibliography, $lang)}
     }
   let $content := 
     for $bibliographicalManifestation in $bibliographicalManifestations 
@@ -801,7 +809,8 @@ declare function getBibliographicalManifestation($queryParams) {
     (: 'copyright' : getCopyright($bibliography, $lang), :)
     'description' : $bibliographicalManifestation,
     'keywords' : array{getKeywords($bibliography, $lang)},
-    'url' : getUrl($bibliographicalManifestation/@xml:id, '/bibliography/manifestations/', $lang)
+    'url' : getUrl($bibliographicalManifestation/@xml:id, '/bibliography/manifestations/', $lang),
+    'metadata' : array{getMetadata($bibliography, $lang)}
     }
   let $uuid := $bibliographicalManifestation/@xml:id
   let $content := map {
@@ -1224,7 +1233,8 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
   let $meta := map{
     'title' : 'Liste des index',
     'author' : 'Guides de Paris',
-    'quantity' : getQuantity($data, 'index', 'index')
+    'quantity' : getQuantity($data, 'index', 'index'),
+    'metadata' : array{getMetadata($data, $lang)}
     }
   let $content := 
     for $entry in $data
@@ -1250,13 +1260,14 @@ declare function getIndexList($queryParams as map(*)) as map(*) {
 declare function getIndexLocorum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $data := if ($queryParams?text = 'all')
-      then synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id]
-      else synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
+  let $data := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexLocorum']
+  let $dataFiltered := if ($queryParams?text = 'all')
+      then $data//tei:listPlace/tei:place[@xml:id]
+      else $data//tei:listPlace/tei:place[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
   (: let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPlace/tei:place[@xml:id] :)
   let $results := if ($queryParams?letter != 'all') then
-    for $entry in $data where $entry/tei:placeName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
-    else $data
+    for $entry in $dataFiltered where $entry/tei:placeName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
+    else $dataFiltered
   let $meta := map{
     'title' : 'Index des lieux',
     'author' : 'Guides de Paris',
@@ -1264,7 +1275,8 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
     'text' : $queryParams?text,
     'start' : $queryParams?start,
     'count' : $queryParams?count,
-    'letter' : $queryParams?letter
+    'letter' : $queryParams?letter,
+    'metadata' : array{getMetadata($data, $lang)}
     }
   let $content :=
     for $entry in $results
@@ -1298,11 +1310,13 @@ declare function getIndexLocorumItem($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $itemId := map:get($queryParams, 'itemId')
   let $db := synopsx.models.synopsx:getDb($queryParams)
-  let $entry := $db//tei:place[@xml:id = $itemId]
+  let $data := $db/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexLocorum']
+  let $entry := $data//tei:place[@xml:id = $itemId]
   let $meta := map{
     'rubrique' : 'Entrée de l’index de lieux',
     'author' : 'Guides de Paris',
-    'quantity' : getQuantity($entry, 'occurence', 'occurences')
+    'quantity' : getQuantity($entry, 'occurence', 'occurences'),
+    'metadata' : array{getMetadata($data, $lang)}
     }
   let $uuid := $entry/@xml:id
   let $content :=
@@ -1341,13 +1355,14 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
   let $search := map:get($queryParams, 'search')
-  let $data := if ($queryParams?text = 'all')
-    then synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person[@xml:id]
-    else synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
+  let $data := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexNominum']
+  let $dataFiltered := if ($queryParams?text = 'all')
+    then $data//tei:listPerson/tei:person[@xml:id]
+    else $data//tei:listPerson/tei:person[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
   (:let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listPerson/tei:person[@xml:id]:)
   let $results := if ($queryParams?letter != 'all') then
-    for $entry in $data where $entry/tei:persName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
-    else $data
+    for $entry in $dataFiltered where $entry/tei:persName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
+    else $dataFiltered
   let $meta := map{
     'title' : 'Index des personnes',
     'author' : 'Guides de Paris',
@@ -1355,7 +1370,8 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
     'text' : $queryParams?text,
     'start' : $queryParams?start,
     'count' : $queryParams?count,
-    'letter' : $queryParams?letter
+    'letter' : $queryParams?letter,
+    'metadata' : array{getMetadata($data, $lang)}
     }
   let $content := 
     for $entry in $results
@@ -1392,11 +1408,13 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $itemId := map:get($queryParams, 'itemId')
   let $db := synopsx.models.synopsx:getDb($queryParams)
-  let $entry := $db//tei:listPerson/tei:person[@xml:id = $itemId]
+  let $data := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexNominum']
+  let $entry := $data//tei:listPerson/tei:person[@xml:id = $itemId]
   let $meta := map{
     'rubrique' : 'Entrée d’index des personnes',
     'author' : 'Guides de Paris',
-    'quantity' : getQuantity($entry, 'occurence', 'occurences')
+    'quantity' : getQuantity($entry, 'occurence', 'occurences'),
+    'metadata' : array{getMetadata($data, $lang)}
     }
   let $uuid := $entry/@xml:id
   let $content :=
@@ -1440,13 +1458,14 @@ declare function getIndexNominumItem($queryParams as map(*)) as map(*) {
 declare function getIndexOperum($queryParams as map(*)) as map(*) {
   let $lang := 'fr'
   let $dateFormat := 'jjmmaaa'
-  let $data := if ($queryParams?text = 'all')
-    then synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object[@xml:id]
-    else synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
+  let $data := synopsx.models.synopsx:getDb($queryParams)/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexOperum']
+  let $dataFiltered := if ($queryParams?text = 'all')
+    then $data//tei:listObject/tei:object[@xml:id]
+    else $data//tei:listObject/tei:object[@xml:id][tei:listRelation/tei:relation/@type = $queryParams?text]
   (:let $data := synopsx.models.synopsx:getDb($queryParams)//tei:listObject/tei:object[@xml:id]:)
   let $results := if ($queryParams?letter != 'all') then
-    for $entry in $data where $entry/tei:objectName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
-    else $data
+    for $entry in $dataFiltered where $entry/tei:objectName[1][fn:starts-with(fn:lower-case(.), fn:lower-case($queryParams?letter))] return $entry
+    else $dataFiltered
   let $meta := map{
     'title' : 'Index des œuvres',
     'author' : 'Guides de Paris',
@@ -1454,7 +1473,8 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
     'text' : $queryParams?text,
     'start' : $queryParams?start,
     'count' : $queryParams?count,
-    'letter' : $queryParams?letter
+    'letter' : $queryParams?letter,
+    'metadata' : array{getMetadata($data, $lang)}
     }
   let $content := 
     for $entry in $results
@@ -1487,7 +1507,8 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
   let $dateFormat := 'jjmmaaa'
   let $itemId := map:get($queryParams, 'itemId')
   let $db := synopsx.models.synopsx:getDb($queryParams)
-  let $entry := $db//tei:object[@xml:id = $itemId]
+  let $data := $db/tei:teiCorpus/tei:TEI[tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id = 'gdpIndexOperum']
+  let $entry := $data//tei:object[@xml:id = $itemId]
   let $occurences := $entry/tei:relation[@type="locus"]
   let $meta := map{
     'rubrique' : 'Entrée de l’index des œuvres',
@@ -1496,7 +1517,8 @@ declare function getIndexOperumItem($queryParams as map(*)) as map(*) {
     'type' : $entry//tei:type/tei:label,
     'date' : $entry/tei:creation/tei:date,
     'desc' : $entry/tei:desc,
-    'quantity' : getQuantity($occurences, 'occurence', 'occurences')
+    'quantity' : getQuantity($occurences, 'occurence', 'occurences'),
+    'metadata' : array{getMetadata($data, $lang)}
     }
   let $uuid := $entry/@xml:id
   let $content := 

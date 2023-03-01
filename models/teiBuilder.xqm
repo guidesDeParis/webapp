@@ -62,6 +62,11 @@ declare function getMetadata($content as element()*, $lang as xs:string) as map(
     "content" : getTitles($content, $lang)
   },
   map{
+      "name" : "DC.author",
+      "scheme" : "URI",
+      "content" : getAuthors($content, $lang)
+    },
+  map{
     "name" : "keywords",
     "content" : ("architecture", "18e siècle"),
     "lang" : "fr"
