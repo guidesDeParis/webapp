@@ -484,7 +484,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $uuid := $item/@xml:id
   let $itemBefore := getItemBefore($item, $lang)
   let $itemAfter := getItemAfter($item, $lang)
-  let $itemRefactored := if ($item/preceding-sibling::tei:pb[1])
+  let $itemRefactored := if ($item/preceding-sibling::*[1][self::tei:fw])
     then element tei:div {
       $item/preceding-sibling::tei:pb[1],
       $item/preceding-sibling::tei:fw[1],
