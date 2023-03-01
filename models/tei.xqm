@@ -484,10 +484,17 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $uuid := $item/@xml:id
   let $itemBefore := getItemBefore($item, $lang)
   let $itemAfter := getItemAfter($item, $lang)
+  let $itemRefactored := if ($item/preceding-sibling::tei:pb[1])
+    then element tei:div {
+      $item/preceding-sibling::tei:pb[1],
+      $item/preceding-sibling::tei:fw[1],
+      $item/node()
+    }
+    else $item
   let $tei :=
     if ($queryParams?depth)
-    then $item
-    else remove-elements-deep($item, 'div')
+    then $itemRefactored
+    else remove-elements-deep($itemRefactored, 'div')
   let $content := 
   map {
     'title' : getSectionTitle($item),
