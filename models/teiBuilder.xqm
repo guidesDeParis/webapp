@@ -599,6 +599,21 @@ declare function deepCopy($node, $options) {
       }
       default return $node
 };
+
+(:~
+ : this function get a refactorated item when pagination is before the div
+ :)
+declare function getItemRefactorated($node as element()) as element() {
+  let $pagination := $node/preceding-sibling::tei:pb[1] union $node/preceding-sibling::tei:fw[1]
+  return if ($pagination)
+    then element {fn:node-name($node)} {
+      $node/@*,
+      $pagination,
+      $node/node()
+    }
+    else $node
+};
+
 (:~
  : this function get occurences of index entry
  :

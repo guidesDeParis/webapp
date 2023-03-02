@@ -525,17 +525,6 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     }
 };
 
-declare function getItemRefactorated($node as element()) as element() {
-  let $pagination := $node[preceding-sibling::pb[1]|preceding-sibling::fw[1]]
-  return if ($pagination)
-    then element {fn:node-name()} {
-      $node/@*,
-      $pagination,
-      $node/node()
-    }
-    else $node
-};
-
 (:~
  : this function get item by ID
  :
