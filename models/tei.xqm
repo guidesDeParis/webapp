@@ -498,7 +498,7 @@ declare function getItemById($queryParams as map(*)) as map(*) {
   let $tei :=
     if ($queryParams?depth)
     then $item
-    else remove-elements-deep($item, 'div')
+    else remove-elements-deep(getItemRefactorated($item), 'div')
   let $content := 
   map {
     'title' : getSectionTitle($item),
@@ -523,6 +523,17 @@ declare function getItemById($queryParams as map(*)) as map(*) {
     'meta'    : $meta,
     'content' : $content
     }
+};
+
+declare function getItemRefactorated($node as element()) as element() {
+  let $pagination := $node[preceding-sibling::pb[1]|preceding-sibling::fw[1]]
+  return if ($pagination)
+    then element {fn:node-name()} {
+      $node/@*,
+      $pagination,
+      $node/node()
+    }
+    else $node
 };
 
 (:~
