@@ -574,11 +574,11 @@ declare function getTextIdWithRegex($extract as element()) as xs:string {
  : this function get the upperPart of a div
  :)
 declare function remove-elements-deep($nodes as node()*, $names as xs:string*) {
-  for $node at $i in $nodes
+  for $node at $i in $nodes except $nodes[(self::tei:pb|self::tei:fw)[preceding-sibling::tei:div]]
   return if ($node instance of element())
     then if (fn:name($node) = $names and $i != 1)
       then ()
-      else element { fn:node-name($node)} {
+    else element { fn:node-name($node)} {
         $node/@*, remove-elements-deep($node/node(),
         $names)
         }
