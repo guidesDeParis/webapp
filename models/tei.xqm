@@ -211,7 +211,7 @@ declare function getContent($queryParams as map(*)) as map(*) {
     'uuid' : $uuid,
     'path' : '/',
     'url' : $gdp.globals:root || '/' || $uuid,
-    'tei' : $article
+    'tei' : $article/tei:text
     }
   return  map{
     'meta'    : $meta,
