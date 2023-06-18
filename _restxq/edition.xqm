@@ -26,6 +26,8 @@ declare namespace request = 'http://exquery.org/ns/request';
 declare namespace rest = "http://exquery.org/ns/restxq" ;
 declare namespace update = "http://basex.org/modules/update" ;
 declare namespace web = "http://basex.org/modules/web" ;
+declare namespace inspect = "http://basex.org/modules/inspect" ;
+declare namespace xqdoc = "http://www.xqdoc.org/1.0" ;
 
 declare namespace perm = "http://basex.org/modules/perm" ;
 declare namespace user = "http://basex.org/modules/user" ;
@@ -529,7 +531,7 @@ declare
   %output:media-type('application/json')
   %output:method('json')
   %rest:query-param("start", "{$start}", 1)
-  %rest:query-param("count", "{$count}", 100)
+  %rest:query-param("count", "{$count}", 2000)
   %rest:query-param("text", "{$text}", 'all')
   %rest:query-param("letter", "{$letter}", 'all')
 function indexOperumJson(
@@ -674,11 +676,12 @@ function indexNominumItemRdf($itemId) {
     }
     return gdp.mappings.tei2rdf:tei2rdf($queryParams, $result, $outputParams)
 };
-
 (:~
- : entrées d’index d’un texte ???
- :)
- 
-(:~
- : cartes et accès complexes 
- :)
+ :
+declare
+  %rest:path('/doc')
+  %rest:produces('application/xml')
+function getDoc() {
+inspect:xqdoc('./edition.xqm')
+};
+:)
