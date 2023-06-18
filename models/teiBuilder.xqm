@@ -1012,6 +1012,8 @@ declare function getTitleMap($nodes, $options as map(*)) {
       'type' : if ($node/@type) then fn:string($node/@type) else $node/fn:name(),
       'title' : getSectionTitle($node),
       'uuid' : $uuid,
+      'pages' : getPages($node, map{}),
+      'size' : getWordsCount($node, map{}),
       'path' : '/items/',
       'url' : $gdp.globals:root || '/items/' || $uuid,
       'indexes' : array{ getIndexesWithFt($node, map{}) },
