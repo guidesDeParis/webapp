@@ -491,10 +491,9 @@ declare function getQuantity($content as item()*, $unit as xs:string, $units as 
   let $nb := if ($content instance of xs:integer)
     then xs:integer($content)
     else fn:count($content)
-  return switch ($nb)
-    case ($nb = 0) return map{'quantity' : 0, 'units' : fn:normalize-space('pas de ' ||  $unit)}
-    case ($nb = 1) return map{'quantity' : $nb, 'unit' : $unit}
-    default return map{'quantity' : $nb, 'unit' : $units}
+  return if ($nb eq 0) then map{'quantity' : 0, 'unit' : fn:normalize-space('pas de ' ||  $unit)}
+         else if ($nb eq 1)  then map{'quantity' : $nb, 'unit' : $unit}
+         else map{'quantity' : $nb, 'unit' : $units}
 };
 
 (:~
