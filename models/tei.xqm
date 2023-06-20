@@ -1293,6 +1293,7 @@ declare function getIndexLocorum($queryParams as map(*)) as map(*) {
     }
   let $content :=
     for $entry in $results
+    order by $entry/tei:placeName[1]
     let $uuid := $entry/@xml:id
     return map {
       'title' : $entry/tei:placeName[1],
@@ -1388,6 +1389,7 @@ declare function getIndexNominum($queryParams as map(*)) as map(*) {
     }
   let $content := 
     for $entry in $results
+    order by $entry/tei:persName[1]
     let $uuid := $entry/@xml:id
     return map {
       'title' : $entry/tei:persName[1],
@@ -1491,6 +1493,7 @@ declare function getIndexOperum($queryParams as map(*)) as map(*) {
     }
   let $content := 
     for $entry in $results
+    order by $entry/tei:objectName[1]
     let $uuid := $entry/@xml:id
     return map {
       'title' : $entry/tei:objectName[1],
