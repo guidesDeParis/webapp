@@ -258,7 +258,7 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
       },
     'description' : getDescription($corpus, $lang),
     'editionsQuantity' : getQuantity($otherEditions/tei:biblStruct, 'édition', ' éditions'), (: @todo with or without unit :)
-    'textsQuantity' : getQuantity($corpus/tei:TEI, 'texte disponible', 'textes disponibles'),
+    'textsQuantity' : getQuantity($corpus/tei:TEI, 'édition consultable', 'éditions disponibles'),
     'uuid' : $uuid,
     'path' : '/corpus/',
     'url' : $gdp.globals:root || '/corpus/' || $uuid
