@@ -240,6 +240,8 @@ declare function getCorpusList($queryParams as map(*)) as map(*) {
     }
   let $content := 
     for $corpus in $corpora/tei:teiCorpus
+    let $title := getTitles($corpus, $lang)
+    order by $title
     let $uuid := $corpus/tei:teiHeader/tei:fileDesc/tei:sourceDesc/@xml:id
     let $ref := getRef($corpus)
     let $otherEditions := getOtherEditions($ref)
