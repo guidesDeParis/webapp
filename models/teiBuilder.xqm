@@ -661,7 +661,7 @@ declare function getOccurences($entry as element(), $options as map(*)) as map(*
   group by $texts := $item/@type
   return map{
     'item' : fn:normalize-space($texts),
-    'biblio' : getRef($options?db//tei:TEI[tei:teiHeader//tei:sourceDesc[@xml:id = $texts]]),
+    
     'occurences' : array{
       let $ids := $item/@passive  ! fn:tokenize(., ' ') ! fn:substring-after(., '#')
       let $lookup :=
