@@ -905,8 +905,8 @@ declare function getIndexEntriesFromIndex($item as element()) as map(*)* {
  : @param $id
  : @return a div
  :)
-declare function getDivFromId($id as xs:string) as element() {
-  (db:open('gdp')//*[@xml:id=$id]/ancestor::tei:div[1])[1]
+declare function getDivFromId($id as xs:string) as element()* {
+  db:open('gdp')//*[@xml:id=$id]/ancestor::tei:div[1]
 };
 
 (:~
